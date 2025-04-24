@@ -1,0 +1,45 @@
+# Node modules
+/node_modules/
+
+# Build
+/dist/
+/build/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*.local
+
+# IDEs e editores
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Sistema operacional
+.DS_Store      # macOS
+Thumbs.db      # Windows
+
+# Arquivos de protótipo
+*.fig
+*.xd
+/prototypes/
+
+# Arquivos temporários
+*.tmp
+*.swp
+
+# Coverage de testes
+/coverage/
+
+# Arquivos pessoais
+segredo.txt
+minhas-anotações.md
