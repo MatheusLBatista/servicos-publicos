@@ -39,8 +39,13 @@ class Usuario {
                     cidade: { type: String, required: [true, "O cidade é obrigatório!"]},
                     estado: { type: String, enum: estadosBrasil, required: [true, "O estado é obrigatório!"]}
                 }
+            }, 
+            {
+                timestamps: true,
+                versionKey: false
             }
-        )
+        );
+        
     }
 }
 
