@@ -45,6 +45,20 @@ class Usuario {
                 versionKey: false
             }
         );
+
+        // Validação personalizada para garantir que rota + dominio sejam únicos dentro do grupo
+        usuarioSchema.pre('save', function (next) {
+            const permissoes = this.permissoes;
+            const combinacoes = permissoes.map(p => `${p.rota}_${p.dominio}`);
+            const setCombinacoes = new Set(combinacoes);
+
+            if (combinacoes.length !== setCombinacoes.size) {
+                return next(new Error('Permissões duplicadas encontradas: rota + domínio devem ser únicos dentro de cada grupo.'));
+            }
+
+            next();
+        });
+
         
         usuarioSchema.plugin(mongoosePaginate);
         this.model = mongoose.model('usuario', usuarioSchema);
