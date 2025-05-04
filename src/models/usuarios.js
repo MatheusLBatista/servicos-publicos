@@ -46,6 +46,8 @@ class Usuario {
             }
         );
         
+        usuarioSchema.plugin(mongoosePaginate);
+        this.model = mongoose.model('usuarios', usuarioSchema);
     }
 }
 
