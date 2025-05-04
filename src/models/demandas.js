@@ -61,7 +61,7 @@ class Demanda {
         );
 
         demandaSchema.plugin(mongoosePaginate);
-        this.model = mongoose.model('demandas', demandaSchema);
+        this.model = mongoose.model('demanda', demandaSchema);
     }
 }
 
