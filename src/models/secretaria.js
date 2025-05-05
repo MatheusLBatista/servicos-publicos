@@ -5,7 +5,6 @@ class Secretaria {
     constructor() {
         const secretariaSchema = new mongoose.Schema(
             {
-                id_secretaria: { type: String, required: [true, "O ID da secretaria é obrigatório!"]},
                 nome: { type: String, required: [true, "O nome da secretaria é obrigatório!"]},
             }, 
             {

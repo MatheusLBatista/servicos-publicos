@@ -5,10 +5,9 @@ class TipoDemanda {
     constructor() {
         const tipoDemandaSchema = new mongoose.Schema(
             {
-                id_tipo_demanda: { type: String, required: [true, "O ID do tipo de demanda é obrigatório!"]},
                 titulo: { type: String, required: [true, "O título da demanda é obrigatório!"]},
                 descricao: { type: String, required: [true, "A descrição da demanda é obrigatória!"]},
-                link_imagem_fundo: {
+                link_imagem: {
                     type: String,
                     required: false,
                     default: "",

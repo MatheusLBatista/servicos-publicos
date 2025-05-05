@@ -1,8 +1,66 @@
-//173 nunca muda 
-
+import { fakerPT_BR } from '@faker-js/faker';
 import fakebr from 'faker-br';
+import mongoose from 'mongoose';
+import { v4 as uuid } from 'uuid';
+import Secretaria from '../models/secretaria';
+import TipoDemanda from '../models/tipoDemanda';
+import Demanda from '../models/demandas';
+
+async function loadModels() {
+  return [
+    { name: 'Secretaria', model: Secretaria },
+    { name: 'TipoDemanda', model: TipoDemanda },
+    { name: 'Demanda', model: Demanda }
+  ];
+}
+
+const fakeMappings = {
+  common: {
+    nome: () => 
+      fakebr.name.firstName() + " " + fakebr.name.lastName(),
+    descricao: () => fakebr.lorem.sentence(),
+    link_imagem: () => fakebr.internet.url() + "/" + uuid() + ".jpg",
+    tipo: () => fakebr.lorem.word(),
+
+  }, 
+
+  Secretaria: {
+
+  },
+
+  TipoDemanda: {
+    titulo: () => fakebr.lorem.word(),
+    icone: () => fakebr.internet.url() + "/" + uuid() + ".jpg",
+    subdescricao: () => fakebr.lorem.sentence()
+  },
+
+  Demanda: {
+    status: () => {
+      const values =  [ "Em aberto", "Em andamento", "Concluída" ]
+      return values[Math.floor(Math.random() * values.length)]
+    },
+    data: () => fakebr.date.past(),
+    resolucao: () => fakebr.lorem.sentence(),
+    feedback: () => parseFloat(fakebr.number.float({ min: 0, max: 5 }).toFixed(1)),
+    avaliacao_resolucao: () => fakebr.lorem.sentence(),
+    motivo_devolucao: () => fakebr.lorem.sentence(),
+    link_imagem_resolucao: () => fakebr.internet.url() + "/" + uuid() + ".jpg",
+    usuario: () => [{ _id: new mongoose.Types.ObjectId().toString() }],
+    endereco: () => [
+      {
+        logradouro: fakebr.address.street(),
+        cep: fakebr.address.zipCode(),
+        bairro: fakebr.address.county(),
+        numero: fakebr.address.buildingNumber(),
+        complemento: fakebr.address.secondaryAddress()
+      }
+    ]
+  }
+
+}
 
 
+// ---------------------------------------------------------------------------------------------------------------------
 /**
  * Retorna o mapping global, consolidando os mappings comuns e específicos.
  * Nesta versão automatizada, carregamos os models e combinamos o mapping comum com o mapping específico de cada model.

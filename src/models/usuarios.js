@@ -11,7 +11,6 @@ class Usuario {
     constructor() {
         const usuarioSchema = new mongoose.Schema(
             {
-                id_usuario: { type: String, required: [true, "O ID do usuário é obrigatório!"]},
                 cpf: { type: String, required: [true, "O CPF do usuário é obrigatório!"] },
                 email: { type: String, required: [true, "O email do usuário é obrigatório!"] },
                 celular: { type: String, required: [true, "O celular do usuário é obrigatório!"] },

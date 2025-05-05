@@ -6,7 +6,6 @@ class Demanda {
     constructor() {
         const demandaSchema = new mongoose.Schema(
             {
-                id_demanda: { type: String, required: [true, "O ID da demanda é obrigatório!"]},
                 tipo: { type: String, required: [true, "O tipo da demanda é obrigatório!"]},
                 status: { 
                     type: String,
