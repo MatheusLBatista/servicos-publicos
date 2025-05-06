@@ -1,12 +1,12 @@
 import "dotenv/config";
 import { randomBytes as _randomBytes } from "crypto";
-
-// Conexão com banco
-import DbConect from "../config/DbConnect.js";
-
+import mongoose from "mongoose";    
 import Usuario from "../models/usuarios.js";
 import getGlobalFakeMapping from "./globalFakeMapping";
 import { gerarSenhaHash } from "./seeds.js";
+
+// Conexão com banco
+import DbConect from "../config/DbConnect.js";
 
 await DbConect.conectar();
 
@@ -52,3 +52,5 @@ async function seedUsuario() {
 
   return Usuario.find();
 }
+
+export default seedUsuario;
