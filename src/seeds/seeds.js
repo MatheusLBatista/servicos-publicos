@@ -1,12 +1,12 @@
-import { faker } from "@faker-js/faker";
 import "dotenv/config";
-import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
-import Usuario from "../models/usuarios";
-import Secretaria from "../models/secretaria";
-import Demanda from "../models/demandas";
-import TipoDemanda from "../models/tipoDemanda";
+export function gerarSenhaHash(senhaPura) {
+    return bcrypt.hashSync(senhaPura, 8)
+}
 
+const senhaPura = "AaBb@123456";
+const senhaHash = gerarSenhaHash(senhaPura)
 
  
 
