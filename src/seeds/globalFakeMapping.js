@@ -22,7 +22,10 @@ const fakeMappings = {
       fakebr.name.firstName() + " " + fakebr.name.lastName(),
     descricao: () => fakebr.lorem.sentence(),
     link_imagem: () => fakebr.internet.url() + "/" + uuid() + ".jpg",
-    tipo: () => fakebr.lorem.word(),
+    tipo: () => {
+      const values =  [ "Coleta", "Iluminação", "Animais", "Pavimentação", "Árvores", "Saneamento" ]
+      return values[Math.floor(Math.random() * values.length)]
+    },
 
   }, 
 

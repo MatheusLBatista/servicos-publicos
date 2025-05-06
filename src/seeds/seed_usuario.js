@@ -1,14 +1,20 @@
 import "dotenv/config";
-import { randomBytes as _randomBytes } from "crypto";
-import mongoose from "mongoose";    
+import { randomBytes as _randomBytes } from "crypto";  
 import Usuario from "../models/usuarios.js";
 import getGlobalFakeMapping from "./globalFakeMapping";
-import { gerarSenhaHash } from "./seeds.js";
+import bcrypt from "bcryptjs";
 
 // Conexão com banco
 import DbConect from "../config/DbConnect.js";
 
 await DbConect.conectar();
+
+export function gerarSenhaHash(senhaPura) {
+    return bcrypt.hashSync(senhaPura, 8)
+}
+
+const senhaPura = "AaBb@123456";
+const senhaHash = gerarSenhaHash(senhaPura)
 
 const globalFakeMapping = await getGlobalFakeMapping();
 
@@ -34,7 +40,7 @@ async function seedUsuario() {
       nome: globalFakeMapping.nome(),
       nome_social: globalFakeMapping.nome_social(),
       portaria_nomeacao: globalFakeMapping.portaria_nomeacao(),
-      senha: gerarSenhaHash(globalFakeMapping.senha()),
+      senha: senhaHash,
       endereco: {
         logradouro: globalFakeMapping.logradouro(),
         cep: globalFakeMapping.cep(),
