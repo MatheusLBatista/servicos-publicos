@@ -1,16 +1,18 @@
 import { fakerPT_BR } from '@faker-js/faker';
 import fakebr from 'faker-br';
-import mongoose from 'mongoose';
+import mongoose, { model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 import Secretaria from '../models/secretaria';
 import TipoDemanda from '../models/tipoDemanda';
 import Demanda from '../models/demandas';
+import Usuario from '../models/usuarios';
 
 async function loadModels() {
   return [
     { name: 'Secretaria', model: Secretaria },
     { name: 'TipoDemanda', model: TipoDemanda },
-    { name: 'Demanda', model: Demanda }
+    { name: 'Demanda', model: Demanda },
+    { name: 'Usuario', model: Usuario }
   ];
 }
 
@@ -23,6 +25,33 @@ const fakeMappings = {
     tipo: () => fakebr.lorem.word(),
 
   }, 
+
+  Usuario: {
+    cpf: () => fakebr.person.cpf(),
+    email: () => fakebr.internet.email(),
+    celular: () => fakebr.phone.number('(##) #####-####'),
+    cnh: () => fakebr.person.cpf(), // simulando como um número semelhante
+    data_nomeacao: () => fakebr.date.past(),
+    cargo: () => fakebr.person.jobTitle(),
+    formacao: () => fakebr.education.course(),
+    nivel_acesso: () => ({
+      municipe: true,
+      operador: false,
+      administrador: false
+    }),
+    nome_social: () => fakebr.name.firstName() + " " + fakebr.name.lastName(),
+    portaria_nomeacao: () => "PORT/" + fakebr.number.int({ min: 1000, max: 9999 }),
+    senha: () => fakebr.internet.password(),
+    endereco: () => ({
+      logradouro: fakebr.address.street(),
+      cep: fakebr.address.zipCode(),
+      bairro: fakebr.address.county(),
+      numero: fakebr.address.buildingNumber(),
+      complemento: fakebr.address.secondaryAddress(),
+      cidade: fakebr.address.city(),
+      estado: fakebr.address.state({ abbreviated: false })
+    })
+  },
 
   Secretaria: {
 
