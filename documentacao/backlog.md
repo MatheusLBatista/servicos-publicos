@@ -1,12 +1,12 @@
 # MILESTONE 1
 
-- [ ] Requisitos (revisão)
-- [ ] Modelagem do Banco (revisão)
-- [ ] Protótipo Figma (revisão)
-- [ ] Documentação de cada rota (incluindo regras de negócio)
-- [ ] Metodologia - (Métricas SCRUM)
-- [ ] Dificuldades encontradas
-- [ ] Aprendizagem com o processo
+- [x] Requisitos (revisão)
+- [x] Modelagem do Banco (revisão)
+- [x] Protótipo Figma (revisão)
+- [x] Documentação de cada rota (incluindo regras de negócio)
+- [x] Metodologia - (Métricas SCRUM)
+- [x] Dificuldades encontradas
+- [x] Aprendizagem com o processo
 
 ---
 
