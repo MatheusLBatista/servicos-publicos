@@ -21,13 +21,12 @@
             - [ ] `get /coleta/`;
             - [ ] `post /coleta/criar`;
 * Iniciar testes unitários do fluxo principal
-    * Teste rotas 
-            * Teste rotas de autenticação
-                - [ ] `/login`;
-                - [ ] `/registro`;
-            * Teste rota da página principal
-                - [ ] `/get`;
-            * Teste rota da página de coleta
-                - [ ] `get /coleta/`;
-                - [ ] `post /coleta/criar`;
-                - [ ] `post /coleta/criar/endereco`;   
+        * Teste rotas de autenticação
+            - [ ] `/login`;
+            - [ ] `/registro`;
+        * Teste rota da página principal
+            - [ ] `/get`;
+        * Teste rota da página de coleta
+            - [ ] `get /coleta/`;
+            - [ ] `post /coleta/criar`;
+            - [ ] `post /coleta/criar/endereco`;   
