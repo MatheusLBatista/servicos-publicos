@@ -1,15 +1,15 @@
 ## Sprint 3 (30/04/2025 - 12/05/2025)
 * Iniciar implementação dos requisitos principais da API (Matheus e Giullia)
     * Seeds (Matheus e Giullia)
-        - [ ] Seed usuario (Matheus);
+        - [x] Seed usuario (Matheus);
         - [ ] Seed secretaria (Giullia);
-        - [ ] Seed demanda (Matheus);
+        - [x] Seed demanda (Matheus);
         - [ ] Seed tipo de demanda (Giullia);
-        - [ ] Global Fake Mapping (Matheus);
+        - [x] Global Fake Mapping (Matheus);
     * Models (Matheus e Giullia)
-        - [ ] Model usuario (Matheus);
+        - [x] Model usuario (Matheus);
         - [ ] Model secretaria (Giullia);
-        - [ ] Model demanda (Matheus);
+        - [x] Model demanda (Matheus);
         - [ ] Model tipo de demanda (Giullia);
     * Rotas 
         * Rotas 
