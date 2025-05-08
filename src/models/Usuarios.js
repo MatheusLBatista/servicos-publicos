@@ -60,7 +60,7 @@ class Usuario {
 
         
         usuarioSchema.plugin(mongoosePaginate);
-        this.model = mongoose.model('usuario', usuarioSchema);
+        this.model = mongoose.model('usuarios', usuarioSchema);
     }
 }
 

@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { randomBytes as _randomBytes } from "crypto";  
-import Usuario from "../models/usuarios.js";
+import Usuario from "../models/Usuarios.js";
 import getGlobalFakeMapping from "./globalFakeMapping.js";
 import bcrypt from "bcryptjs";
 

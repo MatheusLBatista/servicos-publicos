@@ -28,7 +28,7 @@ class Secretaria {
 
 
         secretariaSchema.plugin(mongoosePaginate);
-        this.model = mongoose.model('secretaria', secretariaSchema);
+        this.model = mongoose.model('secretarias', secretariaSchema);
     }
 }
 

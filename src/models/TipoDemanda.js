@@ -44,7 +44,7 @@ class TipoDemanda {
 
 
         tipoDemandaSchema.plugin(mongoosePaginate);
-        this.model = mongoose.model('tipo_demanda', tipoDemandaSchema);
+        this.model = mongoose.model('tipo_demandas', tipoDemandaSchema);
     }
 }
 

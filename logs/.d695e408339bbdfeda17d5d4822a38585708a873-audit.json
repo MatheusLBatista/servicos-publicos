@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/home/matheus_batista/Documentos/fabrica-software/servicos-publicos/logs/.d695e408339bbdfeda17d5d4822a38585708a873-audit.json",
+    "files": [
+        {
+            "date": 1746667131701,
+            "name": "/home/matheus_batista/Documentos/fabrica-software/servicos-publicos/logs/error-2025-05-07.log",
+            "hash": "47b67fab27098558773ac3bd06aa9c1c0a3af4e88c3cf2a4ef56b697b013567d"
+        }
+    ],
+    "hashType": "sha256"
+}
