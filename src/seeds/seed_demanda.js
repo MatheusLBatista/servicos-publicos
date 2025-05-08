@@ -1,11 +1,11 @@
 import "dotenv/config";
 import { randomBytes as _randomBytes } from "crypto";
 import Demanda from "../models/demandas.js";
-import getGlobalFakeMapping from "./globalFakeMapping";
+import getGlobalFakeMapping from "./globalFakeMapping.js";
 import Usuario from "../models/usuarios.js";
 
 // Conexão com banco
-import DbConect from "../config/DbConnect.js";
+import DbConnect from "../config/dbConnect.js";
 
 await DbConect.conectar();
 

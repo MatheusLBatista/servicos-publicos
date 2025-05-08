@@ -2,10 +2,10 @@ import { fakerPT_BR } from '@faker-js/faker';
 import fakebr from 'faker-br';
 import mongoose, { model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
-import Secretaria from '../models/secretaria';
-import TipoDemanda from '../models/tipoDemanda';
-import Demanda from '../models/demandas';
-import Usuario from '../models/usuarios';
+import Secretaria from '../models/secretaria.js';
+import TipoDemanda from '../models/tipoDemanda.js';
+import Demanda from '../models/demandas.js';
+import Usuario from '../models/usuarios.js';
 
 async function loadModels() {
   return [
