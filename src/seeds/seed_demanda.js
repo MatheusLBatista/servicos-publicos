@@ -36,11 +36,11 @@ async function seedDemanda() {
       link_imagem: globalFakeMapping.link_imagem(),
       link_imagem_resolucao: globalFakeMapping.link_imagem_resolucao(),
       endereco: {
-        logradouro: globalFakeMapping.logradouro(),
-        cep: globalFakeMapping.cep(),
-        bairro: globalFakeMapping.bairro(),
-        numero: globalFakeMapping.numero(),
-        complemento: globalFakeMapping.complemento()
+        logradouro: globalFakeMapping.endereco.logradouro(),
+        cep: globalFakeMapping.endereco.cep(),
+        bairro: globalFakeMapping.endereco.bairro(),
+        numero: globalFakeMapping.endereco.numero(),
+        complemento: globalFakeMapping.endereco.complemento()
       },
       usuario: [usuarioAleatorio._id]
     });

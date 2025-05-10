@@ -5,7 +5,7 @@ import seedUsuario from "./seed_usuario.js";
 async function main() {
     try {
       await seedUsuario();
-      //await seedDemanda();
+      await seedDemanda();
 
       console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");
     } catch (err) {
@@ -17,6 +17,5 @@ async function main() {
     }
   }
   
-  // Executa tudo
   main();
   

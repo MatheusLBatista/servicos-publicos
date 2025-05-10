@@ -1,22 +1,8 @@
-import { fakerPT_BR } from '@faker-js/faker';
 import { faker } from '@faker-js/faker/locale/pt_BR';
 import fakebr from 'faker-br';
 import mongoose, { model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
-// import Secretaria from '../models/Secretaria.js';
-// import TipoDemanda from '../models/TipoDemanda.js';
-// import Demanda from '../models/Demandas.js';
-// import Usuario from '../models/Usuarios.js';
 import loadModels from './loadModels.js';
-
-// async function loadModels() {
-//   return [
-//     { name: 'Secretaria', model: Secretaria },
-//     { name: 'TipoDemanda', model: TipoDemanda },
-//     { name: 'Demanda', model: Demanda },
-//     { name: 'Usuario', model: Usuario }
-//   ];
-// }
 
 const fakeMappings = {
   common: {
@@ -32,19 +18,19 @@ const fakeMappings = {
   }, 
 
   Usuario: {
-    cpf: () => fakebr.helpers.replaceSymbols('###.###.###-##'),
+    cpf: () => fakebr.br.cpf(),
     email: () => fakebr.internet.email(),
     celular: () => faker.phone.number('(##) 9####-####'),
     cnh: () => fakebr.helpers.replaceSymbols('###########'),
     data_nomeacao: () => fakebr.date.past(),
-    cargo: () => fakebr.lorem.sentence(),
-    formacao: () => fakebr.lorem.word(),
+    cargo: () => fakebr.name.jobType(),
+    formacao: () => fakebr.name.jobArea(),
     nivel_acesso: () => {
       const values =  [ "Munícipe", "Operador", "Administrador"]
       return values[Math.floor(Math.random() * values.length)]
     },
     nome_social: () => fakebr.name.firstName() + " " + fakebr.name.lastName(),
-    portaria_nomeacao: () => `PORT/${faker.number.int({ min: 1000, max: 9999 })}`,
+    portaria_nomeacao: () => `PORTARIA/${faker.number.int({ min: 1000, max: 9999 })}`,
     senha: () => fakebr.internet.password(),
     endereco: {
       logradouro: () => fakebr.address.streetName(),
@@ -73,21 +59,19 @@ const fakeMappings = {
       return values[Math.floor(Math.random() * values.length)]
     },
     data: () => fakebr.date.past(),
-    resolucao: () => fakebr.lorem.sentence(),
-    feedback: () => parseFloat(fakebr.number.float({ min: 0, max: 5 }).toFixed(1)),
+    resolucao: () => fakebr.random.words(),
+    feedback: () => parseFloat(Math.floor(Math.random() * 5)) + 1,
     avaliacao_resolucao: () => fakebr.lorem.sentence(),
     motivo_devolucao: () => fakebr.lorem.sentence(),
     link_imagem_resolucao: () => fakebr.internet.url() + "/" + uuid() + ".jpg",
     usuario: () => [{ _id: new mongoose.Types.ObjectId().toString() }],
-    endereco: () => [
-      {
-        logradouro: fakebr.address.street(),
+    endereco: {
+        logradouro: fakebr.address.streetName(),
         cep: fakebr.address.zipCode(),
         bairro: fakebr.address.county(),
-        numero: fakebr.address.buildingNumber(),
+        numero: (Math.floor(Math.random() * 9999) + 1000),
         complemento: fakebr.address.secondaryAddress()
       }
-    ]
   }
 
 }
