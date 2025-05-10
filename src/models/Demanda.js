@@ -82,4 +82,4 @@ class Demanda {
     }
 }
 
-export default Demanda;
+export default new Demanda().model;

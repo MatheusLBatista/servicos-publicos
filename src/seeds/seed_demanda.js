@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { randomBytes as _randomBytes } from "crypto";
-import Demanda from "../models/demandas.js";
+import Demanda from "../models/Demanda.js";
 import getGlobalFakeMapping from "./globalFakeMapping.js";
-import Usuario from "../models/usuarios.js";
+import Usuario from "../models/Usuario.js";
 
 // Conexão com banco
 import DbConnect from "../config/dbConnect.js";

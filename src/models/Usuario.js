@@ -64,4 +64,4 @@ class Usuario {
     }
 }
 
-export default Usuario;
+export default new Usuario().model;
