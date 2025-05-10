@@ -1,4 +1,5 @@
 import { fakerPT_BR } from '@faker-js/faker';
+import { faker } from '@faker-js/faker/locale/pt_BR';
 import fakebr from 'faker-br';
 import mongoose, { model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
@@ -31,30 +32,29 @@ const fakeMappings = {
   }, 
 
   Usuario: {
-    cpf: () => fakebr.person.cpf(),
+    cpf: () => fakebr.helpers.replaceSymbols('###.###.###-##'),
     email: () => fakebr.internet.email(),
-    celular: () => fakebr.phone.number('(##) #####-####'),
-    cnh: () => fakebr.person.cpf(), 
+    celular: () => faker.phone.number('(##) 9####-####'),
+    cnh: () => fakebr.helpers.replaceSymbols('###########'),
     data_nomeacao: () => fakebr.date.past(),
-    cargo: () => fakebr.person.jobTitle(),
-    formacao: () => fakebr.education.course(),
-    nivel_acesso: () => ({
-      municipe: true,
-      operador: false,
-      administrador: false
-    }),
+    cargo: () => fakebr.lorem.sentence(),
+    formacao: () => fakebr.lorem.word(),
+    nivel_acesso: () => {
+      const values =  [ "Munícipe", "Operador", "Administrador"]
+      return values[Math.floor(Math.random() * values.length)]
+    },
     nome_social: () => fakebr.name.firstName() + " " + fakebr.name.lastName(),
-    portaria_nomeacao: () => "PORT/" + fakebr.number.int({ min: 1000, max: 9999 }),
+    portaria_nomeacao: () => `PORT/${faker.number.int({ min: 1000, max: 9999 })}`,
     senha: () => fakebr.internet.password(),
-    endereco: () => ({
-      logradouro: fakebr.address.street(),
-      cep: fakebr.address.zipCode(),
-      bairro: fakebr.address.county(),
-      numero: fakebr.address.buildingNumber(),
-      complemento: fakebr.address.secondaryAddress(),
-      cidade: fakebr.address.city(),
-      estado: fakebr.address.state({ abbreviated: false })
-    })
+    endereco: {
+      logradouro: () => fakebr.address.streetName(),
+      cep: () => fakebr.address.zipCode(),
+      bairro: () => fakebr.address.county(),
+      numero: () => (Math.floor(Math.random() * 9000) + 1000),
+      complemento: () => fakebr.address.secondaryAddress(),
+      cidade: () => fakebr.address.city(),
+      estado: () => fakebr.address.state({ abbreviated: false })
+  }
   },
 
   Secretaria: {

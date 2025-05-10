@@ -1,11 +1,11 @@
 import "dotenv/config";
-import seedDemanda from "./seed_demanda";
-import seedUsuario from "./seed_usuario";
+import seedDemanda from "./seed_demanda.js";
+import seedUsuario from "./seed_usuario.js";
  
 async function main() {
     try {
-      await seedDemanda();
       await seedUsuario();
+      //await seedDemanda();
 
       console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");
     } catch (err) {
