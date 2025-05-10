@@ -1,13 +1,13 @@
 import "dotenv/config";
 import { randomBytes as _randomBytes } from "crypto";  
-import Usuario from "../models/Usuarios.js";
+// import Usuario from "../models/Usuarios.js";
 import getGlobalFakeMapping from "./globalFakeMapping.js";
 import bcrypt from "bcryptjs";
 
 // Conexão com banco
-import DbConect from "../config/dbConnect.js";
+import DbConnect from "../config/dbConnect.js";
 
-await DbConect.conectar();
+await DbConnect.conectar();
 
 export function gerarSenhaHash(senhaPura) {
     return bcrypt.hashSync(senhaPura, 8)

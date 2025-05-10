@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/.bf129b4e89cc030e3d35791f6c014a5cb56956ba-audit.json",
+    "files": [
+        {
+            "date": 1746902061435,
+            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-10.log",
+            "hash": "373b5e5afda15d136e58a2ef1a57f320d184881b8004961d7d80112279502708"
+        }
+    ],
+    "hashType": "sha256"
+}

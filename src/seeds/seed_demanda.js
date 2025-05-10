@@ -7,7 +7,7 @@ import Usuario from "../models/usuarios.js";
 // Conexão com banco
 import DbConnect from "../config/dbConnect.js";
 
-await DbConect.conectar();
+await DbConnect.conectar();
 
 const globalFakeMapping = await getGlobalFakeMapping();
 
