@@ -132,6 +132,11 @@ function getSchemaFieldNames(schema) {
  * Retorna um array com os nomes dos campos que estiverem faltando.
  */
 function validateModelMapping(model, modelName, mapping) {
+  if (!model || !model.schema || !model.schema.paths) {
+    console.warn(`⚠️  Model ${modelName} é inválido ou sem schema.paths.`);
+    return [];
+  }
+
   const fields = getSchemaFieldNames(model.schema);
   const missing = fields.filter((field) => !(field in mapping));
   if (missing.length > 0) {
