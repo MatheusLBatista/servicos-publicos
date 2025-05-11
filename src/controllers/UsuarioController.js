@@ -1,8 +1,8 @@
 //recebe a requisicao de fato e da a resposta
+// import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
 import UsuarioService from "../service/UsuarioService.js";
 import mongoose from 'mongoose';
 import { UsuarioQuerySchema, UsuarioIdSchema } from '../utils/validators/schemas/zod/querys/UsuarioQuerySchema.js';
-// import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
 import {
     CommonResponse,
     CustomError,
@@ -27,7 +27,7 @@ class UsuarioController {
             UsuarioIdSchema.parse(id);
         }
 
-        // Validação das queries (se existirem)
+        //Validação das queries (se existirem)
         // const query = req.query || {};
         // if (Object.keys(query).length !== 0) {
         //     // deve apenas validar o objeto query, tendo erro o zod será responsável por lançar o erro
@@ -35,8 +35,7 @@ class UsuarioController {
         // }
 
         const data = await this.service.listar(req);
-        
-        return CommonResponse(res, data);
+        return CommonResponse.success(res, data);
     }
 }
 

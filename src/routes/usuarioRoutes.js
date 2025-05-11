@@ -7,8 +7,7 @@ const router = express.Router();
 
 const usuarioController = new UsuarioController();
 
-router 
-    router
+router
     .get("/usuarios", asyncWrapper(usuarioController.listar.bind(usuarioController)))
     .get("/usuarios/:id", asyncWrapper(usuarioController.listar.bind(usuarioController)));
     // .post("/usuarios", asyncWrapper(usuarioController.criar.bind(usuarioController)))

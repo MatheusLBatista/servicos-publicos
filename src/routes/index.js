@@ -15,26 +15,14 @@ const routes = (app) => {
         app.use(logRoutes);
     }
 
-    // Middleware para ler JSON
-    app.use(express.json());
-
-    // Rotas com prefixos claros
-    app.use("/usuarios", usuarioRoutes);
-
     // Rota raiz simples
     app.get("/", (req, res) => {
         res.send("API rodando.");
     });
 
-    // Tratamento de rota não encontrada
-    app.use((req, res) => {
-        res.status(404).json({
-            message: "Recurso não encontrado.",
-            data: null,
-            errors: [{ message: "Rota não encontrada." }]
-        });
-    });
+    app.use(express.json(), 
+    usuarioRoutes)
+    
 };
-
 
 export default routes;
