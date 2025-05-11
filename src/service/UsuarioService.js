@@ -6,6 +6,7 @@
 // import AuthHelper from '../utils/AuthHelper.js';
 import mongoose from 'mongoose';
 import UsuarioRepository from '../repository/UsuarioRepository.js';
+import { parse } from 'dotenv';
 
 class UsuarioService {
     constructor() {
@@ -28,6 +29,20 @@ class UsuarioService {
         //chama o repositório
         const data = await this.repository.criar(parsedData);
 
+        return data;
+    }
+
+    async atualizar(id, parsedData) {
+        console.log('Estou no atualizar em UsuarioService');
+
+        // nunca trocar senha ou email
+        delete parsedData.email;
+        delete parsedData.senha;
+
+        // Garante que o usuário existe
+        // await this.ensureUserExists(id);
+
+        const data = await this.repository.atualizar(id, parsedData);
         return data;
     }
 }

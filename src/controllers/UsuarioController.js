@@ -52,6 +52,24 @@ class UsuarioController {
 
         return CommonResponse.created(res, usuarioLimpo);
     }
+
+    async atualizar(req, res) {
+        console.log('Estou no atualizar em UsuarioController');
+
+        const { id } = req.params;
+        UsuarioIdSchema.parse(id);
+
+        // const parsedData = UsuarioUpdateSchema.parse(req.body);
+        const parsedData = req.body;
+
+        const data = await this.service.atualizar(id, parsedData);
+
+        let usuarioLimpo = data.toObject();
+
+        delete usuarioLimpo.senha;
+
+        return CommonResponse.success(res, data, 200, 'Usuário atualizado com sucesso.');
+    }
 }
 
 export default UsuarioController;
