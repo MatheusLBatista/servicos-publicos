@@ -9,8 +9,8 @@ const usuarioController = new UsuarioController();
 
 router
     .get("/usuarios", asyncWrapper(usuarioController.listar.bind(usuarioController)))
-    .get("/usuarios/:id", asyncWrapper(usuarioController.listar.bind(usuarioController)));
-    // .post("/usuarios", asyncWrapper(usuarioController.criar.bind(usuarioController)))
+    .get("/usuarios/:id", asyncWrapper(usuarioController.listar.bind(usuarioController)))
+    .post("/usuarios", asyncWrapper(usuarioController.criar.bind(usuarioController)));
     // .patch("/usuarios/:id", asyncWrapper(usuarioController.atualizar.bind(usuarioController)))
     // .put("/usuarios/:id", asyncWrapper(usuarioController.atualizar.bind(usuarioController)))
     // .delete("/usuarios/:id", asyncWrapper(usuarioController.deletar.bind(usuarioController)))

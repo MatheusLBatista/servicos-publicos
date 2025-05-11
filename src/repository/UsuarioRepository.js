@@ -31,6 +31,11 @@ class UsuarioRepository {
 
         return Usuario.find()
     }
+
+    async criar(dadosUsuario){
+        const usuario = new this.modelUsuario(dadosUsuario);
+        return await usuario.save()
+    }
 }
 
 export default UsuarioRepository;

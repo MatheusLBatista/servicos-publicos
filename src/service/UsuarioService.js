@@ -18,6 +18,18 @@ class UsuarioService {
         console.log('Estou retornando os dados em UsuarioService para o controller');
         return data;
     }
+
+    async criar(parsedData) {
+        console.log("Estou em criar no UsuarioService")
+        
+        //valida email único
+        //await this.validateEmail(parsedData.email);
+
+        //chama o repositório
+        const data = await this.repository.criar(parsedData);
+
+        return data;
+    }
 }
 
 export default UsuarioService;

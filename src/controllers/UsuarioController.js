@@ -1,6 +1,7 @@
 //recebe a requisicao de fato e da a resposta
 // import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
 import UsuarioService from "../service/UsuarioService.js";
+import { UsuarioSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
 import mongoose from 'mongoose';
 import { UsuarioQuerySchema, UsuarioIdSchema } from '../utils/validators/schemas/zod/querys/UsuarioQuerySchema.js';
 import {
@@ -36,6 +37,20 @@ class UsuarioController {
 
         const data = await this.service.listar(req);
         return CommonResponse.success(res, data);
+    }
+
+    async criar(req, res) {
+        console.log('Estou no criar em UsuarioController');
+
+        // Cria o DTO de criação e valida os dados - criar ajustes na biblioteca zod
+        //const parsedData = UsuarioSchema.parse(req.body);
+        let data = await this.service.criar(req.body);
+
+        let usuarioLimpo = data.toObject();
+
+        delete usuarioLimpo.senha;
+
+        return CommonResponse.created(res, usuarioLimpo);
     }
 }
 
