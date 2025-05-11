@@ -1,12 +1,10 @@
 import mongoose, { mongo } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
-import Usuario from "./usuarios";
 
 class Demanda {
     constructor() {
         const demandaSchema = new mongoose.Schema(
             {
-                id_demanda: { type: String, required: [true, "O ID da demanda é obrigatório!"]},
                 tipo: { type: String, required: [true, "O tipo da demanda é obrigatório!"]},
                 status: { 
                     type: String,
@@ -80,8 +78,8 @@ class Demanda {
 
 
         demandaSchema.plugin(mongoosePaginate);
-        this.model = mongoose.model('demanda', demandaSchema);
+        this.model = mongoose.model('demandas', demandaSchema);
     }
 }
 
-export default Demanda;
+export default new Demanda().model;

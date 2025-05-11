@@ -39,7 +39,3 @@ Thumbs.db      # Windows
 
 # Coverage de testes
 /coverage/
-
-# Arquivos pessoais
-segredo.txt
-minhas-anotações.md

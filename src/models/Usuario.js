@@ -11,7 +11,6 @@ class Usuario {
     constructor() {
         const usuarioSchema = new mongoose.Schema(
             {
-                id_usuario: { type: String, required: [true, "O ID do usuário é obrigatório!"]},
                 cpf: { type: String, required: [true, "O CPF do usuário é obrigatório!"] },
                 email: { type: String, required: [true, "O email do usuário é obrigatório!"] },
                 celular: { type: String, required: [true, "O celular do usuário é obrigatório!"] },
@@ -61,8 +60,8 @@ class Usuario {
 
         
         usuarioSchema.plugin(mongoosePaginate);
-        this.model = mongoose.model('usuario', usuarioSchema);
+        this.model = mongoose.model('usuarios', usuarioSchema);
     }
 }
 
-export default Usuario;
+export default new Usuario().model;

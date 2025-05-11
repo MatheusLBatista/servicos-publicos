@@ -1,12 +1,21 @@
-import { faker } from "@faker-js/faker";
 import "dotenv/config";
-import mongoose from "mongoose";
-
-import Usuario from "../models/usuarios";
-import Secretaria from "../models/secretaria";
-import Demanda from "../models/demandas";
-import TipoDemanda from "../models/tipoDemanda";
-
-
+import seedDemanda from "./seed_demanda.js";
+import seedUsuario from "./seed_usuario.js";
  
+async function main() {
+    try {
+      await seedUsuario();
+      await seedDemanda();
 
+      console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");
+    } catch (err) {
+      console.error("Erro ao executar SEED:", err);
+
+    } finally {
+      mongoose.connection.close();
+      process.exit(0);
+    }
+  }
+  
+  main();
+  
