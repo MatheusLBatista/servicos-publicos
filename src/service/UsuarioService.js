@@ -45,6 +45,13 @@ class UsuarioService {
         const data = await this.repository.atualizar(id, parsedData);
         return data;
     }
+
+    async deletar(id) {
+        console.log('Estou no atualizar em UsuarioService');
+
+        const data = await this.repository.deletar(id)
+        return data;
+    }
 }
 
 export default UsuarioService;
