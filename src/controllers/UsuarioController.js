@@ -14,6 +14,16 @@ import {
     asyncWrapper
 } from '../utils/helpers/index.js';
 
+// Importações necessárias para o upload de arquivos
+import fileUpload from 'express-fileupload';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import sharp from 'sharp';
+// Helper para __dirname em módulo ES
+const getDirname = () => path.dirname(fileURLToPath(import.meta.url));
+
 
 class UsuarioController {
     constructor() {

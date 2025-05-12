@@ -13,8 +13,6 @@
     - [x] Model demanda (Matheus)
     - [ ] Model tipo de demanda (Giullia)
   - **Rotas**
-    - *Rota de autenticação*
-      - [ ] `/login`
     - *Rotas de usuário* (Matheus)
       - [x] `/get/usuarios`
       - [x] `/get/usuarios/:id`

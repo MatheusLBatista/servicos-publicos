@@ -1,4 +1,6 @@
 ## Sprint 4 (13/05/2025 - 23/05/2025)
+- *Rota de autenticação*
+      - [ ] `/login`
 - Iniciar testes unitários do fluxo principal
   - *Teste rotas de autenticação*
     - [ ] `/login`

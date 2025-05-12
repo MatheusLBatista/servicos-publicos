@@ -9,7 +9,40 @@ class UsuarioRepository {
         this.modelUsuario = usuarioModel;
     }
 
-    //listar ou listar por ID
+    async buscarPorID(id, includeTokens = false) {
+        let query = this.modelUsuario.findOne(id);
+
+        if (includeTokens) {
+            query = query.select('+refreshtoken +accesstoken');
+        }
+
+        const user = await query;
+        
+        if (!user) {
+            throw new CustomError({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: 'Usuário',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Usuário')
+            });
+        }
+
+        return user;
+    }
+
+    async buscarPorEmail(email, idIgnorado = null) {
+        const filtro = { email };
+
+        if (idIgnorado) {
+            filtro._id = { $ne: idIgnorado };
+        }
+
+        const documento = await this.model.findOne(filtro, '+senha')
+
+        return documento;
+    }
+
     async listar(req) {
         const { id } = req.params;
 

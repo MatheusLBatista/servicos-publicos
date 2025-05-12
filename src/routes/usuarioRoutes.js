@@ -14,6 +14,8 @@ router
     .patch("/usuarios/:id", asyncWrapper(usuarioController.atualizar.bind(usuarioController)))
     .put("/usuarios/:id", asyncWrapper(usuarioController.atualizar.bind(usuarioController)))
     .delete("/usuarios/:id", asyncWrapper(usuarioController.deletar.bind(usuarioController)))
+
+    //foto
     .post("/usuarios/:id/foto", asyncWrapper(usuarioController.fotoUpload.bind(usuarioController)))
     .get("/usuarios/:id/foto", asyncWrapper(usuarioController.getFoto.bind(usuarioController)));
 

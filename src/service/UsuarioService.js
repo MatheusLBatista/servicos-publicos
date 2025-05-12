@@ -24,7 +24,7 @@ class UsuarioService {
         console.log("Estou em criar no UsuarioService")
         
         //valida email único
-        //await this.validateEmail(parsedData.email);
+        await this.validateEmail(parsedData.email);
 
         //chama o repositório
         const data = await this.repository.criar(parsedData);
@@ -40,7 +40,7 @@ class UsuarioService {
         delete parsedData.senha;
 
         // Garante que o usuário existe
-        // await this.ensureUserExists(id);
+        await this.ensureUserExists(id);
 
         const data = await this.repository.atualizar(id, parsedData);
         return data;
@@ -49,8 +49,39 @@ class UsuarioService {
     async deletar(id) {
         console.log('Estou no atualizar em UsuarioService');
 
+        await this.ensureUserExists(id);
+
         const data = await this.repository.deletar(id)
         return data;
+    }
+
+    //metodos auxiliares
+    async validateEmail(email, id=null) {
+        const usuarioExistente = await this.repository.buscarPorEmail(email, id);
+        if (usuarioExistente) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.BAD_REQUEST.code,
+                errorType: 'validationError',
+                field: 'email',
+                details: [{ path: 'email', message: 'Email já está em uso.' }],
+                customMessage: 'Email já cadastrado.',
+            });
+        }
+    }
+
+    async ensureUserExists(id){
+        const usuarioExistente = await this.repository.buscarPorID(id);
+        if (!usuarioExistente) {
+            throw new CustomError({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: 'Usuário',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Usuário'),
+            });
+        }
+
+        return usuarioExistente;
     }
 }
 
