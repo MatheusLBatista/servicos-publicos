@@ -3,6 +3,7 @@ import fakebr from 'faker-br';
 import mongoose, { model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 import loadModels from './loadModels.js';
+import { estadosBrasil } from '../models/Usuario.js';
 
 const fakeMappings = {
   common: {
@@ -39,7 +40,9 @@ const fakeMappings = {
       numero: () => (Math.floor(Math.random() * 9000) + 1000),
       complemento: () => fakebr.address.secondaryAddress(),
       cidade: () => fakebr.address.city(),
-      estado: () => fakebr.address.state({ abbreviated: false })
+      estado: () => {
+        return estadosBrasil[Math.floor(Math.random() * estadosBrasil.length)];
+      }
   }
   },
 

@@ -1,15 +1,21 @@
-import express from "express";
 // import routes from "./routes/index.js";
 // import cors from "cors";
 // import helmet from "helmet";
 // import compression from "compression";
-import DbConnect from './config/DbConnect.js';
 // import errorHandler from './utils/helpers/errorHandler.js';
 // import logger from './utils/logger.js';
-import CommonResponse from './utils/helpers/CommonResponse.js';
 // import fileUpload from 'express-fileupload';
+import DbConnect from './config/DbConnect.js';
+import routes from './routes/index.js';
+import CommonResponse from './utils/helpers/CommonResponse.js';
+import express from "express";
 
 const app = express();
+
+await DbConnect.conectar();
+
+app.use(express.json()); // importante para ler JSON
+routes(app);
 
 // Middleware para lidar com rotas não encontradas (404)
 app.use((req, res, next) => {
@@ -21,7 +27,5 @@ app.use((req, res, next) => {
         [{ message: 'Rota não encontrada.' }]
     );
 });
-
-await DbConnect.conectar();
 
 export default app;
