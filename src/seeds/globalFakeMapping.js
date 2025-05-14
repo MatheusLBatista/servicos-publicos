@@ -47,7 +47,10 @@ const fakeMappings = {
   },
 
   Secretaria: {
-
+    nome_secretaria: () => {
+      const values =  [ "SAAE", " SEMOSP", "ENERGISA" ]
+      return values[Math.floor(Math.random() * values.length)]
+    }
   },
 
   TipoDemanda: {
