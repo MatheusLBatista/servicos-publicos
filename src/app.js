@@ -5,7 +5,7 @@
 // import errorHandler from './utils/helpers/errorHandler.js';
 // import logger from './utils/logger.js';
 // import fileUpload from 'express-fileupload';
-import DbConnect from './config/DbConnect.js';
+import DbConnect from './config/dbConnect.js';
 import routes from './routes/index.js';
 import CommonResponse from './utils/helpers/CommonResponse.js';
 import express from "express";

@@ -2,7 +2,7 @@ import app from './src/app.js'
 import "dotenv/config";
 import routes from './src/routes/index.js';
 
-const port = process.env.PORT || 5011; 
+const port = process.env.PORT || 5015; 
 
 routes(app)
 
