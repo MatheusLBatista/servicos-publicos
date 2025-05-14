@@ -48,4 +48,4 @@ class TipoDemanda {
     }
 }
 
-export default TipoDemanda;
+export default new TipoDemanda().model;

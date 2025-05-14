@@ -32,4 +32,4 @@ class Secretaria {
     }
 }
 
-export default Secretaria;
+export default new Secretaria().model;
