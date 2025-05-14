@@ -27,6 +27,18 @@ class DemandaController{
         return CommonResponse.success(res, data);
     }
 
+    async criar(req, res){
+        console.log('Estou no criar em DemandaController');
+
+        let  data = await this.service.criar(req.body);
+
+        let usuarioLimpo = data.toObject();
+
+        //deletar campos que nao podem ser visualizados
+
+        return CommonResponse.created(res, usuarioLimpo);
+    }
+
 }
 
 export default DemandaController;

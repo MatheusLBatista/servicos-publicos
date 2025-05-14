@@ -13,6 +13,16 @@ class DemandaService {
         console.log('Estou retornando os dados em DemandaService para o controller');
         return data;
     }
+
+    async criar(parsedData) {
+        console.log("Estou em Demanda Service");
+
+        //adicionar demais validações
+
+        const data = await this.repository.criar(parsedData);
+        
+        return data;
+    }
 }
 
 export default DemandaService;

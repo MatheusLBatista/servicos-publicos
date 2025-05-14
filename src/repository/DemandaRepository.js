@@ -22,9 +22,9 @@ class DemandaRepository {
                 throw new CustomError({
                     statusCode: 404,
                     errorType: 'resourceNotFound',
-                    field: 'Usuário',
+                    field: 'Demanda',
                     details: [],
-                    customMessage: messages.error.resourceNotFound('Usuário')
+                    customMessage: messages.error.resourceNotFound('Demanda')
                 });
             }
 
@@ -32,6 +32,15 @@ class DemandaRepository {
         }
 
         return Demanda.find()
+    }
+
+    async criar(dadosDemanda){
+        const demanda = new this.modelDemanda(dadosDemanda);
+        return await demanda.save()
+    }
+
+    async atualizar(id, parsedData){
+
     }
 
 }
