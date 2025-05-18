@@ -21,30 +21,29 @@ import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import sharp from 'sharp';
-import { SecretariaIDSchema } from "../utils/validators/schemas/zod/querys/SecretariaQuerySchema.js";
 // Helper para __dirname em módulo ES
 const getDirname = () => path.dirname(fileURLToPath(import.meta.url));
 
 
 class UsuarioController {
-    //constructor() {
-   //     this.service = new UsuarioService();
-    //}
+    constructor() {
+        this.service = new UsuarioService();
+    }
     
     async listar(req, res){
-        console.log('Estou no listar em SecretariaController');
+        console.log('Estou no listar em UsuarioController');
 
         const { id } = req.params || {}
         if(id) {
-            SecretariaIDSchema.parse(id);
+            UsuarioIdSchema.parse(id);
         }
 
         //Validação das queries (se existirem)
-        const query = req.query || {};
-        if (Object.keys(query).length !== 0) {
+        // const query = req.query || {};
+        // if (Object.keys(query).length !== 0) {
         //     // deve apenas validar o objeto query, tendo erro o zod será responsável por lançar o erro
-            await SecretariaQuerySchema.parseAsync(query);
-        }
+        //     await UsuarioQuerySchema.parseAsync(query);
+        // }
 
         const data = await this.service.listar(req);
         return CommonResponse.success(res, data);
