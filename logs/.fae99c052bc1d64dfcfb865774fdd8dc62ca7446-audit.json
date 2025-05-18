@@ -1,0 +1,25 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\usuario\\Documents\\projetoFabricaII\\servicos-publicos\\logs\\.fae99c052bc1d64dfcfb865774fdd8dc62ca7446-audit.json",
+    "files": [
+        {
+            "date": 1747338592586,
+            "name": "C:\\Users\\usuario\\Documents\\projetoFabricaII\\servicos-publicos\\logs\\combined-2025-05-15.log",
+            "hash": "39dd871a54cd4bf3463e66e82fd7772f4c746d5ed19b47426f81c2aeea27f487"
+        },
+        {
+            "date": 1747526540385,
+            "name": "C:\\Users\\usuario\\Documents\\projetoFabricaII\\servicos-publicos\\logs\\combined-2025-05-17.log",
+            "hash": "684b4a6d47a0c5ff6fcccfc3d5678709dee212512afd494b9cac07a3be0946f4"
+        },
+        {
+            "date": 1747542693497,
+            "name": "C:\\Users\\usuario\\Documents\\projetoFabricaII\\servicos-publicos\\logs\\combined-2025-05-18.log",
+            "hash": "3a5bcbf843f8094276ea635c6e3504ff465377927dc43658543724c8299797b8"
+        }
+    ],
+    "hashType": "sha256"
+}

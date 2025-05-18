@@ -7,6 +7,8 @@ import dotenv from "dotenv";
 // Importação das rotas
 import usuarioRoutes from "./usuarioRoutes.js";
 
+//import secretariaRoutes from "./secretariaRoutes.js"
+
 dotenv.config();
 
 const routes = (app) => {
