@@ -1,19 +1,24 @@
 import express from "express";
-import AuthMiddleware from "../middlewares/AuthMiddleware.js";
-import authPermission from '../middlewares/AuthPermission.js';
 import SecretariaController from '../controllers/SecretariaController.js';
-import csvFileValidator from "../middlewares/csvFileValidator.js";
 import { asyncWrapper } from '../utils/helpers/index.js';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
-const secretariaController = new SecretariaController(); // Instância da classe
+const secretariaController = new SecretariaController();
 
 router
-  .get("/secretaria", asyncWrapper(secretariaController.listar.bind(secretariaController)))
-  .get("/secretaria/demandas/:id", asyncWrapper(secretariaController.listar.bind(secretariaController)))
-  .post("/secretaria/demandas/:id/atribuir", asyncWrapper(secretariaController.listar.bind(secretariaController)))
-  .post("/secretaria/demandas/:id/rejeitar", asyncWrapper(secretariaController.listar.bind(secretariaController)))
-  .patch("/secretaria/demandas/:id/devolucao", asyncWrapper(secretariaController.listar.bind(secretariaController)))
+    .get("/secretaria", asyncWrapper(secretariaController.listar.bind(secretariaController)))
+    .get("/secretaria/:id", asyncWrapper(secretariaController.listar.bind(secretariaController)))
+    //.post("/secretaria", asyncWrapper(secretariaController.criar.bind(secretariaController)))
+    //.patch("/secretaria/:id", asyncWrapper(secretariaController.atualizar.bind(secretariaController)))
+    //.put("/secretaria/:id", asyncWrapper(secretariaController.atualizar.bind(secretariaController)))
+    //.delete("/secretaria/:id", asyncWrapper(secretariaController.deletar.bind(secretariaController)))
+
+    //foto
+    //.post("/secretaria/:id/foto", asyncWrapper(secretariaController.fotoUpload.bind(secretariaController)))
+    //.get("/secretaria/:id/foto", asyncWrapper(secretariaController.getFoto.bind(secretariaController)));
+
+    console.log("Rotas de Secretaria carregadas");
 
 export default router;

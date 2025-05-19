@@ -1,4 +1,4 @@
-// /src/services/UsuarioService.js
+// /src/services/SecretariaService.js
 // import bcrypt from 'bcrypt';
 // import { PermissoesArraySchema } from '../utils/validators/schemas/zod/PermissaoValidation.js';
 // import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 import SecretariaRepository from '../repository/SecretariaRepository.js';
 import { parse } from 'dotenv';
 
-class SecretarariaService {
+class SecretariaService {
     constructor() {
         this.repository = new SecretariaRepository();
     }
@@ -21,4 +21,4 @@ class SecretarariaService {
     }
 }
 
-export default SecretarariaService;
+export default SecretariaService;

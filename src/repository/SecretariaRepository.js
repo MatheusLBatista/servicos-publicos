@@ -1,29 +1,57 @@
-import SecretariaModel from '../models/Secretaria.js';
-import { CustomError, messages } from '../utils/helpers/index.js';
+import Secretaria from '../models/Secretaria.js';
+import mongoose from 'mongoose';
+import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
 
 class SecretariaRepository {
-    constructor({ model = SecretariaModel } = {}) {
-        this.model = model;
+    constructor({
+        SecretariaModel = Secretaria
+    } = {}) {
+        this.modelSecretaria = SecretariaModel;
     }
 
-    // Método para listar secretarias,
-    // podendo buscar por ID
-    async listar(req) {
-        const { id } = req.params || {};
+    async buscarPorID(id, includeTokens = false) {
+        let query = this.modelSecretaria.findOne(id);
 
-        // Se vier um ID na rota, retorna apenas a secretaria correspondente
-        if (id) {
-            const secretararia = await this.model.findById(id);
-            if (!secretararia) {
+        if (includeTokens) {
+            query = query.select('+refreshtoken +accesstoken');
+        }
+
+        const user = await query;
+        
+        if (!user) {
+            throw new CustomError({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: 'Secretaria',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Secretaria')
+            });
+        }
+
+        return user;
+    }
+
+    async listar(req) {
+        const { id } = req.params;
+
+        if(id) {
+            const data = await this.modelSecretaria.findById(id);
+
+            if (!data) {
                 throw new CustomError({
                     statusCode: 404,
                     errorType: 'resourceNotFound',
                     field: 'Secretaria',
-                    customMessage: messages.error.resourceNotFound('Secretaria'),
+                    details: [],
+                    customMessage: messages.error.resourceNotFound('Secretaria')
                 });
             }
-            return secretararia.find();
+
+            return Secretaria.findById(id);
         }
 
+        return Secretaria.find()
     }
 }
+
+export default SecretariaRepository;
