@@ -19,6 +19,15 @@ class SecretariaService {
         console.log('Estou retornando os dados em SecretariaService para o controller');
         return data;
     }
+
+    async criar(parsedData) {
+        console.log("Estou no criar em SecretariaService")
+
+        //chama o repositório
+        const data = await this.repository.criar(parsedData);
+
+        return data;
+    }
 }
 
 export default SecretariaService;

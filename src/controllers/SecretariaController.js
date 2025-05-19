@@ -49,6 +49,20 @@ class SecretariaController {
         return CommonResponse.success(res, data);
     }
 
+    async criar(req, res) {
+            console.log('Estou no criar em SecretariaController');
+    
+            // Cria o DTO de criação e valida os dados - criar ajustes na biblioteca zod
+            //const parsedData = UsuarioSchema.parse(req.body);
+            let data = await this.service.criar(req.body);
+    
+            let secretaria = data.toObject();
+    
+            delete secretaria.senha;
+    
+            return CommonResponse.created(res, secretaria);
+        }
+
 }
 
 export default SecretariaController;

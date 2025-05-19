@@ -5,8 +5,21 @@ class Secretaria {
     constructor() {
         const secretariaSchema = new mongoose.Schema(
             {
-                nome: { type: String, required: [true, "O nome da secretaria é obrigatório!"]},
-            }, 
+                nome: { type: String, required: [true, "O nome da secretaria é obrigatório!"]}, 
+                permissoes: [
+                {
+                    rota: { type: String, index: true, required: true },
+                    dominio: { type: String, default: "" },           
+                    ativo: { type: Boolean, default: false },
+                    buscar: { type: Boolean, default: false },
+                    enviar: { type: Boolean, default: false },
+                    substituir: { type: Boolean, default: false },
+                    modificar: { type: Boolean, default: false },
+                    excluir: { type: Boolean, default: false },
+                }
+                ]
+            },
+
             {
                 timestamps: true,
                 versionKey: false

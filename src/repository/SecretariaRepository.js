@@ -52,6 +52,11 @@ class SecretariaRepository {
 
         return Secretaria.find()
     }
+
+    async criar(dadosSecretaria){
+        const secretaria = new this.modelSecretaria(dadosSecretaria);
+        return await secretaria.save()
+    }
 }
 
 export default SecretariaRepository;

@@ -10,9 +10,8 @@ const secretariaController = new SecretariaController();
 router
     .get("/secretaria", asyncWrapper(secretariaController.listar.bind(secretariaController)))
     .get("/secretaria/:id", asyncWrapper(secretariaController.listar.bind(secretariaController)))
-    //.post("/secretaria", asyncWrapper(secretariaController.criar.bind(secretariaController)))
+    .post("/secretaria", asyncWrapper(secretariaController.criar.bind(secretariaController)))
     //.patch("/secretaria/:id", asyncWrapper(secretariaController.atualizar.bind(secretariaController)))
-    //.put("/secretaria/:id", asyncWrapper(secretariaController.atualizar.bind(secretariaController)))
     //.delete("/secretaria/:id", asyncWrapper(secretariaController.deletar.bind(secretariaController)))
 
     //foto
