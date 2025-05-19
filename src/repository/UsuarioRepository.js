@@ -1,6 +1,7 @@
 import Usuario from '../models/Usuario.js';
 import mongoose from 'mongoose';
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
+import UsuarioFilterBuild from './filters/UsuarioFilterBuild.js';
 
 class UsuarioRepository {
     constructor({
@@ -10,7 +11,7 @@ class UsuarioRepository {
     }
 
     async buscarPorID(id, includeTokens = false) {
-        let query = this.modelUsuario.findOne(id);
+        let query = this.modelUsuario.findById(id);
 
         if (includeTokens) {
             query = query.select('+refreshtoken +accesstoken');
@@ -38,7 +39,8 @@ class UsuarioRepository {
             filtro._id = { $ne: idIgnorado };
         }
 
-        const documento = await this.model.findOne(filtro, '+senha')
+        // const documento = await this.modelUsuario.findOne(filtro, '+senha')
+        const documento = await this.modelUsuario.findOne(filtro).select('+senha');
 
         return documento;
     }
@@ -59,10 +61,43 @@ class UsuarioRepository {
                 });
             }
 
-            return Usuario.findById(id);
+            return data;
         }
 
-        return Usuario.find()
+        const { nome, email, nivel_acesso, page = 1 } = req.query;
+        const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
+        
+        const filterBuild = new UsuarioFilterBuild()
+            .comEmail(email || '')
+            .comNome(nome || '')
+            .comNivelAcesso(nivel_acesso || '')
+
+        if(typeof filterBuild.build !== 'function') {
+            throw new CustomError({
+                statusCode: 500,
+                errorType: 'internalServerError',
+                field: 'Usuário',
+                details: [],
+                customMessage: messages.error.internalServerError("Usuário")
+            });
+        }
+
+        const filtros = filterBuild.build();
+
+        const options = {
+            page: parseInt(page, 10),
+            limit: parseInt(limite, 10),
+            sort: { nome: 1 },
+        };
+
+        const resultado = await this.modelUsuario.paginate(filtros, options);
+
+        resultado.docs = resultado.docs.map(doc => {
+            const usuarioObj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
+            return usuarioObj;
+        });
+        
+        return resultado;
     }
 
     async criar(dadosUsuario){
