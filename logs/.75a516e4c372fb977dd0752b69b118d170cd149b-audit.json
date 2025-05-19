@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/home/giullia_chiarotti/Documentos/FabricaII/fabrica/servicos-publicos/logs/.75a516e4c372fb977dd0752b69b118d170cd149b-audit.json",
+    "files": [
+        {
+            "date": 1747181562107,
+            "name": "/home/giullia_chiarotti/Documentos/FabricaII/fabrica/servicos-publicos/logs/error-2025-05-13.log",
+            "hash": "9669952a55e7c4c604687af076e6cd33d2baf6171cbeaf269f8ffc2683d34d3d"
+        }
+    ],
+    "hashType": "sha256"
+}
