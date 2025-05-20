@@ -58,10 +58,8 @@ class SecretariaController {
     
             let secretaria = data.toObject();
     
-            delete secretaria.senha;
-    
             return CommonResponse.created(res, secretaria);
-        }
+    }
 
 }
 
