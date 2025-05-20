@@ -64,13 +64,15 @@ class UsuarioRepository {
             return data;
         }
 
-        const { nome, email, nivel_acesso, page = 1 } = req.query;
+        const { nome, email, nivel_acesso, cargo, formacao, page = 1 } = req.query;
         const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
         
         const filterBuild = new UsuarioFilterBuild()
             .comEmail(email || '')
             .comNome(nome || '')
             .comNivelAcesso(nivel_acesso || '')
+            .comCargo(cargo || '')
+            .comFormacao(formacao || '')
 
         if(typeof filterBuild.build !== 'function') {
             throw new CustomError({

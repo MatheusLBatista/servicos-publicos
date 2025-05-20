@@ -1,3 +1,4 @@
+import { optional } from "zod";
 import Usuario from "../../models/Usuario.js";
 
 import UsuarioRepository from '../UsuarioRepository.js';
@@ -28,6 +29,20 @@ class UsuarioFilterBuild {
         if (nivelAcesso) {
             const chave = `nivel_acesso.${nivelAcesso}`;
             this.filtros[chave] = true;
+        }
+        return this;
+    }
+
+    comCargo(cargo) {
+        if(cargo) {
+            this.filtros.cargo = { $regex: cargo, $options: 'i' }
+        }
+        return this;
+    }
+
+    comFormacao(formacao) {
+        if(formacao) {
+            this.filtros.formacao = { $regex: formacao, $options: 'i' }
         }
         return this;
     }
