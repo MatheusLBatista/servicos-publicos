@@ -39,26 +39,45 @@ class SecretariaController {
         }
 
         //Validação das queries (se existirem)
-        // const query = req.query || {};
-        // if (Object.keys(query).length !== 0) {
-        //     // deve apenas validar o objeto query, tendo erro o zod será responsável por lançar o erro
-        //     await SecretariaQuerySchema.parseAsync(query);
-        // }
+        const query = req.query || {};
+        if (Object.keys(query).length !== 0) {
+        // deve apenas validar o objeto query, tendo erro o zod será responsável por lançar o erro
+            await SecretariaQuerySchema.parseAsync(query);
+        }
 
         const data = await this.service.listar(req);
         return CommonResponse.success(res, data);
     }
 
     async criar(req, res) {
-            console.log('Estou no criar em SecretariaController');
+        console.log('Estou no criar em SecretariaController');
     
-            // Cria o DTO de criação e valida os dados - criar ajustes na biblioteca zod
-            //const parsedData = UsuarioSchema.parse(req.body);
-            let data = await this.service.criar(req.body);
+        const parsedData = SecretariaSchema.parse(req.body);
+        let data = await this.service.criar(parsedData);
     
-            let secretaria = data.toObject();
+        let secretariaLimpo = data.toObject();
     
-            return CommonResponse.created(res, secretaria);
+        return CommonResponse.created(res, secretariaLimpo);
+    }
+
+    async deletar(req, res) {
+        console.log('Estou no deletar em SecretariaController');
+    
+        const { id } = req.params || {};
+        SecretariaIDSchema.parse(id);
+    
+        if (!id) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.BAD_REQUEST.code,
+                errorType: 'validationError',
+                field: 'id',
+                details: [],
+                customMessage: 'ID da secretaria é obrigatório para deletar.'
+            });
+        }
+    
+        const data = await this.service.deletar(id);
+        return CommonResponse.success(res, data, 200, 'Secretaria excluída com sucesso.');
     }
 
 }

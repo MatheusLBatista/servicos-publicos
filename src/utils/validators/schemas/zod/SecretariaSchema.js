@@ -1,13 +1,8 @@
-// src/utils/validators/schemas/zod/UsuarioSchema.js
+// src/utils/validators/schemas/zod/SecretariaSchema.js
 
 import { z } from 'zod';
 import objectIdSchema from './ObjectIdSchema.js';
 import { RotaSchema } from './RotaSchema.js';
-
-/** Definição da expressão regular para a senha
- * Padrão: 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial
- * Tamanho mínimo: 8 caracteres
- **/
 
 // Validação de array de ObjectId sem duplicações
 const distinctObjectIdArray = z
@@ -18,7 +13,17 @@ const distinctObjectIdArray = z
   );
 
 const SecretariaSchema = z.object({
-  nome: z.string().min(1, 'Campo nome é obrigatório.')
+  nome: z.string().min(3, 'Campo nome é obrigatório.'),
+  sigla: z.string().min(1, 'Campo sigla é obrigatório.'),
+  email: z
+      .string()
+      .email('Formato de email inválido.')
+      .min(1, 'Campo email é obrigatório.'),
+  telefone: z 
+    .string()
+    .regex(/^\(?\d{2}\)?\s?\d{5}-?\d{4}$/, {
+    message: "Telefone inválido. Use o formato (XX) XXXX-XXXX"})
+    .min(1, 'Campo telefone é obrigatório.')
 });
 
 const SecretaraUpdateSchema = SecretariaSchema.partial();

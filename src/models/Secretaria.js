@@ -6,18 +6,9 @@ class Secretaria {
         const secretariaSchema = new mongoose.Schema(
             {
                 nome: { type: String, required: [true, "O nome da secretaria é obrigatório!"]}, 
-                permissoes: [
-                {
-                    rota: { type: String, index: true, required: true },
-                    dominio: { type: String, default: "" },           
-                    ativo: { type: Boolean, default: false },
-                    buscar: { type: Boolean, default: false },
-                    enviar: { type: Boolean, default: false },
-                    substituir: { type: Boolean, default: false },
-                    modificar: { type: Boolean, default: false },
-                    excluir: { type: Boolean, default: false },
-                }
-                ]
+                sigla: { type: String, required: [true, "A sigla da secretaria é obrigatório!"]},
+                email: { type: String, required: [true, "O email da secretaria é obrigatório!"] },
+                telefone: { type: String, required: [true, "O telefone da secretaria é obrigatório!"] }
             },
 
             {
@@ -27,6 +18,7 @@ class Secretaria {
         );
 
         // Validação personalizada para garantir que rota + dominio sejam únicos dentro do grupo
+        /*
         secretariaSchema.pre('save', function (next) {
             const permissoes = this.permissoes;
             const combinacoes = permissoes.map(p => `${p.rota}_${p.dominio}`);
@@ -38,7 +30,7 @@ class Secretaria {
 
             next();
         });
-
+        */
 
         secretariaSchema.plugin(mongoosePaginate);
         this.model = mongoose.model('secretarias', secretariaSchema);

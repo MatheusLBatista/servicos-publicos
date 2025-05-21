@@ -28,6 +28,31 @@ class SecretariaService {
 
         return data;
     }
+
+    async deletar(id) {
+        console.log('Estou no deletar em SecretariaService');
+
+        await this.ensureSecretariaExists(id);
+
+        const data = await this.repository.deletar(id)
+        return data;
+    }
+
+    async ensureSecretariaExists(id){
+        const secretariaExistente = await this.repository.buscarPorID(id);
+        if (!secretariaExistente) {
+            throw new CustomError({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: 'Secretaria',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Secretaria'),
+            });
+        }
+
+        return secretariaExistente;
+    }
+
 }
 
 export default SecretariaService;
