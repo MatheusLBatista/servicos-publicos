@@ -32,6 +32,22 @@ class UsuarioRepository {
         return user;
     }
 
+    async buscarPorNome(nome, idIgnorado = null) {
+        // Criar o filtro base
+        const filtro = { nome };
+
+        // Adicionar a condição para excluir o ID, se fornecido
+        if (idIgnorado) {
+            filtro._id = { $ne: idIgnorado }; // Adiciona a condição _id != idIgnorado
+        }
+
+        // Consultar o documento no banco de dados
+        const documento = await this.model.findOne(filtro);
+
+        // Retornar o documento encontrado
+        return documento;
+    }
+
     async buscarPorEmail(email, idIgnorado = null) {
         const filtro = { email };
 

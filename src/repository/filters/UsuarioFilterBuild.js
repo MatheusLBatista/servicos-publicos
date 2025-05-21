@@ -1,4 +1,3 @@
-import { optional } from "zod";
 import Usuario from "../../models/Usuario.js";
 
 import UsuarioRepository from '../UsuarioRepository.js';
@@ -7,7 +6,7 @@ class UsuarioFilterBuild {
     constructor() {
         this.filtros = {};
         this.usuarioRepository = new UsuarioRepository();
-        this.usuarioModel = new Usuario()
+        this.usuarioModel = new Usuario();
     }
 
     comNome(nome) {
