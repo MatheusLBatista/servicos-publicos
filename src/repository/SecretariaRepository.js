@@ -10,7 +10,7 @@ class SecretariaRepository {
     }
 
     async buscarPorID(id, includeTokens = false) {
-        let query = this.modelSecretaria.findOne(id);
+        let query = this.modelSecretaria.findOne({ _id: new mongoose.Types.ObjectId(id) });
 
         if (includeTokens) {
             query = query.select('+refreshtoken +accesstoken');
@@ -56,6 +56,11 @@ class SecretariaRepository {
     async criar(dadosSecretaria){
         const secretaria = new this.modelSecretaria(dadosSecretaria);
         return await secretaria.save()
+    }
+         
+    async deletar(id){
+        const secretaria = await this.modelSecretaria.findByIdAndDelete(id);
+        return secretaria;
     }
 }
 

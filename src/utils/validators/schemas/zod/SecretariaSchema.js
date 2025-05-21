@@ -1,4 +1,4 @@
-// src/utils/validators/schemas/zod/UsuarioSchema.js
+// src/utils/validators/schemas/zod/SecretariaSchema.js
 
 import { z } from 'zod';
 import objectIdSchema from './ObjectIdSchema.js';
