@@ -1,6 +1,7 @@
 import mongoose, { mongo } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
+// TODO: remove require
 class Demanda {
     constructor() {
         const demandaSchema = new mongoose.Schema(

@@ -7,6 +7,7 @@ export const estadosBrasil = [
     "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
   ];
 
+// TODO: remove remove require
 class Usuario {
     constructor() {
         const usuarioSchema = new mongoose.Schema(
