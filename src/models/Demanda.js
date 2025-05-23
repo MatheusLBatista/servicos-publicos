@@ -51,7 +51,7 @@ class Demanda {
                 },
 
                 //referência para usuários
-                usuario: [
+                usuarios: [
                     {
                         type: mongoose.Schema.Types.ObjectId,
                         ref: 'usuarios'

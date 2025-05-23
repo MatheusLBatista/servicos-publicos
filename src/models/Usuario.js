@@ -7,7 +7,8 @@ export const estadosBrasil = [
     "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
   ];
 
-// TODO: remove remove require
+// TODO: remove remove require 
+// TODO: verificar porque nao consigo filtrar nivel acesso
 class Usuario {
     constructor() {
         const usuarioSchema = new mongoose.Schema(

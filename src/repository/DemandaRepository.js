@@ -71,8 +71,8 @@ class DemandaRepository {
         const options = {
             page: parseInt(page, 10),
             limit: parseInt(limite, 10),
-            populate: ['usuarios'],
-            sort: { nome: 1 }
+            populate: { path: 'usuarios' },
+            sort: { nome: 1 } 
         }
 
         const resultado = await this.modelDemanda.paginate(filtros, options);
