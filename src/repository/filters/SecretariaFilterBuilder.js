@@ -1,8 +1,13 @@
 // src/repositories/filters/SecretariaFilterBuilder.js
+import Secretaria from '../../models/Secretaria.js'
+
+import SecretariaRepository from '../SecretariaRepository.js';
 
 class SecretariaFilterBuilder {
     constructor() {
         this.filtros = {};
+        this.secretariaRepository = new SecretariaRepository();
+        this.secretariaModel =  new Secretaria()
     }
 
     comNome(nome) {

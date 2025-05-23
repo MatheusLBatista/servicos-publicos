@@ -29,7 +29,6 @@ class SecretariaController {
     constructor() {
         this.service = new SecretariaService();
     }
-    
     async listar(req, res){
         console.log('Estou no listar em SecretariaController');
 
