@@ -2,7 +2,6 @@
 
 import { z } from 'zod';
 import objectIdSchema from './ObjectIdSchema.js';
-import { RotaSchema } from './RotaSchema.js';
 
 /** Definição da expressão regular para a senha
  * Padrão: 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial

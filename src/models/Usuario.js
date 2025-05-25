@@ -7,38 +7,37 @@ export const estadosBrasil = [
     "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
   ];
 
-// TODO: remove remove require 
 // TODO: verificar porque nao consigo filtrar nivel acesso
 class Usuario {
     constructor() {
         const usuarioSchema = new mongoose.Schema(
             {
-                cpf: { type: String, required: [true, "O CPF do usuário é obrigatório!"] },
-                email: { type: String, required: [true, "O email do usuário é obrigatório!"] },
-                celular: { type: String, required: [true, "O celular do usuário é obrigatório!"] },
-                cnh: { type: String, required: [false, "A CNH do usuário não é obrigatória!"] },
-                data_nomeacao: { type: Date, required: [false, "A data de nomeação não é obrigatório!"] },
-                cargo: { type: String, required: [false, "O cargo do usuário não é obrigatório!"] },
-                formacao: { type: String, required: [false, "A formação do usuário não é obrigatório!"] },
+                cpf: { type: String },
+                email: { type: String },
+                celular: { type: String },
+                cnh: { type: String },
+                data_nomeacao: { type: Date },
+                cargo: { type: String },
+                formacao: { type: String },
                 nivel_acesso: {
                     type: {
-                        municipe: { type: Boolean, required: true, default: true },
-                        operador: { type: Boolean, required: true, default: false },
-                        administrador: { type: Boolean, required: true, default: false }
-                    }, required: [ true, "O nível de acesso do usuário é obrigatório!"]
+                        municipe: { type: Boolean },
+                        operador: { type: Boolean },
+                        administrador: { type: Boolean },
+                    }, 
                 },
-                nome: { type: String, required: [true, "O nome do usuário é obrigatório!"] },
-                nome_social: { type: String, required: [false, "O nome social do usuário não é obrigatório!"] },
-                portaria_nomeacao: { type: String, required: [false, "A portaria de nomeação do usuário não é obrigatória!"] },
-                senha: { type: String, required: [true, "A senha do usuário é obrigatória!"] },
+                nome: { type: String },
+                nome_social: { type: String },
+                portaria_nomeacao: { type: String },
+                senha: { type: String },
                 endereco: {
-                    logradouro: { type: String, required: [true, "O logradouro é obrigatório!"]},
-                    cep: { type: String, required: [true, "O CEP é obrigatório!"]},
-                    bairro: { type: String, required: [true, "O bairro é obrigatório!"]},
-                    numero: { type: String, required: [true, "O número é obrigatório!"]},
-                    complemento: { type: String, required: [true, "O complemento é obrigatório!"]},
-                    cidade: { type: String, required: [true, "O cidade é obrigatório!"]},
-                    estado: { type: String, enum: estadosBrasil, required: [true, "O estado é obrigatório!"]}
+                    logradouro: { type: String },
+                    cep: { type: String },
+                    bairro: { type: String },
+                    numero: { type: String },
+                    complemento: { type: String },
+                    cidade: { type: String },
+                    estado: { type: String, enum: estadosBrasil }
                 }
             }, 
             {
