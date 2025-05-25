@@ -31,30 +31,20 @@ class DemandaRepository {
                 });
             }
 
-            //length dos arrays
-            const totalUsuarios = data.usuarios ? data.usuarios.length : 0;
-            const dataWithStats = {
-                ...data.toObject(),
-                estatisticas: {
-                    totalUsuarios
-                }
-            };
-
-            return dataWithStats;
-            // return Demanda.findById(id);
+            return data;
         }
 
         const { tipo, status, data, resolucao, feedback, avaliacao_resulucao, link_imagem, motivo_devolucao, link_imagem_resolucao, endereco, usuario, page = 1 } = req.query;
-        const limite = Math.min(parseInt(req.params.limite, 10) || 10, 100)
-        // return Demanda.find()
+        //TODO: aplicar regra de negócio para jogar erro caso nao tenha uma segunda 
+        const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
 
         const filterBuilder = new DemandaFilterBuild()
-            .comTipo()
-            .comData()
-            .comEndereco()
-            .comStatus()
+            .comTipo(tipo || '')
+            .comData(data || '')
+            .comEndereco(endereco || '')
+            .comStatus(status || '')
 
-        await filterBuilder.comUsuario(usuario);
+        await filterBuilder.comUsuario(usuario || '');
 
         if (typeof filterBuilder.build !== 'function') {
             throw new CustomError({
@@ -73,7 +63,7 @@ class DemandaRepository {
             limit: parseInt(limite, 10),
             populate: { path: 'usuarios' },
             sort: { nome: 1 } 
-        }
+        };
 
         const resultado = await this.modelDemanda.paginate(filtros, options);
 
