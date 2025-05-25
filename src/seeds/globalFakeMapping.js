@@ -19,6 +19,7 @@ const fakeMappings = {
   }, 
 
   Usuario: {
+    ativo: () => Math.random() < 0.8,
     cpf: () => fakebr.br.cpf(),
     email: () => fakebr.internet.email(),
     celular: () => faker.phone.number('(##) 9####-####'),
