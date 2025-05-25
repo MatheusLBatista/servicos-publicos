@@ -75,7 +75,7 @@ class DemandaFilterBuild {
                     : [ usuarioEncontrado._id ]
                 : [];
             
-            this.filtros.usuario = { $in: usuariosIDs };
+            this.filtros.usuarios = { $in: usuariosIDs };
         }
 
         return this

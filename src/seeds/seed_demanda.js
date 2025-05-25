@@ -22,9 +22,9 @@ async function seedDemanda() {
 
   const demandas = [];
 
-  const usuarioAleatorio = usuarios[Math.floor(Math.random() * usuarios.length )]
-
   for (let i = 0; i <= 10; i++) {
+    const usuarioAleatorio = usuarios[Math.floor(Math.random() * usuarios.length )];
+
     demandas.push({
       tipo: globalFakeMapping.tipo(),
       status: globalFakeMapping.status(),
@@ -42,7 +42,7 @@ async function seedDemanda() {
         numero: globalFakeMapping.endereco.numero(),
         complemento: globalFakeMapping.endereco.complemento()
       },
-      usuario: [usuarioAleatorio._id]
+      usuarios: [usuarioAleatorio._id]
     });
   }
 
