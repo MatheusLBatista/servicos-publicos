@@ -1,7 +1,7 @@
 //recebe a requisicao de fato e da a resposta
 // import { SecretariaSchema, SecretariaUpdateSchema } from '../utils/validators/schemas/zod/SecretariaSchema.js';
 import SecretariaService from "../service/SecretariaService.js";
-import { SecretariaSchema } from '../utils/validators/schemas/zod/SecretariaSchema.js';
+import { SecretariaUpdateSchema, SecretariaSchema } from '../utils/validators/schemas/zod/SecretariaSchema.js';
 import mongoose from 'mongoose';
 import { SecretariaQuerySchema, SecretariaIDSchema } from '../utils/validators/schemas/zod/querys/SecretariaQuerySchema.js';
 import {
@@ -58,6 +58,24 @@ class SecretariaController {
     
         return CommonResponse.created(res, secretariaLimpo);
     }
+
+    async atualizar(req, res) {
+        console.log('Estou no atualizar em SecretariaController');
+
+        const { id } = req.params;
+        SecretariaIDSchema.parse(id);
+
+        const parsedData = SecretariaUpdateSchema.parse(req.body);
+
+        const data = await this.service.atualizar(id, parsedData);
+
+        let secretariaLimpo = data.toObject();
+
+        delete secretariaLimpo.senha;
+
+        return CommonResponse.success(res, data, 200, 'Secretaria atualizada com sucesso.');
+    }
+
 
     async deletar(req, res) {
         console.log('Estou no deletar em SecretariaController');

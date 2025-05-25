@@ -29,6 +29,18 @@ class SecretariaService {
         return data;
     }
 
+    async atualizar(id, parsedData) {
+        console.log('Estou no atualizar em SecretariaService');
+
+        delete parsedData.email;
+
+        await this.ensureSecretariaExists(id);
+
+        const data = await this.repository.atualizar(id, parsedData);
+        return data;
+    }
+
+
     async deletar(id) {
         console.log('Estou no deletar em SecretariaService');
 

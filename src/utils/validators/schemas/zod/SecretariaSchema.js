@@ -26,6 +26,6 @@ const SecretariaSchema = z.object({
     .min(1, 'Campo telefone é obrigatório.')
 });
 
-const SecretaraUpdateSchema = SecretariaSchema.partial();
+const SecretariaUpdateSchema = SecretariaSchema.partial();
 
-export { SecretariaSchema, SecretaraUpdateSchema };
+export { SecretariaSchema, SecretariaUpdateSchema };

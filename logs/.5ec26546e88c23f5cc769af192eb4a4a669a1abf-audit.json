@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\.5ec26546e88c23f5cc769af192eb4a4a669a1abf-audit.json",
+    "files": [
+        {
+            "date": 1748132443458,
+            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\combined-2025-05-24.log",
+            "hash": "485da3ca713522f819f2427fdb4004b606536672e66f37065e76b1b48ece3a0c"
+        }
+    ],
+    "hashType": "sha256"
+}
