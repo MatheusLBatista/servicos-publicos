@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 // Importação das rotas
 import usuarioRoutes from "./usuarioRoutes.js";
-
+import demandaRoutes from "./demandaRoutes.js"
 import secretariaRoutes from "./secretariaRoutes.js"
 
 dotenv.config();
@@ -23,7 +23,7 @@ const routes = (app) => {
     });
 
     app.use(express.json(), 
-    usuarioRoutes, secretariaRoutes)
+    usuarioRoutes, secretariaRoutes, demandaRoutes)
     
 };
 

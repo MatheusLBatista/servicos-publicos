@@ -7,6 +7,8 @@ export const estadosBrasil = [
     "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
   ];
 
+// TODO: remove remove require 
+// TODO: verificar porque nao consigo filtrar nivel acesso
 class Usuario {
     constructor() {
         const usuarioSchema = new mongoose.Schema(
@@ -46,17 +48,17 @@ class Usuario {
         );
 
         // Validação personalizada para garantir que rota + dominio sejam únicos dentro do grupo
-        usuarioSchema.pre('save', function (next) {
-            const permissoes = this.permissoes;
-            const combinacoes = permissoes.map(p => `${p.rota}_${p.dominio}`);
-            const setCombinacoes = new Set(combinacoes);
+        // usuarioSchema.pre('save', function (next) {
+        //     const permissoes = this.permissoes;
+        //     const combinacoes = permissoes.map(p => `${p.rota}_${p.dominio}`);
+        //     const setCombinacoes = new Set(combinacoes);
 
-            if (combinacoes.length !== setCombinacoes.size) {
-                return next(new Error('Permissões duplicadas encontradas: rota + domínio devem ser únicos dentro de cada grupo.'));
-            }
+        //     if (combinacoes.length !== setCombinacoes.size) {
+        //         return next(new Error('Permissões duplicadas encontradas: rota + domínio devem ser únicos dentro de cada grupo.'));
+        //     }
 
-            next();
-        });
+        //     next();
+        // });
 
         
         usuarioSchema.plugin(mongoosePaginate);

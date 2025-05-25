@@ -73,7 +73,7 @@ const fakeMappings = {
     avaliacao_resolucao: () => fakebr.lorem.sentence(),
     motivo_devolucao: () => fakebr.lorem.sentence(),
     link_imagem_resolucao: () => fakebr.internet.url() + "/" + uuid() + ".jpg",
-    usuario: () => [{ _id: new mongoose.Types.ObjectId().toString() }],
+    usuarios: () => [{ _id: new mongoose.Types.ObjectId().toString() }],
     endereco: {
         logradouro: fakebr.address.streetName(),
         cep: fakebr.address.zipCode(),

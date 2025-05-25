@@ -52,7 +52,7 @@ class UsuarioController {
     async criar(req, res) {
         console.log('Estou no criar em UsuarioController');
 
-        // Cria o DTO de criação e valida os dados - criar ajustes na biblioteca zod
+        // valida os dados - criar ajustes na biblioteca zod
         //const parsedData = UsuarioSchema.parse(req.body);
         let data = await this.service.criar(req.body);
 

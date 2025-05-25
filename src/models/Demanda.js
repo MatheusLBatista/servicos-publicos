@@ -1,6 +1,7 @@
 import mongoose, { mongo } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
+// TODO: remove require
 class Demanda {
     constructor() {
         const demandaSchema = new mongoose.Schema(
@@ -50,7 +51,7 @@ class Demanda {
                 },
 
                 //referência para usuários
-                usuario: [
+                usuarios: [
                     {
                         type: mongoose.Schema.Types.ObjectId,
                         ref: 'usuarios'
@@ -64,17 +65,17 @@ class Demanda {
         );
 
         // Validação personalizada para garantir que rota + dominio sejam únicos dentro do grupo
-        demandaSchema.pre('save', function (next) {
-            const permissoes = this.permissoes;
-            const combinacoes = permissoes.map(p => `${p.rota}_${p.dominio}`);
-            const setCombinacoes = new Set(combinacoes);
+        // demandaSchema.pre('save', function (next) {
+        //     const permissoes = this.permissoes;
+        //     const combinacoes = permissoes.map(p => `${p.rota}_${p.dominio}`);
+        //     const setCombinacoes = new Set(combinacoes);
 
-            if (combinacoes.length !== setCombinacoes.size) {
-                return next(new Error('Permissões duplicadas encontradas: rota + domínio devem ser únicos dentro de cada grupo.'));
-            }
+        //     if (combinacoes.length !== setCombinacoes.size) {
+        //         return next(new Error('Permissões duplicadas encontradas: rota + domínio devem ser únicos dentro de cada grupo.'));
+        //     }
 
-            next();
-        });
+        //     next();
+        // });
 
 
         demandaSchema.plugin(mongoosePaginate);
