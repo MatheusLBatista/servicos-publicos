@@ -7,29 +7,28 @@ export const estadosBrasil = [
     "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
   ];
 
-// TODO: verificar porque nao consigo filtrar nivel acesso
 class Usuario {
     constructor() {
         const usuarioSchema = new mongoose.Schema(
             {
-                cpf: { type: String },//
-                email: { type: String },//
-                celular: { type: String },//
-                cnh: { type: String },//
-                data_nomeacao: { type: Date },//
-                cargo: { type: String },//
-                formacao: { type: String },//
-                nivel_acesso: {//
+                cpf: { type: String },
+                email: { type: String },
+                celular: { type: String },
+                cnh: { type: String },
+                data_nomeacao: { type: Date },
+                cargo: { type: String },
+                formacao: { type: String },
+                nivel_acesso: {
                     type: {
                         municipe: { type: Boolean },
                         operador: { type: Boolean },
                         administrador: { type: Boolean },
                     }, 
                 },
-                nome: { type: String }, //
-                nome_social: { type: String }, //
+                nome: { type: String }, 
+                nome_social: { type: String }, 
                 portaria_nomeacao: { type: String },
-                senha: { type: String },//
+                senha: { type: String },
                 endereco: {
                     logradouro: { type: String },
                     cep: { type: String },

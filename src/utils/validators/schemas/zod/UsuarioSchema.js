@@ -1,7 +1,6 @@
 // src/utils/validators/schemas/zod/UsuarioSchema.js
 
 import { z } from 'zod';
-import objectIdSchema from './ObjectIdSchema.js';
 import { estadosBrasil } from '../../../../models/Usuario.js';
 
 /** Definição da expressão regular para a senha
@@ -70,7 +69,6 @@ const UsuarioSchema = z.object({
   portaria_nomeacao: z
    .string()
    .optional(),
-  //  .refine(/ˆPORTARIA\/\d{4}$/, "A portaria deve seguir o formato PORTARIA/0000"),
   endereco: z.object({
     logradouro: z.string().min(2, "O logradouro não pode ser vazio."),
     cep: z.string().regex(/^\d{5}-?\d{3}$/, "CEP inválido"),
