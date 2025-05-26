@@ -18,6 +18,9 @@ async function seedSecretaria() {
   for (let i = 0; i <= 10; i++) {
     secretararia.push({
       nome: globalFakeMapping.nome_secretaria(),
+      sigla: globalFakeMapping.sigla(),
+      email: globalFakeMapping.email_secretaria(),
+      telefone: globalFakeMapping.telefone()
     });
   }
   const result = await Secretararia.collection.insertMany(secretararia);

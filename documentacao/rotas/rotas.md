@@ -235,7 +235,7 @@ Lista de demandas com seus respectivos status, tipo e operador atribuído (se ac
 
 ---
 
-### 6.2 `GET /demandas/{id}`
+### 6.2 `GET /secretaria/demandas/{id}`
 #### Caso de Uso
 A secretaria pode visualizar o detalhamento de uma demanda específica.
 

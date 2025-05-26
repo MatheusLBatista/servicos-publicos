@@ -9,6 +9,11 @@
             "date": 1747181562107,
             "name": "/home/giullia_chiarotti/Documentos/FabricaII/fabrica/servicos-publicos/logs/error-2025-05-13.log",
             "hash": "9669952a55e7c4c604687af076e6cd33d2baf6171cbeaf269f8ffc2683d34d3d"
+        },
+        {
+            "date": 1747782825954,
+            "name": "/home/giullia_chiarotti/Documentos/FabricaII/fabrica/servicos-publicos/logs/error-2025-05-20.log",
+            "hash": "323a22e3b07f4dd827a0e7ad292818740c8b690b6b6f28698834e44442a9f7f6"
         }
     ],
     "hashType": "sha256"

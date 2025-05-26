@@ -22,5 +22,12 @@
       - [x] `/delete/usuarios/:id`
       - [x] `/get/usuarios/:id/foto`
       - [x] `/post/usuarios/:id/foto`
+      - *Rotas de secretaria* (Giullia)
+      - [x] `/get/secretaria`
+      - [] `/get/secretaria/demanda`
+      - [] `/get/secretaria/demanda/:id`
+      - [] `post/secretaria/demanda/:id/aceitar`
+      - [] `post/secretaria/demanda/:id/rejeitar`
+      - [] `post/secretaria/demanda/:id/devolucao`
     
 
