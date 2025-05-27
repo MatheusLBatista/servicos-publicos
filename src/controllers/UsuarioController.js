@@ -77,7 +77,7 @@ class UsuarioController {
 
         delete usuarioLimpo.senha;
 
-        return CommonResponse.success(res, data, 200, 'Usuário atualizado com sucesso.');
+        return CommonResponse.success(res, usuarioLimpo, 200, 'Usuário atualizado com sucesso.');
     }
 
     async deletar(req, res) {
