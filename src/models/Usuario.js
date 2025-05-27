@@ -10,7 +10,6 @@ export const estadosBrasil = [
 
 class Usuario {
     constructor() {
-        //TODO: adicionar ativo
         const usuarioSchema = new mongoose.Schema(
             {
                 cpf: { type: String },
@@ -22,7 +21,7 @@ class Usuario {
                 formacao: { type: String },
                 nivel_acesso: {
                     type: {
-                        municipe: { type: Boolean },
+                        municipe: { type: Boolean, default: true },
                         operador: { type: Boolean },
                         administrador: { type: Boolean },
                     }, 

@@ -65,7 +65,7 @@ const UsuarioSchema = z.object({
    operador: z.boolean().optional(),
    administrador: z.boolean().optional(),
    municipe: z.boolean().optional()
-  }),
+  }).optional(),
   portaria_nomeacao: z
    .string()
    .optional(),

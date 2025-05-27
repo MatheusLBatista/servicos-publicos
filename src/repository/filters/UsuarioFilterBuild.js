@@ -24,7 +24,6 @@ class UsuarioFilterBuild {
 
     }
 
-    //TODO: adicionar ativo
     comAtivo(ativo){
         if(ativo !== undefined){
             const valor = ativo === true || ativo === 'true' || ativo === 1 || ativo === '1'
