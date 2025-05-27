@@ -30,7 +30,7 @@ class DemandaController{
     async criar(req, res){
         console.log('Estou no criar em DemandaController');
 
-        let  data = await this.service.criar(req.body);
+        let data = await this.service.criar(req.body);
 
         let usuarioLimpo = data.toObject();
 
@@ -39,6 +39,45 @@ class DemandaController{
         return CommonResponse.created(res, usuarioLimpo);
     }
 
+    async atualizar(req, res) {
+        console.log('Estou no atualizar em DemandaController');
+
+        const { id } = req.params;
+
+        // TODO: implementar verificação
+        // DemandaIdSchema.parse(id)
+
+        // TODO: adicionar parsedData
+        const parsedData = req.body;
+
+        const data = await this.service.atualizar(id, parsedData)
+
+        let demandaLimpa = data.toObject();
+
+        delete demandaLimpa.tipo;
+        delete demandaLimpa.data;
+        
+        return CommonResponse.success(res, demandaLimpa, 200, "Demanda atualizada com sucesso!")
+    }
+
+    async deletar(req, res) {
+        console.log('Estou no deletar em DemandaController');
+
+        const { id } = req.params || {};
+
+        if(!id) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.BAD_REQUEST.code,
+                errorType: 'validationError',
+                field: 'id',
+                details: [],
+                customMessage: 'ID da demanda é obrigatório para deletar.'
+            });
+        }
+
+        const data = await this.service.deletar(id);
+        return CommonResponse.success(res, data, 200, "Demanda excluída com sucesso!")
+    }
 }
 
 export default DemandaController;

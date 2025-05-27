@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import DemandaRepository from "../repository/DemandaRepository.js";
 import { parse } from 'dotenv';
+import CustomError from "../utils/helpers/CustomError.js";
 
 class DemandaService {
     constructor(){
@@ -23,6 +24,34 @@ class DemandaService {
         
         return data;
     }
-}
+
+    async atualizar(id, parsedData){
+        console.log("Estou em atualizar de Demanda Service");
+
+        delete parsedData.tipo;
+        delete parsedData.data;
+
+        //garantir id
+        await this.ensureDemandaExists(id);
+
+        const data = await this.repository.atualizar(id, parsedData);
+        return data;
+    }
+
+    async deletar(id) {
+        console.log("Estou em deletar de Demanda Service");
+
+        await this.ensureDemandaExists(id);
+
+        const data = await this.repository.deletar(id);
+        return data;
+    }
+
+    async ensureDemandaExists(id) {
+        const demandaExistente = await this.repository.buscarPorID(id);
+
+        return demandaExistente;
+    }
+} 
 
 export default DemandaService;
