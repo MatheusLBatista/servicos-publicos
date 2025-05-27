@@ -19,6 +19,7 @@ const fakeMappings = {
   }, 
 
   Usuario: {
+    ativo: () => Math.random() < 0.8,
     cpf: () => fakebr.br.cpf(),
     email: () => fakebr.internet.email(),
     celular: () => faker.phone.number('(##) 9####-####'),
@@ -27,8 +28,13 @@ const fakeMappings = {
     cargo: () => fakebr.name.jobType(),
     formacao: () => fakebr.name.jobArea(),
     nivel_acesso: () => {
-      const values =  [ "Munícipe", "Operador", "Administrador"]
-      return values[Math.floor(Math.random() * values.length)]
+      const values = ["municipe", "operador", "administrador"];
+      const selected = values[Math.floor(Math.random() * values.length)];
+      return {
+        municipe: selected === "municipe",
+        operador: selected === "operador",
+        administrador: selected === "administrador",
+      };
     },
     nome_social: () => fakebr.name.firstName() + " " + fakebr.name.lastName(),
     portaria_nomeacao: () => `PORTARIA/${faker.number.int({ min: 1000, max: 9999 })}`,

@@ -77,7 +77,7 @@ async buscarPorNome(nome, idIgnorado = null) {
             return data;
         }
 
-        const { nome, email, nivel_acesso, cargo, formacao, page = 1 } = req.query;
+        const { nome, email, nivel_acesso, cargo, formacao, ativo, page = 1 } = req.query;
         const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
         
         const filterBuild = new UsuarioFilterBuild()
@@ -86,6 +86,7 @@ async buscarPorNome(nome, idIgnorado = null) {
             .comNivelAcesso(nivel_acesso || '')
             .comCargo(cargo || '')
             .comFormacao(formacao || '')
+            .comAtivo(ativo || '')
 
         if(typeof filterBuild.build !== 'function') {
             throw new CustomError({

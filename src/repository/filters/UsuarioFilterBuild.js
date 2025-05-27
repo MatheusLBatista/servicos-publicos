@@ -24,7 +24,17 @@ class UsuarioFilterBuild {
 
     }
 
-    comNivelAcesso(nivelAcesso) {
+    comAtivo(ativo){
+        if(ativo !== undefined){
+            const valor = ativo === true || ativo === 'true' || ativo === 1 || ativo === '1'
+            ativo === false || ativo === 'false' || ativo === 0 || ativo === '0'
+
+            this.filtros.ativo = valor;
+        }
+        return this;
+    }
+
+    comNivelAcesso(nivelAcesso) {//
         if (nivelAcesso) {
             const chave = `nivel_acesso.${nivelAcesso}`;
             this.filtros[chave] = true;
@@ -32,14 +42,14 @@ class UsuarioFilterBuild {
         return this;
     }
 
-    comCargo(cargo) {
+    comCargo(cargo) {//
         if(cargo) {
             this.filtros.cargo = { $regex: cargo, $options: 'i' }
         }
         return this;
     }
 
-    comFormacao(formacao) {
+    comFormacao(formacao) {//
         if(formacao) {
             this.filtros.formacao = { $regex: formacao, $options: 'i' }
         }

@@ -25,6 +25,8 @@ async function seedUsuario() {
 
   for (let i = 0; i <= 10; i++) {
     usuarios.push({
+      link_imagem: globalFakeMapping.link_imagem(),
+      ativo: globalFakeMapping.ativo(),
       cpf: globalFakeMapping.cpf(),
       email: globalFakeMapping.email(),
       celular: globalFakeMapping.celular(),
