@@ -2,7 +2,6 @@
 
 import { z } from 'zod';
 import objectIdSchema from './ObjectIdSchema.js';
-import { RotaSchema } from './RotaSchema.js';
 
 // Validação de array de ObjectId sem duplicações
 const distinctObjectIdArray = z
