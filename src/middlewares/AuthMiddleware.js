@@ -8,7 +8,7 @@ import AuthService from '../services/AuthService.js';
 
 class AuthMiddleware {
   constructor() {
-    this.service = new AuthService();
+   this.service = new AuthService();
 
     /**
      * Vinculação para grantir ao método handle o contexto 'this' correto

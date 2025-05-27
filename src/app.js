@@ -28,7 +28,6 @@ app.use((req, res, next) => {
     );
 });
 
-// Middleware de Tratamento de Erros (deve ser adicionado após as rotas)
 app.use(errorHandler);
 
 export default app;

@@ -5,8 +5,12 @@ class Secretaria {
     constructor() {
         const secretariaSchema = new mongoose.Schema(
             {
-                nome: { type: String, required: [true, "O nome da secretaria é obrigatório!"]},
-            }, 
+                nome: { type: String}, 
+                sigla: { type: String},
+                email: { type: String},
+                telefone: { type: String}
+            },
+
             {
                 timestamps: true,
                 versionKey: false
@@ -14,6 +18,7 @@ class Secretaria {
         );
 
         // Validação personalizada para garantir que rota + dominio sejam únicos dentro do grupo
+        /*
         secretariaSchema.pre('save', function (next) {
             const permissoes = this.permissoes;
             const combinacoes = permissoes.map(p => `${p.rota}_${p.dominio}`);
@@ -25,7 +30,7 @@ class Secretaria {
 
             next();
         });
-
+        */
 
         secretariaSchema.plugin(mongoosePaginate);
         this.model = mongoose.model('secretarias', secretariaSchema);

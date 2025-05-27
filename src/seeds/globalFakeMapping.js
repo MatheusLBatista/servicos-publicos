@@ -54,15 +54,22 @@ const fakeMappings = {
 
   Secretaria: {
     nome_secretaria: () => {
-      const values =  [ "SAAE", " SEMOSP", "ENERGISA" ]
+      const values =  [ "Secretaria Municipal de Transporte e Trânsito", " Serviço Autônomo de Águas e Esgotos", "Secretaria Municipal de Obras e Serviços Públicos" ]
       return values[Math.floor(Math.random() * values.length)]
-    }
+    },
+    sigla: () => fakebr.lorem.word(),
+    email_secretaria: () => fakebr.internet.email(),
+    telefone: () => fakebr.phone.number('(##) 9####-####')
   },
 
   TipoDemanda: {
     titulo: () => fakebr.lorem.word(),
     icone: () => fakebr.internet.url() + "/" + uuid() + ".jpg",
-    subdescricao: () => fakebr.lorem.sentence()
+    descricao: () => fakebr.lorem.sentece(),
+    subdescricao: () => fakebr.lorem.sentence(),
+    tipo: () => {
+      const values =  [ "Coleta", "Iluminação", "Saneamento", "Árvores", "Animais", "Pavimentação"]
+      return values[Math.floor(Math.random() * values.length)]}
   },
 
   Demanda: {
