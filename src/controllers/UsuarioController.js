@@ -39,11 +39,11 @@ class UsuarioController {
         }
 
         //Validação das queries (se existirem)
-        // const query = req.query || {};
-        // if (Object.keys(query).length !== 0) {
-        //     // deve apenas validar o objeto query, tendo erro o zod será responsável por lançar o erro
-        //     await UsuarioQuerySchema.parseAsync(query);
-        // }
+        const query = req.query || {};
+        if (Object.keys(query).length !== 0) {
+            // deve apenas validar o objeto query, tendo erro o zod será responsável por lançar o erro
+            await UsuarioQuerySchema.parseAsync(query);
+        }
 
         const data = await this.service.listar(req);
         return CommonResponse.success(res, data);

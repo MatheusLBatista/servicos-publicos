@@ -14,16 +14,36 @@ export const UsuarioQuerySchema = z.object({
         })
         .transform((val) => val?.trim()),
     email: z
-        .union([z.string().email("Formato de email inválido"), z.undefined()])
+        .union([z.string().email("Formato de email inválido."), z.undefined()])
         .optional(),
+    formacao: z
+        .string()
+        .optional()
+        .refine((val) => !val || val.trim().length > 0, {
+            message: "Formação não pode ser vazio."
+        })
+        .transform((val) => val?.trim()),
+    cargo: z
+        .string()
+        .optional()
+        .refine((val) => !val || val.trim().length > 0, {
+            message: "Cargo não pode ser vazio."
+        })
+        .transform((val) => val?.trim()),
+    nivel_acesso: z
+        .string()
+        .optional()
+        .transform((val) => val?.trim().toLowerCase())
+        .refine((val) => !val || ["municipe", "munícipe", "operador", "administrador"].includes(val), {
+            message: "Nível de acesso inválido."
+        }),
     ativo: z
         .string()
         .optional()
+        .transform((val) => val?.trim().toLowerCase())
         .refine((value) => !value || value === "true" || value === "false", {
             message: "Ativo deve ser 'true' ou 'false'",
         }),
-    grupo: z.string().optional().transform((val) => val?.trim()),
-    unidade: z.string().optional().transform((val) => val?.trim()),
     page: z
         .string()
         .optional()

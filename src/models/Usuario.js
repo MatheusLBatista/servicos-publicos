@@ -1,5 +1,6 @@
 import mongoose, { mongo } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
+import { boolean } from "zod";
 
 export const estadosBrasil = [
     "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO",
@@ -9,6 +10,7 @@ export const estadosBrasil = [
 
 class Usuario {
     constructor() {
+        //TODO: adicionar ativo
         const usuarioSchema = new mongoose.Schema(
             {
                 cpf: { type: String },
@@ -25,7 +27,8 @@ class Usuario {
                         administrador: { type: Boolean },
                     }, 
                 },
-                nome: { type: String }, 
+                nome: { type: String },
+                ativo: { type: Boolean, default: true }, 
                 nome_social: { type: String }, 
                 portaria_nomeacao: { type: String },
                 senha: { type: String },

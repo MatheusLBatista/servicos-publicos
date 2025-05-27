@@ -34,7 +34,7 @@ const UsuarioSchema = z.object({
       }
     ),
   link_foto: z.string().optional(),
-  ativo: z.boolean(),
+  ativo: z.boolean().optional(),
   nome_social: z
     .string()
     .min(1, "O nome social deve conter mais que 1 caracter.")
