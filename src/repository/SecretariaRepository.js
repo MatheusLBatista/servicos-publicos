@@ -1,7 +1,7 @@
 import Secretaria from '../models/Secretaria.js';
 import mongoose from 'mongoose';
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
-import SecretariaFilterBuilder from './filters/SecretariaFilterBuilder.js';
+import SecretariaFilterBuilder from './filters/SecretariaFilterBuild.js';
 
 class SecretariaRepository {
     constructor({

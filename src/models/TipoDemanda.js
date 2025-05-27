@@ -30,6 +30,7 @@ class TipoDemanda {
         );
 
         // Validação personalizada para garantir que rota + dominio sejam únicos dentro do grupo
+        /*
         tipoDemandaSchema.pre('save', function (next) {
             const permissoes = this.permissoes;
             const combinacoes = permissoes.map(p => `${p.rota}_${p.dominio}`);
@@ -41,7 +42,7 @@ class TipoDemanda {
 
             next();
         });
-
+        */
 
         tipoDemandaSchema.plugin(mongoosePaginate);
         this.model = mongoose.model('tipo_demandas', tipoDemandaSchema);

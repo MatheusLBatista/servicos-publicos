@@ -1,8 +1,7 @@
-//recebe a requisicao de fato e da a resposta
-import SecretariaService from "../service/SecretariaService.js";
-import { SecretariaUpdateSchema, SecretariaSchema } from '../utils/validators/schemas/zod/SecretariaSchema.js';
+import TipoDemandaService from "../service/TipoDemandaService.js";
+import { TipoDemandaUpdateSchema, TipoDemandaSchema } from '../utils/validators/schemas/zod/TipoDemandaSchema.js';
 import mongoose from 'mongoose';
-import { SecretariaQuerySchema, SecretariaIDSchema } from '../utils/validators/schemas/zod/querys/SecretariaQuerySchema.js';
+import { TipoDemandaQuerySchema, TipoDemandaIDSchema } from '../utils/validators/schemas/zod/querys/TipoDemandaQuerySchema.js';
 import {
     CommonResponse,
     CustomError,
@@ -24,23 +23,23 @@ import sharp from 'sharp';
 const getDirname = () => path.dirname(fileURLToPath(import.meta.url));
 
 
-class SecretariaController {
+class TipoDemandaController {
     constructor() {
-        this.service = new SecretariaService();
+        this.service = new TipoDemandaService();
     }
     async listar(req, res){
-        console.log('Estou no listar em SecretariaController');
+        console.log('Estou no listar em TipoDemandaController');
 
         const { id } = req.params || {}
         if(id) {
-            SecretariaIDSchema.parse(id);
+            TipoDemandaIDSchema.parse(id);
         }
 
         //Validação das queries (se existirem)
         const query = req.query || {};
         if (Object.keys(query).length !== 0) {
         // deve apenas validar o objeto query, tendo erro o zod será responsável por lançar o erro
-            await SecretariaQuerySchema.parseAsync(query);
+            await TipoDemandaQuerySchema.parseAsync(query);
         }
 
         const data = await this.service.listar(req);
@@ -48,39 +47,39 @@ class SecretariaController {
     }
 
     async criar(req, res) {
-        console.log('Estou no criar em SecretariaController');
+        console.log('Estou no criar em TipoDemandaController');
     
-        const parsedData = SecretariaSchema.parse(req.body);
+        const parsedData = TipoDemandaSchema.parse(req.body);
         let data = await this.service.criar(parsedData);
     
-        let secretariaLimpo = data.toObject();
+        let tipoDemandaLimpo = data.toObject();
     
-        return CommonResponse.created(res, secretariaLimpo);
+        return CommonResponse.created(res, tipoDemandaLimpo);
     }
 
     async atualizar(req, res) {
-        console.log('Estou no atualizar em SecretariaController');
+        console.log('Estou no atualizar em TipoDemandaController');
 
         const { id } = req.params;
-        SecretariaIDSchema.parse(id);
+        TipoDemandaIDSchema.parse(id);
 
-        const parsedData = SecretariaUpdateSchema.parse(req.body);
+        const parsedData = TipoDemandaUpdateSchema.parse(req.body);
 
         const data = await this.service.atualizar(id, parsedData);
 
-        let secretariaLimpo = data.toObject();
+        let tipoDemandaLimpo = data.toObject();
 
-        delete secretariaLimpo.senha;
+        delete tipoDemandaLimpo.senha;
 
-        return CommonResponse.success(res, data, 200, 'Secretaria atualizada com sucesso.');
+        return CommonResponse.success(res, data, 200, 'TipoDemanda atualizada com sucesso.');
     }
 
 
     async deletar(req, res) {
-        console.log('Estou no deletar em SecretariaController');
+        console.log('Estou no deletar em TipoDemandaController');
     
         const { id } = req.params || {};
-        SecretariaIDSchema.parse(id);
+        TipoDemandaIDSchema.parse(id);
     
         if (!id) {
             throw new CustomError({
@@ -88,14 +87,14 @@ class SecretariaController {
                 errorType: 'validationError',
                 field: 'id',
                 details: [],
-                customMessage: 'ID da secretaria é obrigatório para deletar.'
+                customMessage: 'ID da TipoDemanda é obrigatório para deletar.'
             });
         }
     
         const data = await this.service.deletar(id);
-        return CommonResponse.success(res, data, 200, 'Secretaria excluída com sucesso.');
+        return CommonResponse.success(res, data, 200, 'TipoDemanda excluída com sucesso.');
     }
 
 }
 
-export default SecretariaController;
+export default TipoDemandaController;

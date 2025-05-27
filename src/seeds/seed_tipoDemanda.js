@@ -19,7 +19,10 @@ async function seedTipoDemanda() {
     tipoDemanda.push({
       titulo: globalFakeMapping.titulo(),
       icone: globalFakeMapping.icone(),
-      subdescricao: globalFakeMapping.subdescricao()
+      descricao: globalFakeMapping.descricao(),
+      subdescricao: globalFakeMapping.subdescricao(),
+      link_imagem: globalFakeMapping.link_imagem(),
+      tipo: globalFakeMapping.tipo()
     });
   }
 

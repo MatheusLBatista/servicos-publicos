@@ -14,6 +14,16 @@
             "date": 1748213229683,
             "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\combined-2025-05-25.log",
             "hash": "6082101e5c01482212da515009ccd8808bba54ac21b0cb517c4fbf109761c12e"
+        },
+        {
+            "date": 1748315945174,
+            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\combined-2025-05-26.log",
+            "hash": "de2de2313db4e0e588154a7c7f9ab385f77a9d651c7604e6d7da110ca097aba6"
+        },
+        {
+            "date": 1748318534225,
+            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\combined-2025-05-27.log",
+            "hash": "94c085279153eb3cb867598dad160b7f694e3b5966f233738e2c468098ab6777"
         }
     ],
     "hashType": "sha256"
