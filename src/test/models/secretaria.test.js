@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Secretaria from "../../src/models/Secretaria.js";
+import Secretaria from "../../models/Secretaria.js";
 import { it, expect, describe, beforeAll, afterAll } from "@jest/globals";
 import { MongoMemoryServer } from 'mongodb-memory-server';
 

@@ -1,9 +1,9 @@
-// src/repositories/filters/SecretariaFilterBuilder.js
+// src/repositories/filters/SecretariaFilterBuild.js
 import Secretaria from '../../models/Secretaria.js'
 
 import SecretariaRepository from '../SecretariaRepository.js';
 
-class SecretariaFilterBuilder {
+class SecretariaFilterBuild {
     constructor() {
         this.filtros = {};
         this.secretariaRepository = new SecretariaRepository();
@@ -29,4 +29,4 @@ class SecretariaFilterBuilder {
     }
 }
 
-export default SecretariaFilterBuilder;
+export default SecretariaFilterBuild;

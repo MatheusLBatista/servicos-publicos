@@ -59,7 +59,11 @@ const fakeMappings = {
   TipoDemanda: {
     titulo: () => fakebr.lorem.word(),
     icone: () => fakebr.internet.url() + "/" + uuid() + ".jpg",
-    subdescricao: () => fakebr.lorem.sentence()
+    descricao: () => fakebr.lorem.sentece(),
+    subdescricao: () => fakebr.lorem.sentence(),
+    tipo: () => {
+      const values =  [ "Coleta", "Iluminação", "Saneamento", "Árvores", "Animais", "Pavimentação"]
+      return values[Math.floor(Math.random() * values.length)]}
   },
 
   Demanda: {

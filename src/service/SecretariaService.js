@@ -1,9 +1,7 @@
 // /src/services/SecretariaService.js
-// import bcrypt from 'bcrypt';
-// import { PermissoesArraySchema } from '../utils/validators/schemas/zod/PermissaoValidation.js';
-// import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
-// import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
-// import AuthHelper from '../utils/AuthHelper.js';
+//import bcrypt from 'bcrypt';
+import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
+//import AuthHelper from '../utils/AuthHelper.js';
 import mongoose from 'mongoose';
 import SecretariaRepository from '../repository/SecretariaRepository.js';
 import { parse } from 'dotenv';
@@ -23,6 +21,8 @@ class SecretariaService {
     async criar(parsedData) {
         console.log("Estou no criar em SecretariaService")
 
+        //validar nome unico 
+        await this.validarNome(parsedData.nome);
         //chama o repositório
         const data = await this.repository.criar(parsedData);
 
@@ -63,6 +63,19 @@ class SecretariaService {
         }
 
         return secretariaExistente;
+    }
+
+    async validarNome(nome, id=null) {
+        const secretariaExistente = await this.repository.buscarPorNome(nome, id);
+        if (secretariaExistente) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.BAD_REQUEST.code,
+                errorType: 'validationError',
+                field: 'nome',
+                details: [{ path: 'nome', message: 'Nome já está em uso.' }],
+                customMessage: 'Nome já cadastrado.',
+            });
+        }
     }
 
 }
