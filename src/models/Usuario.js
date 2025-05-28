@@ -12,10 +12,11 @@ class Usuario {
     constructor() {
         const usuarioSchema = new mongoose.Schema(
             {
-                cpf: { type: String },
-                email: { type: String },
+                //TODO: implementar unique no service
+                cpf: { type: String, unique: true },
+                email: { type: String, unique: true },
                 celular: { type: String },
-                cnh: { type: String },
+                cnh: { type: String, unique: true },
                 data_nomeacao: { type: Date },
                 cargo: { type: String },
                 formacao: { type: String },
