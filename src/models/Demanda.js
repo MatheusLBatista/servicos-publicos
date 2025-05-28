@@ -5,7 +5,10 @@ class Demanda {
     constructor() {
         const demandaSchema = new mongoose.Schema(
             {
-                tipo: { type: String },
+                tipo: { 
+                    type: String,
+                    enum: [ "Coleta", "Iluminação", "Saneamento", "Árvores", "Animais", "Pavimentação"]
+                 },
                 status: { 
                     type: String,
                     enum: [ "Em aberto", "Em andamento", "Concluída" ],
@@ -15,17 +18,7 @@ class Demanda {
                 resolucao: { type: String },
                 feedback: { type: Number },
                 avaliacao_resolucao: { type: String },
-                link_imagem: {
-                    type: String,
-                    default: "",
-                    validate: {
-                      validator: function(v) {
-                        let validator = /^https?:\/\/.+\.(jpg|jpeg|png|webp|svg|gif)$/.test(v)
-                        return validator ;
-                      },
-                      message: props => `${props.value} não é um link de imagem válido!`
-                    }
-                },
+                link_imagem: { type: String },
                 motivo_devolucao: { type: String },
                 link_imagem_resolucao: {
                     type: String,

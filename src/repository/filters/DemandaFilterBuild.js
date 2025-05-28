@@ -41,7 +41,7 @@ class DemandaFilterBuild {
 
             if(fim) {
                 const dataFim = new Date(fim);
-                dataFim.setHours(24, 59, 59, 999)
+                dataFim.setHours(23, 59, 59, 999)
                 this.filtros.criadoEm.$lte = dataFim;
             }
         }
