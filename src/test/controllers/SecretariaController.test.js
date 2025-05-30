@@ -18,6 +18,7 @@ describe('SecretariaController', () => {
         SecretariaService.mockClear();
         secretariaController = new SecretariaController();
     });
+    
 
     it('deve listar secretarias', async () => {
         const mockData = [{ id: '6832ad0c109564baed4cda0e', nome: 'Secretaria 1' }];
