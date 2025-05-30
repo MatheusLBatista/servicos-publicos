@@ -57,7 +57,6 @@ class DemandaRepository {
         }
 
         const { tipo, status, data, resolucao, feedback, avaliacao_resulucao, link_imagem, motivo_devolucao, link_imagem_resolucao, endereco, usuario, page = 1 } = req.query;
-        //TODO: aplicar regra de negócio para jogar erro caso nao tenha uma segunda 
         const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
 
         const filterBuilder = new DemandaFilterBuild()

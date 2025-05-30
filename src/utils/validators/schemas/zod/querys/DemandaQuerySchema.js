@@ -24,8 +24,7 @@ export const DemandaQuerySchema = z.object({
         }),
     data: z
         .string()
-        .optional()
-        .datetime(),
+        .optional(),
     usuarios: z
         .string()
         .optional()

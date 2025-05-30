@@ -25,10 +25,8 @@ class UsuarioFilterBuild {
     }
 
     comAtivo(ativo){
-        if(ativo !== undefined){
-            const valor = ativo === true || ativo === 'true' || ativo === 1 || ativo === '1'
-            ativo === false || ativo === 'false' || ativo === 0 || ativo === '0'
-
+        if (ativo !== undefined) {
+            const valor = ativo === true || ativo === 'true' || ativo === 1 || ativo === '1';
             this.filtros.ativo = valor;
         }
         return this;

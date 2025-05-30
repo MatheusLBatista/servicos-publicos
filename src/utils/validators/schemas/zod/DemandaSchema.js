@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import { estadosBrasil } from '../../../../models/Usuario.js';
 import mongoose from 'mongoose';
+import objectIdSchema from '../zod/ObjectIdSchema.js'
 
-export const tiposDemanda = [ "Coleta", "Iluminação", "Saneamento", "Árvores", "Animais", "Pavimentação"];
+export const tiposDemanda = [ "Coleta", "Iluminação", "Saneamento", "Árvores", "Animais", "Pavimentação" ];
 
 export const statusDemanda = [ "Em aberto", "Em andamento", "Concluída" ]
 
@@ -13,8 +14,8 @@ export const enderecoSchema = z.object({
         numero: z.number().int().positive("O número deve ser inteiro e positivo."),
         complemento: z.string().optional(),
         cidade: z.string().min(2, "A cidade não pode ser vazia."),
-        estado: z.enum((val) => estadosBrasil.includes(val), {
-            message: "Estado inválido."
+        estado: z.string().refine(val => estadosBrasil.includes(val), {
+          message: "Estado inválido."
         })
       });
 
@@ -28,7 +29,6 @@ const distinctObjectIdArray = z
 const DemandaSchema = z.object ({
     tipo: z
       .string()
-      .transform((val) => val.trim().toLowerCase())
       .refine((val) => tiposDemanda.includes(val),
         {
         message: "Tipo inválido. Deve ser um dos valores permitidos.",
@@ -36,17 +36,15 @@ const DemandaSchema = z.object ({
     ),
     status: z
       .string()
-      .transform((val) => val.trim().toLocaleLowerCase())
       .refine((val) => statusDemanda.includes(val),
       {
         message: "Status inválido. Deve ser um dos valores permitidos."
       }),
     data: z
-      .string()
-      .datetime(),
-    resolucao: z
-      .optional()
       .string(),
+    resolucao: z
+      .string()
+      .optional(),
     feedback:z
       .number()
       .optional(),
