@@ -64,6 +64,7 @@ const UsuarioSchema = z.object({
   nivel_acesso: z.object({
    operador: z.boolean().optional(),
    administrador: z.boolean().optional(),
+   secretario: z.boolean().optional(),
    municipe: z.boolean().optional()
   }).optional(),
   portaria_nomeacao: z

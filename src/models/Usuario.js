@@ -23,6 +23,7 @@ class Usuario {
                     type: {
                         municipe: { type: Boolean, default: true },
                         operador: { type: Boolean },
+                        secretario: { type: Boolean },
                         administrador: { type: Boolean },
                     }, 
                 },
