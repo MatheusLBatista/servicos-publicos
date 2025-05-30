@@ -75,6 +75,7 @@ class UsuarioController {
 
         let usuarioLimpo = data.toObject();
 
+        delete usuarioLimpo.email;
         delete usuarioLimpo.senha;
 
         return CommonResponse.success(res, usuarioLimpo, 200, 'Usuário atualizado com sucesso.');
@@ -84,6 +85,7 @@ class UsuarioController {
         console.log('Estou no atualizar em UsuarioController');
 
         const { id } = req.params || {};
+        UsuarioIdSchema.parse(id);
 
         if (!id) {
             throw new CustomError({

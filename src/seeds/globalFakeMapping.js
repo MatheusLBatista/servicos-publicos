@@ -28,11 +28,12 @@ const fakeMappings = {
     cargo: () => fakebr.name.jobType(),
     formacao: () => fakebr.name.jobArea(),
     nivel_acesso: () => {
-      const values = ["municipe", "operador", "administrador"];
+      const values = ["municipe", "operador", "administrador", "secretario"];
       const selected = values[Math.floor(Math.random() * values.length)];
       return {
         municipe: selected === "municipe",
         operador: selected === "operador",
+        secretario: selected === "secretario",
         administrador: selected === "administrador",
       };
     },
