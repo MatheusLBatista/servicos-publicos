@@ -77,17 +77,18 @@ async buscarPorNome(nome, idIgnorado = null) {
             return data;
         }
 
-        const { nome, email, nivel_acesso, cargo, formacao, page = 1 } = req.query;
+        const { nome, email, nivel_acesso, cargo, formacao, ativo, page = 1 } = req.query;
         const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
         
-        const filterBuild = new UsuarioFilterBuild()
+        const filterBuilder = new UsuarioFilterBuild()
             .comEmail(email || '')
             .comNome(nome || '')
             .comNivelAcesso(nivel_acesso || '')
             .comCargo(cargo || '')
             .comFormacao(formacao || '')
+            .comAtivo(ativo || '')
 
-        if(typeof filterBuild.build !== 'function') {
+        if(typeof filterBuilder.build !== 'function') {
             throw new CustomError({
                 statusCode: 500,
                 errorType: 'internalServerError',
@@ -97,7 +98,7 @@ async buscarPorNome(nome, idIgnorado = null) {
             });
         }
 
-        const filtros = filterBuild.build();
+        const filtros = filterBuilder.build();
 
         const options = {
             page: parseInt(page, 10),
@@ -105,7 +106,7 @@ async buscarPorNome(nome, idIgnorado = null) {
             sort: { nome: 1 },
         };
 
-        const resultado = await this.modelUsuario.paginate(filtros, options);
+        const resultado = await this.modelUsuario.paginate({}, { page: 1, limit: 10 });
 
         resultado.docs = resultado.docs.map(doc => {
             const usuarioObj = typeof doc.toObject === 'function' ? doc.toObject() : doc;

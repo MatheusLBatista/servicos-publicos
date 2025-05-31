@@ -11,6 +11,8 @@ router
     .get('/demandas', asyncWrapper(demandaController.listar.bind(demandaController)))
     .get('/demandas/:id', asyncWrapper(demandaController.listar.bind(demandaController)))
     .post('/demandas', asyncWrapper(demandaController.criar.bind(demandaController)))
-    // .post('/demandas/:id', asyncWrapper(demandaController.atualizar.bind(demandaController)));
+    .patch("/demandas/:id", asyncWrapper(demandaController.atualizar.bind(demandaController)))
+    .put("/demandas/:id", asyncWrapper(demandaController.atualizar.bind(demandaController)))
+    .delete("/demandas/:id", asyncWrapper(demandaController.deletar.bind(demandaController)));
 
 export default router;

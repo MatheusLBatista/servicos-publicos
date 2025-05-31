@@ -1,7 +1,7 @@
 //recebe a requisicao de fato e da a resposta
 // import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
 import UsuarioService from "../service/UsuarioService.js";
-import { UsuarioSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
+import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
 import mongoose from 'mongoose';
 import { UsuarioQuerySchema, UsuarioIdSchema } from '../utils/validators/schemas/zod/querys/UsuarioQuerySchema.js';
 import {
@@ -39,11 +39,11 @@ class UsuarioController {
         }
 
         //Validação das queries (se existirem)
-        // const query = req.query || {};
-        // if (Object.keys(query).length !== 0) {
-        //     // deve apenas validar o objeto query, tendo erro o zod será responsável por lançar o erro
-        //     await UsuarioQuerySchema.parseAsync(query);
-        // }
+        const query = req.query || {};
+        if (Object.keys(query).length !== 0) {
+            // deve apenas validar o objeto query, tendo erro o zod será responsável por lançar o erro
+            await UsuarioQuerySchema.parseAsync(query);
+        }
 
         const data = await this.service.listar(req);
         return CommonResponse.success(res, data);
@@ -53,8 +53,8 @@ class UsuarioController {
         console.log('Estou no criar em UsuarioController');
 
         // valida os dados - criar ajustes na biblioteca zod
-        //const parsedData = UsuarioSchema.parse(req.body);
-        let data = await this.service.criar(req.body);
+        const parsedData = UsuarioSchema.parse(req.body);
+        let data = await this.service.criar(parsedData);
 
         let usuarioLimpo = data.toObject();
 
@@ -69,22 +69,23 @@ class UsuarioController {
         const { id } = req.params;
         UsuarioIdSchema.parse(id);
 
-        // const parsedData = UsuarioUpdateSchema.parse(req.body);
-        const parsedData = req.body;
+        const parsedData = UsuarioUpdateSchema.parse(req.body);
 
         const data = await this.service.atualizar(id, parsedData);
 
         let usuarioLimpo = data.toObject();
 
+        delete usuarioLimpo.email;
         delete usuarioLimpo.senha;
 
-        return CommonResponse.success(res, data, 200, 'Usuário atualizado com sucesso.');
+        return CommonResponse.success(res, usuarioLimpo, 200, 'Usuário atualizado com sucesso.');
     }
 
     async deletar(req, res) {
         console.log('Estou no atualizar em UsuarioController');
 
         const { id } = req.params || {};
+        UsuarioIdSchema.parse(id);
 
         if (!id) {
             throw new CustomError({

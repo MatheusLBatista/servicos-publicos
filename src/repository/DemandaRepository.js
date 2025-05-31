@@ -14,6 +14,28 @@ class DemandaRepository {
         this.modelUsuario = usuarioModel;
     }
 
+    async buscarPorID(id, includeTokens = false) {
+        let query = this.modelDemanda.findById(id);
+
+        if (includeTokens) {
+            query = query.select('+refreshtoken +accesstoken');
+        }
+
+        const demanda = await query;
+
+        if(!demanda) {
+            throw new CustomError({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: 'Demanda',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Demanda')
+            })
+        }
+
+        return demanda;
+    }
+
     async listar(req) {
         const { id } = req.params;
 
@@ -35,7 +57,6 @@ class DemandaRepository {
         }
 
         const { tipo, status, data, resolucao, feedback, avaliacao_resulucao, link_imagem, motivo_devolucao, link_imagem_resolucao, endereco, usuario, page = 1 } = req.query;
-        //TODO: aplicar regra de negócio para jogar erro caso nao tenha uma segunda 
         const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
 
         const filterBuilder = new DemandaFilterBuild()
@@ -90,7 +111,35 @@ class DemandaRepository {
     }
 
     async atualizar(id, parsedData){
+        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true });
 
+        if(!demanda) {
+            throw new CustomError ({
+                statusCode: 404,
+                errorType: 'resouceNotFound',
+                field: 'Demanda',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Demanda')
+            })
+        };
+
+        return demanda;
+    }
+
+    async deletar(id) {
+        const demanda = await this.modelDemanda.findByIdAndDelete(id);
+
+        if(!demanda) {
+            throw new CustomError ({
+                statusCode: 404,
+                errorType: 'resouceNotFound',
+                field: 'Demanda',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Demanda')
+            })
+        }
+
+        return demanda;
     }
 
 }
