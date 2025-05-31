@@ -8,27 +8,22 @@ export const DemandaIdSchema = z.string().refine((id) => mongoose.Types.ObjectId
 });
 
 export const DemandaQuerySchema = z.object({
-    tipo: z
+    tipo: tiposDemanda
+        .optional(),
+    status: statusDemanda
+        .optional(),
+    data_inicio: z
         .string()
-        .optional()
-        .transform((val) => val?.trim().toLowerCase())
-        .refine((val) => tiposDemanda.includes(val), {
-            message: "Tipo inválido. Deve ser um dos valores permitidos."
-        }),
-    status: z
-        .string()
-        .transform((val) => val?.trim().toLocaleLowerCase())
-        .optional()
-        .refine((val) => statusDemanda.includes(val),{
-            message: "Status inválido. Deve ser um dos valores permitidos."
-        }),
-    data: z
+        .optional(),
+    data_fim: z
         .string()
         .optional(),
     usuarios: z
         .string()
         .optional()
-        .refine((val) => val?.trim()),
+        .refine((val) => !val || mongoose.Types.ObjectId.isValid(val), {
+            message: "Usuário inválido. Tente novamente!",
+        }),
     endereco: enderecoSchema
         .optional(),
     page: z

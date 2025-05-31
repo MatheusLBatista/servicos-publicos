@@ -30,24 +30,25 @@ class DemandaFilterBuild {
     }
 
     comData(inicio, fim) {
-        if(inicio || fim) {
-            this.filtros.criadoEm = {}
+        if (inicio || fim) {
+            this.filtros.data = {};
 
-            if(inicio) {
-                const dataInicio = new Date(inicio);
-                dataInicio.setHours(0, 0, 0, 0)
-                this.filtros.criadoEm.$gte = dataInicio; 
+            if (inicio) {
+            const dataInicio = new Date(inicio);
+            dataInicio.setHours(0, 0, 0, 0);
+            this.filtros.data.$gte = dataInicio;
             }
 
-            if(fim) {
-                const dataFim = new Date(fim);
-                dataFim.setHours(23, 59, 59, 999)
-                this.filtros.criadoEm.$lte = dataFim;
+            if (fim) {
+            const dataFim = new Date(fim);
+            dataFim.setHours(23, 59, 59, 999);
+            this.filtros.data.$lte = dataFim;
             }
         }
 
         return this;
     }
+
 
     comEndereco(endereco) {
         if(endereco) {

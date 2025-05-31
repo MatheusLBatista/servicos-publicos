@@ -3,9 +3,16 @@ import { estadosBrasil } from '../../../../models/Usuario.js';
 import mongoose from 'mongoose';
 import objectIdSchema from '../zod/ObjectIdSchema.js'
 
-export const tiposDemanda = [ "Coleta", "Iluminação", "Saneamento", "Árvores", "Animais", "Pavimentação" ];
+export const tiposDemanda = z.enum([
+  "Coleta",
+  "Iluminação",
+  "Saneamento",
+  "Árvores",
+  "Animais",
+  "Pavimentação"
+]);
 
-export const statusDemanda = [ "Em aberto", "Em andamento", "Concluída" ]
+export const statusDemanda = z.enum([ "Em aberto", "Em andamento", "Concluída" ]);
 
 export const enderecoSchema = z.object({
         logradouro: z.string().min(2, "O logradouro não pode ser vazio."),

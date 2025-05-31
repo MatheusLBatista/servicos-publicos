@@ -18,8 +18,6 @@ class DemandaService {
     async criar(parsedData) {
         console.log("Estou em Demanda Service");
 
-        //adicionar demais validações
-
         const data = await this.repository.criar(parsedData);
         
         return data;
