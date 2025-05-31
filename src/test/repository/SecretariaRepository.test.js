@@ -23,27 +23,24 @@ describe('SecretariaRepository', () => {
 
   describe('buscarPorID', () => {
     it('deve encontrar uma secretaria por ID', async () => {
-            const mockUser = { _id: '123', nome: 'Teste' };
-            SecretariaModel.findById.mockResolvedValue(mockUser);
+        const mockUser = { _id: '507f1f77bcf86cd799439011', nome: 'Teste' };
+        findOneMock.mockResolvedValue(mockUser);
+        const repo = new SecretariaRepository({ SecretariaModel: mockModel });
 
-            const result = await SecretariaRepository.buscarPorId('123');
+        const result = await repo.buscarPorID('507f1f77bcf86cd799439011');
 
-            expect(result).toEqual(mockUser);
-            expect(SecretariaModel.findById).toHaveBeenCalledWith('123');
+        expect(result).toEqual(mockUser);
+        expect(findOneMock).toHaveBeenCalledWith({ _id: expect.any(Object) });
+    });
 
+    it('deve lançar um erro se a secretaria não for encontrada', async () => {
+        findOneMock.mockResolvedValue(null);
+        const repo = new SecretariaRepository({ SecretariaModel: mockModel });
 
-
-            
-        });
-
-        it('deve lançar um erro se a secretaria não for encontrada', async () => {
-            SecretariaModel.findById.mockResolvedValue(null);
-
-            await expect(SecretariaRepository.buscarPorId('123')).rejects.toThrow(CustomError);
-            expect(SecretariaModel.findById).toHaveBeenCalledWith('123');
-        });
-
-  });
+        await expect(repo.buscarPorID('507f1f77bcf86cd799439011')).rejects.toThrow(CustomError);
+        expect(findOneMock).toHaveBeenCalledWith({ _id: expect.any(Object) });
+    });
+   });
 
   describe('buscarPorNome', () => {
     it('deve retornar secretaria se nome for encontrado', async () => {
