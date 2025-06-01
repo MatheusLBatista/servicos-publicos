@@ -1,6 +1,3 @@
-Perfeito! Aqui está a documentação das rotas já implementadas (e as planejadas) em **Markdown**, pronta para ser usada em README ou portal de documentação:
-
----
 
 # Documentação da API - Serviços Públicos - Vilhena+ Pública
 
