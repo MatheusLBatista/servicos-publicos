@@ -34,16 +34,12 @@ export const UsuarioQuerySchema = z.object({
         .string()
         .optional()
         .transform((val) => val?.trim().toLowerCase())
-        .refine((val) => !val || ["municipe", "munícipe", "operador", "administrador"].includes(val), {
+        .refine((val) => !val || ["municipe", "secretario", "secretário", "munícipe", "operador", "administrador"].includes(val), {
             message: "Nível de acesso inválido."
         }),
     ativo: z
-        .string()
-        .optional()
-        .transform((val) => val?.trim().toLowerCase())
-        .refine((value) => !value || value === "true" || value === "false", {
-            message: "Ativo deve ser 'true' ou 'false'",
-        }),
+        .boolean()
+        .optional(),
     page: z
         .string()
         .optional()

@@ -39,7 +39,7 @@ class SecretariaRepository {
         if (idIgnorado) {
             filtro._id = { $ne: idIgnorado }; 
         }
-        const documento = await this.model.findOne(filtro);
+        const documento = await this.modelSecretaria.findOne(filtro);
 
         return documento;
     }

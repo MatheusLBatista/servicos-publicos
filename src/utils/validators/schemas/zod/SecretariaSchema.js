@@ -12,19 +12,21 @@ const distinctObjectIdArray = z
   );
 
 const SecretariaSchema = z.object({
-  nome: z.string().min(3, 'Campo nome é obrigatório.'),
-  sigla: z.string().min(1, 'Campo sigla é obrigatório.'),
+  nome: z.string().nonempty('Campo nome é obrigatório.').min(3, 'Nome deve ter pelo menos 3 caracteres.'),
+  sigla: z.string().nonempty('Campo sigla é obrigatório.').min(2, 'Sigla deve ter pelo menos 2 caracteres.'),
   email: z
-      .string()
-      .email('Formato de email inválido.')
-      .min(1, 'Campo email é obrigatório.'),
+  .string()
+  .nonempty('Campo email é obrigatório.') 
+  .min(5, 'Email deve ter pelo menos 5 caracteres.')
+  .email('Formato de email inválido.'),
   telefone: z 
-    .string()
-    .regex(/^\(?\d{2}\)?\s?\d{5}-?\d{4}$/, {
-    message: "Telefone inválido. Use o formato (XX) XXXX-XXXX"})
-    .min(1, 'Campo telefone é obrigatório.')
+  .string()
+  .nonempty('Campo telefone é obrigatório.')
+  .regex(/^\(\d{2}\) \d{4,5}-\d{4}$/, {
+    message: "Telefone inválido. Use o formato (XX) XXXX-XXXX ou (XX) XXXXX-XXXX"
+  })
 });
 
 const SecretariaUpdateSchema = SecretariaSchema.partial();
 
-export { SecretariaSchema, SecretariaUpdateSchema };
+export { SecretariaSchema, SecretariaUpdateSchema, distinctObjectIdArray };
