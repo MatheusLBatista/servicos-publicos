@@ -85,6 +85,7 @@ class UsuarioService {
 
         return usuarioExistente;
     }
+    
 }
 
 export default UsuarioService;

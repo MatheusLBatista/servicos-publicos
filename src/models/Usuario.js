@@ -20,6 +20,7 @@ class Usuario {
                 data_nomeacao: { type: Date },
                 cargo: { type: String },
                 formacao: { type: String },
+                link_foto: { type: String },
                 nivel_acesso: {
                     type: {
                         municipe: { type: Boolean, default: true },

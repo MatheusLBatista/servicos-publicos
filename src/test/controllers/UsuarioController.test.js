@@ -1,78 +1,49 @@
 import UsuarioService from '../../service/UsuarioService.js';
+import { CommonResponse, CustomError, HttpStatusCodes } from '../../../src/utils/helpers/index.js';
+import { UsuarioQuerySchema, UsuarioIdSchema } from '../../utils/validators/schemas/zod/querys/UsuarioQuerySchema.js';
+import { UsuarioSchema, UsuarioUpdateSchema } from '../../utils/validators/schemas/zod/UsuarioSchema.js';
 import UsuarioController from '../../controllers/UsuarioController.js';
-import { 
-    CustomError, 
-    HttpStatusCodes 
-} from '../../../src/utils/helpers/index.js';
-import { 
-    UsuarioQuerySchema, 
-    UsuarioIdSchema 
-} from '../../utils/validators/schemas/zod/querys/UsuarioQuerySchema.js';
-import { 
-    UsuarioSchema, 
-    UsuarioUpdateSchema 
-} from '../../utils/validators/schemas/zod/UsuarioSchema.js';
-import { ZodError } from 'zod';
-import fs from 'fs';
-import path from 'path';
-import sharp from 'sharp';
-import { v4 as uuidv4 } from 'uuid';
 
-jest.mock('../../../src/utils/logger.js', () => ({
-  info: () => {},
-  error: () => {},
-  warn: () => {},
-  debug: () => {}
-}));
-
-jest.mock('sharp', () => {
-  const sharpMock = jest.fn(() => ({
-    resize: jest.fn().mockReturnThis(),
-    jpeg: jest.fn().mockReturnThis(),
-    toFile: jest.fn().mockResolvedValue({}),
-  }));
-  return sharpMock;
-});
-
-jest.mock('winston-daily-rotate-file', () => jest.fn(() => ({
-  on: jest.fn()
-})));
-
-jest.mock('fs');
-jest.mock('uuid', () => ({ v4: () => 'mocked-uuid' }));
-jest.mock('sharp');
 jest.mock('../../service/UsuarioService.js');
 
-describe('UsuarioController', () => {
-  let req, res, usuarioController, next;
+describe('controller', () => {
+  let controller;
+  let req;
+  let res;
+  let next;
+  let serviceStub;
 
   beforeEach(() => {
-    req = { 
-      params: {}, 
-      body: {},
-      query: {},
-      files: {} 
+    // Create a new controller instance and override its service with a stub.
+    controller = new UsuarioController();
+    serviceStub = {
+      listar: jest.fn(),
+      criar: jest.fn(),
+      atualizar: jest.fn(),
+      deletar: jest.fn(),
+      processarFoto: jest.fn()
     };
+    controller.service = serviceStub;
+
+    req = { params: {}, query: {}, body: {}, files: {} };
     res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
+      json: jest.fn(),
       setHeader: jest.fn(),
       sendFile: jest.fn()
     };
     next = jest.fn();
-    UsuarioService.mockClear();
-    usuarioController = new UsuarioController();
   });
 
     // Testes para o método listar
     describe('listar', () => {
         it('deve listar usuários com sucesso', async () => {
             const mockData = [{ id: '507f1f77bcf86cd799439011', nome: 'Usuário Teste' }];
-            usuarioController.service.listar.mockResolvedValue(mockData);
+            controller.service.listar.mockResolvedValue(mockData);
 
-            await usuarioController.listar(req, res);
+            await controller.listar(req, res);
 
-            expect(usuarioController.service.listar).toHaveBeenCalledTimes(1);
+            expect(controller.service.listar).toHaveBeenCalledTimes(1);
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({
                 message: 'Requisição bem-sucedida',
@@ -84,7 +55,7 @@ describe('UsuarioController', () => {
         it('deve validar o ID de usuario', async () => {
             req.params.id = 'invalid-id';
             try {
-                await usuarioController.listar(req, res);
+                await controller.listar(req, res);
             } catch (error) {
                 expect(error.errors[0].message).toBe('ID inválido');
             }
@@ -93,7 +64,7 @@ describe('UsuarioController', () => {
         it('deve validar a query nome do usuario', async () => {
             req.query = { nome: '' }; 
             try {
-                await usuarioController.listar(req, res);
+                await controller.listar(req, res);
             } catch (error) {
                 expect(error.errors[0].message).toBe('Nome não pode ser vazio');
             }
@@ -102,7 +73,7 @@ describe('UsuarioController', () => {
         it('deve validar a query email do usuario', async () => {
             req.query = { email: '' }; 
             try {
-                await usuarioController.listar(req, res);
+                await controller.listar(req, res);
             } catch (error) {
                 expect(error.errors[0].message).toBe('Formato de email inválido.');
             }
@@ -110,7 +81,7 @@ describe('UsuarioController', () => {
         it('deve validar a query nivel_acesso do usuario', async () => {
             req.query = { nivel_acesso: '' }; 
             try {
-                await usuarioController.listar(req, res);
+                await controller.listar(req, res);
             } catch (error) {
                 expect(error.errors[0].message).toBe('Nível de acesso inválido.');
             }
@@ -118,7 +89,7 @@ describe('UsuarioController', () => {
         it('deve validar a query cargo do usuario', async () => {
             req.query = { cargo: '' }; 
             try {
-                await usuarioController.listar(req, res);
+                await controller.listar(req, res);
             } catch (error) {
                 expect(error.errors[0].message).toBe('Cargo não pode ser vazio.');
             }
@@ -126,7 +97,7 @@ describe('UsuarioController', () => {
         it('deve validar a query formacao do usuario', async () => {
             req.query = { formacao: '' }; 
             try {
-                await usuarioController.listar(req, res);
+                await controller.listar(req, res);
             } catch (error) {
                 expect(error.errors[0].message).toBe('Formação não pode ser vazio.');
             }
@@ -162,11 +133,11 @@ describe('UsuarioController', () => {
             };
             
             req.body = validUserData;
-            usuarioController.service.criar.mockResolvedValue(mockData);
+            controller.service.criar.mockResolvedValue(mockData);
 
-            await usuarioController.criar(req, res);
+            await controller.criar(req, res);
 
-            expect(usuarioController.service.criar).toHaveBeenCalledWith(validUserData);
+            expect(controller.service.criar).toHaveBeenCalledWith(validUserData);
             expect(res.status).toHaveBeenCalledWith(201);
             expect(res.json).toHaveBeenCalledWith({
                 message: 'Recurso criado com sucesso',
@@ -193,11 +164,11 @@ describe('UsuarioController', () => {
             
             req.params.id = '507f1f77bcf86cd799439011';
             req.body = updateData;
-            usuarioController.service.atualizar.mockResolvedValue(mockData);
+            controller.service.atualizar.mockResolvedValue(mockData);
 
-            await usuarioController.atualizar(req, res);
+            await controller.atualizar(req, res);
 
-            expect(usuarioController.service.atualizar).toHaveBeenCalledWith(
+            expect(controller.service.atualizar).toHaveBeenCalledWith(
                 req.params.id, 
                 updateData
             );
@@ -215,11 +186,11 @@ describe('UsuarioController', () => {
             const mockData = { id: '507f1f77bcf86cd799439011' };
             req.params.id = '507f1f77bcf86cd799439011';
             
-            usuarioController.service.deletar.mockResolvedValue(mockData);
+            controller.service.deletar.mockResolvedValue(mockData);
 
-            await usuarioController.deletar(req, res);
+            await controller.deletar(req, res);
 
-            expect(usuarioController.service.deletar).toHaveBeenCalledWith(req.params.id);
+            expect(controller.service.deletar).toHaveBeenCalledWith(req.params.id);
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({
                 message: 'Usuário excluído com sucesso.',
@@ -233,102 +204,94 @@ describe('UsuarioController', () => {
             req.params = {};
             
             try {
-                await usuarioController.deletar(req, res);
+                await controller.deletar(req, res);
             } catch (error) {
                 expect(error).toBeInstanceOf(CustomError);
                 expect(error.statusCode).toBe(HttpStatusCodes.BAD_REQUEST.code);
                 expect(error.customMessage).toMatch("ID do usuário é obrigatório para deletar.");
             }
             
-            expect(usuarioController.service.deletar).not.toHaveBeenCalled();
+            expect(controller.service.deletar).not.toHaveBeenCalled();
             jest.restoreAllMocks();
         });
     });
 
     ///*
     describe('fotoUpload', () => {
+    it('deve processar o upload da foto e retornar resposta de sucesso', async () => {
+      req.params = { id: '123' };
+      req.files = { file: { name: 'photo.jpg' } };
 
-        it('deve chamar next com erro quando a extensão do arquivo for inválida', async () => { 
-            const mockFile = {
-                name: 'foto.pdf', 
-                data: fs.readFileSync(path.resolve(__dirname, 'mocks', 'foto.png')),
-                size: 12345,
-                md5: 'fake-md5-hash',
-            };
+      const fakeProcessResult = {
+        fileName: 'unique_photo.jpg',
+        metadata: { width: 100, height: 100 }
+      };
+      serviceStub.processarFoto.mockResolvedValue(fakeProcessResult);
 
-            const req = {
-                params: { id: '6839c69706ec18da71924834' },
-                files: { file: mockFile },
-            };
+      const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
+      const successSpy = jest.spyOn(CommonResponse, 'success').mockImplementation((res, data) => {
+        res.status(200).json(data);
+      });
 
-            const res = {
-                status: jest.fn().mockReturnThis(),
-                json: jest.fn(),
-            };
+      await controller.fotoUpload(req, res, next);
+      expect(idParseSpy).toHaveBeenCalledWith('123');
+      expect(serviceStub.processarFoto).toHaveBeenCalledWith('123', req.files.file);
+      expect(successSpy).toHaveBeenCalledWith(res, {
+        message: 'Arquivo recebido e usuário atualizado com sucesso.',
+        dados: { link_foto: fakeProcessResult.fileName },
+        metadados: fakeProcessResult.metadata
+      });
 
-            const next = jest.fn();
-
-            const usuarioController = new UsuarioController();
-
-            await usuarioController.fotoUpload(req, res, next);
-
-            expect(next).toHaveBeenCalled();
-            
-            const error = next.mock.calls[0][0];
-
-            expect(error).toBeInstanceOf(CustomError);
-            expect(error.customMessage).toBe('Extensão de arquivo inválida. Permitido: jpg, jpeg, png, svg.');
-
-            expect(res.status).not.toHaveBeenCalled();
-            expect(res.json).not.toHaveBeenCalled();
-            });
-
-        
-        it('deve chamar next com erro se nenhum arquivo for enviado', async () => {
-        req.params = { id: '123' };
-        req.files = {};
-
-        const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
-
-        await usuarioController.fotoUpload(req, res, next);
-
-        expect(next).toHaveBeenCalled();
-        const error = next.mock.calls[0][0];
-        expect(error).toBeInstanceOf(CustomError);
-        expect(error.customMessage).toBe('Nenhum arquivo foi enviado.');
-
-        idParseSpy.mockRestore();
-        });
+      idParseSpy.mockRestore();
+      successSpy.mockRestore();
     });
 
-    
-    // Testes para o método getFoto
-    describe('getFoto', () => {
-        it('deve retornar foto com sucesso', async () => {
-            const mockUser = {
-                link_foto: 'foto.jpg'
-            };
-            
-            req.params.id = '507f1f77bcf86cd799439011';
-            usuarioController.service.listar.mockResolvedValue(mockUser);
+    it('deve chamar next com erro se nenhum arquivo for enviado', async () => {
+      req.params = { id: '123' };
+      req.files = {};
 
-            await usuarioController.getFoto(req, res, next);
+      const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
+      await controller.fotoUpload(req, res, next);
+      expect(next).toHaveBeenCalled();
+      const error = next.mock.calls[0][0];
+      expect(error).toBeInstanceOf(CustomError);
+      expect(error.customMessage).toBe('Nenhum arquivo foi enviado.');
 
-            expect(res.sendFile).toHaveBeenCalled();
-        });
-
-        it('deve lidar com foto não encontrada', async () => {
-            const mockUser = {
-                link_foto: null
-            };
-            
-            req.params.id = '507f1f77bcf86cd799439011';
-            usuarioController.service.listar.mockResolvedValue(mockUser);
-
-            await usuarioController.getFoto(req, res, next);
-            
-            expect(next).toHaveBeenCalledWith(expect.any(CustomError));
-        });
+      idParseSpy.mockRestore();
     });
-    //*/
+  });
+
+  describe('getFoto', () => {
+    it('deve enviar o arquivo se a foto existir', async () => {
+      req.params = { id: '123' };
+      const fakeUsuario = { link_foto: 'photo.jpg' };
+      serviceStub.listar.mockResolvedValue(fakeUsuario);
+      const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
+
+      await controller.getFoto(req, res, next);
+      expect(idParseSpy).toHaveBeenCalledWith('123');
+      expect(serviceStub.listar).toHaveBeenCalledWith(req);
+      expect(res.setHeader).toHaveBeenCalled();
+      expect(res.sendFile).toHaveBeenCalled();
+
+      idParseSpy.mockRestore();
+    });
+
+    it('deve chamar next com erro se a foto não for encontrada', async () => {
+      req.params = { id: '123' };
+      const fakeUsuario = {}; // no link_foto
+      serviceStub.listar.mockResolvedValue(fakeUsuario);
+      const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
+
+      await controller.getFoto(req, res, next);
+      expect(idParseSpy).toHaveBeenCalledWith('123');
+      expect(serviceStub.listar).toHaveBeenCalledWith(req);
+      expect(next).toHaveBeenCalled();
+      const error = next.mock.calls[0][0];
+      expect(error).toBeInstanceOf(CustomError);
+      expect(error.customMessage).toBe('Foto do usuário não encontrada.');
+
+      idParseSpy.mockRestore();
+    });
+  });
 });
