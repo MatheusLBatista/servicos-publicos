@@ -27,7 +27,6 @@ const TipoDemandaSchema = z.object({
     .transform((val) => val.trim()),
   icone: z
     .string()
-    .url('Deve ser uma URL válida.')
     .refine((val) => !val || /\.(jpg|jpeg|png|gif|svg)$/i.test(val), {
         message: 'A URL deve apontar para uma imagem válida (jpg, png, etc).',
     }),

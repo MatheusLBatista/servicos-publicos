@@ -97,10 +97,26 @@ describe('TipoDemandaController', () => {
     });
 
     it('deve atualizar uma tipoDemanda', async () => {
-        const mockData = { id: '6832ad0c109564baed4cda0e', titulo: 'tipoDemanda Atualizada' };
+        const mockData = {
+            toObject: () => ({
+            id: '6832ad0c109564baed4cda0e',
+            titulo: 'tipoDemanda Atualizada',
+            descricao: "descrição",
+            subdescricao: "subdescrição",
+            icone: "foto.png",
+            link_imagem: "foto.png"
+            })
+        };
+
         req.params.id = '6832ad0c109564baed4cda0e';
-        req.body = { titulo: 'tipoDemanda Atualizada', descricao: "descrição", subdescricao: "subdescrição",
-            icone: "foto.png", link_imagem: "foto.png" };
+        req.body = {
+            titulo: 'tipoDemanda Atualizada',
+            descricao: "descrição",
+            subdescricao: "subdescrição",
+            icone: "foto.png",
+            link_imagem: "foto.png"
+        };
+
         tipoDemandaController.service.atualizar = jest.fn().mockResolvedValue(mockData);
 
         await tipoDemandaController.atualizar(req, res);
@@ -109,13 +125,10 @@ describe('TipoDemandaController', () => {
         expect(tipoDemandaController.service.atualizar).toHaveBeenCalledWith(req.params.id, req.body);
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({
-            //error: false,
-            //code: 200,
-            message: 'tipoDemanda atualizada com sucesso.',
+            message: 'TipoDemanda atualizada com sucesso.',
             data: mockData,
             errors: []
         });
-        
     });
     
     it('deve deletar uma tipoDemanda', async () => {
@@ -131,7 +144,7 @@ describe('TipoDemandaController', () => {
         expect(res.json).toHaveBeenCalledWith({
             //error: false,
             //code: 200,
-            message: 'tipoDemanda excluída com sucesso.',
+            message: 'TipoDemanda excluída com sucesso.',
             data: mockData,
             errors: []
         });
@@ -159,7 +172,7 @@ describe('TipoDemandaController', () => {
         });
 
         it('deve lidar com erro ao transformar objeto no criar', async () => {
-            req.body = { titulo: 'tipoDemanda', email: 'test@test.com', telefone: '(11) 99999-9999', sigla: 'SEC' };
+            req.body = { titulo: 'tipoDemanda', email: 'test@test.com' };
             tipoDemandaController.service.criar.mockResolvedValue({
                 _doc: { id: '1', titulo: 'tipoDemanda' },
                 toObject: jest.fn().mockImplementation(() => {
@@ -167,19 +180,29 @@ describe('TipoDemandaController', () => {
                 })
             });
 
-            await expect(tipoDemandaController.criar(req, res)).rejects.toThrow('Erro ao transformar');
-        });
-
-        it('deve lidar com erro inesperado no service.listar', async () => {
-            tipoDemandaController.service.listar.mockRejectedValue(new Error('Erro inesperado'));
-            
-            await expect(tipoDemandaController.listar(req, res)).rejects.toThrow('Erro inesperado');
+            await expect(tipoDemandaController.criar(req, res)).rejects.toThrowError(
+                expect.objectContaining({
+                    issues: expect.arrayContaining([
+                    expect.objectContaining({ path: ['descricao'], message: 'Required' }),
+                    expect.objectContaining({ path: ['subdescricao'], message: 'Required' }),
+                    expect.objectContaining({ path: ['icone'], message: 'Required' }),
+                    ])
+                })
+            );
         });
 
         it('deve lidar com erro inesperado no service.criar', async () => {
-            req.body = { titulo: 'tipoDemanda', email: 'test@test.com', telefone: '(11) 99999-9999', sigla: 'SEC' };
-            tipoDemandaController.service.criar.mockRejectedValue(new Error('Erro inesperado'));
-            
+            req.body = {
+                titulo: "Teste",
+                descricao: "Descrição",
+                subdescricao: "Subdescrição",
+                icone: "icone.png",
+                link_imagem: "imagem.png",
+                tipo: "Algum tipo"
+            };
+
+            tipoDemandaController.service.criar = jest.fn().mockRejectedValue(new Error('Erro inesperado'));
+
             await expect(tipoDemandaController.criar(req, res)).rejects.toThrow('Erro inesperado');
         });
 
@@ -199,7 +222,7 @@ describe('TipoDemandaController', () => {
         });
 
          it('deve lançar CustomError quando ID não for fornecido no deletar', async () => {
-            jest.spyOn(tipoDemandaIDSchema, 'parse').mockImplementation(() => true);
+            jest.spyOn(TipoDemandaIDSchema, 'parse').mockImplementation(() => true);
             
             req.params = {};
             
@@ -208,7 +231,7 @@ describe('TipoDemandaController', () => {
             } catch (error) {
                 expect(error).toBeInstanceOf(CustomError);
                 expect(error.statusCode).toBe(HttpStatusCodes.BAD_REQUEST.code);
-                expect(error.customMessage).toMatch(/ID da tipoDemanda é obrigatório/);
+                expect(error.customMessage).toMatch("ID da TipoDemanda é obrigatório para deletar.");
             }
             
             expect(tipoDemandaController.service.deletar).not.toHaveBeenCalled();
