@@ -1,6 +1,7 @@
 import SecretariaService from '../../service/SecretariaService.js';
 import SecretariaController from '../../controllers/SecretariaController.js';
 import { jest } from '@jest/globals';
+import { CustomError, HttpStatusCodes } from '../../../src/utils/helpers/index.js';
 import { SecretariaIDSchema, SecretariaQuerySchema } from '../../utils/validators/schemas/zod/querys/SecretariaQuerySchema.js';
 import { SecretariaSchema, SecretariaUpdateSchema } from '../../utils/validators/schemas/zod/SecretariaSchema.js';
 
@@ -48,7 +49,7 @@ describe('SecretariaController', () => {
     });
 
     it('deve validar a query nome da secretaria', async () => {
-        req.query = { nome: '' }; // Query inválida
+        req.query = { nome: '' }; 
         try {
             await secretariaController.listar(req, res);
         } catch (error) {
@@ -57,7 +58,7 @@ describe('SecretariaController', () => {
     });
 
     it('deve validar a query tipo da secretaria', async () => {
-        req.query = { tipo: '' }; // Query inválida
+        req.query = { tipo: '' }; 
         try {
             await secretariaController.listar(req, res);
         } catch (error) {
@@ -112,11 +113,12 @@ describe('SecretariaController', () => {
             data: mockData,
             errors: []
         });
+        
     });
     
     it('deve deletar uma secretaria', async () => {
         const mockData = { id: '6832ad0c109564baed4cda0e' };
-        req.params = { id: '6832ad0c109564baed4cda0e' }; // Apenas o ID é necessário
+        req.params = { id: '6832ad0c109564baed4cda0e' };
         secretariaController.service.deletar = jest.fn().mockResolvedValue(mockData);
 
         await secretariaController.deletar(req, res);
@@ -130,6 +132,92 @@ describe('SecretariaController', () => {
             message: 'Secretaria excluída com sucesso.',
             data: mockData,
             errors: []
+        });
+    });
+
+    describe('Testes complementares para SecretariaController', () => {
+        it('deve listar sem validar ID quando não houver parâmetro', async () => {
+            const mockData = [{ id: '1', nome: 'Secretaria' }];
+            secretariaController.service.listar.mockResolvedValue(mockData);
+
+            await secretariaController.listar(req, res);
+
+            expect(secretariaController.service.listar).toHaveBeenCalledWith(req);
+            expect(res.status).toHaveBeenCalledWith(200);
+        });
+
+        it('deve listar sem validar query quando não houver query params', async () => {
+            const mockData = [{ id: '1', nome: 'Secretaria' }];
+            secretariaController.service.listar.mockResolvedValue(mockData);
+
+            await secretariaController.listar(req, res);
+
+            expect(secretariaController.service.listar).toHaveBeenCalledWith(req);
+            expect(res.status).toHaveBeenCalledWith(200);
+        });
+
+        it('deve lidar com erro ao transformar objeto no criar', async () => {
+            req.body = { nome: 'Secretaria', email: 'test@test.com', telefone: '(11) 99999-9999', sigla: 'SEC' };
+            secretariaController.service.criar.mockResolvedValue({
+                _doc: { id: '1', nome: 'Secretaria' },
+                toObject: jest.fn().mockImplementation(() => {
+                    throw new Error('Erro ao transformar');
+                })
+            });
+
+            await expect(secretariaController.criar(req, res)).rejects.toThrow('Erro ao transformar');
+        });
+
+        it('deve lidar com erro inesperado no service.listar', async () => {
+            secretariaController.service.listar.mockRejectedValue(new Error('Erro inesperado'));
+            
+            await expect(secretariaController.listar(req, res)).rejects.toThrow('Erro inesperado');
+        });
+
+        it('deve lidar com erro inesperado no service.criar', async () => {
+            req.body = { nome: 'Secretaria', email: 'test@test.com', telefone: '(11) 99999-9999', sigla: 'SEC' };
+            secretariaController.service.criar.mockRejectedValue(new Error('Erro inesperado'));
+            
+            await expect(secretariaController.criar(req, res)).rejects.toThrow('Erro inesperado');
+        });
+
+        it('deve lidar com erro inesperado no service.atualizar', async () => {
+            req.params.id = '507f1f77bcf86cd799439011';
+            req.body = { nome: 'Secretaria Atualizada' };
+            secretariaController.service.atualizar.mockRejectedValue(new Error('Erro inesperado'));
+            
+            await expect(secretariaController.atualizar(req, res)).rejects.toThrow('Erro inesperado');
+        });
+
+        it('deve lidar com erro inesperado no service.deletar', async () => {
+            req.params.id = '507f1f77bcf86cd799439011';
+            secretariaController.service.deletar.mockRejectedValue(new Error('Erro inesperado'));
+            
+            await expect(secretariaController.deletar(req, res)).rejects.toThrow('Erro inesperado');
+        });
+
+         it('deve lançar CustomError quando ID não for fornecido no deletar', async () => {
+            jest.spyOn(SecretariaIDSchema, 'parse').mockImplementation(() => true);
+            
+            req.params = {};
+            
+            try {
+                await secretariaController.deletar(req, res);
+            } catch (error) {
+                expect(error).toBeInstanceOf(CustomError);
+                expect(error.statusCode).toBe(HttpStatusCodes.BAD_REQUEST.code);
+                expect(error.customMessage).toMatch(/ID da secretaria é obrigatório/);
+            }
+            
+            expect(secretariaController.service.deletar).not.toHaveBeenCalled();
+            jest.restoreAllMocks();
+        });
+
+        it('deve lidar com erro de validação do Zod no deletar', async () => {
+            req.params = { id: 'id-invalido' };
+            
+            await expect(secretariaController.deletar(req, res)).rejects.toThrow();
+            expect(secretariaController.service.deletar).not.toHaveBeenCalled();
         });
     });
 });
