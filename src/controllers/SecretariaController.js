@@ -21,7 +21,7 @@ import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import sharp from 'sharp';
 // Helper para __dirname em módulo ES
-const getDirname = () => path.dirname(fileURLToPath(import.meta.url));
+//const getDirname = () => path.dirname(fileURLToPath(import.meta.url));
 
 
 class SecretariaController {
@@ -68,9 +68,7 @@ class SecretariaController {
 
         const data = await this.service.atualizar(id, parsedData);
 
-        let secretariaLimpo = data.toObject();
-
-        delete secretariaLimpo.senha;
+        //let secretariaLimpo = data.toObject();
 
         return CommonResponse.success(res, data, 200, 'Secretaria atualizada com sucesso.');
     }
