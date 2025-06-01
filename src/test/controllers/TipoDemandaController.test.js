@@ -69,7 +69,7 @@ describe('TipoDemandaController', () => {
     it('deve criar uma nova tipoDemanda', async () => {
         const mockData = { id: '6832ad0c109564baed4cda0e', titulo: 'tipoDemanda 1'};
         req.body = { titulo: 'tipoDemanda 1', descricao: "descrição", subdescricao: "subdescrição",
-            icone: "foto.png", link_imagem: "foto.png" };
+            icone: "foto.png", link_imagem: "foto.png", tipo: "coleta" };
         //tipoDemandaController.service.criar = jest.fn().mockResolvedValue(mockData);
 
         tipoDemandaController.service.criar = jest.fn().mockResolvedValue({

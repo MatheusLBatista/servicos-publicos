@@ -12,11 +12,11 @@ class TipoDemanda {
                     required: false,
                     default: "",
                     validate: {
-                        validator: function(v) {
-                        if (!v) return true; 
-                        return /^https?:\/\/.+\.(jpg|jpeg|png|webp|svg|gif)$/.test(v);
+                        validator: function (v) {
+                            if (!v) return true; 
+                            return /\.(jpg|jpeg|png|webp|svg|gif)$/i.test(v);
                         },
-                        message: props => `${props.value} não é um link de imagem válido!`
+                        message: props => `${props.value} não é um nome de imagem válido!`
                     }
                 },
                 icone: {
@@ -24,12 +24,12 @@ class TipoDemanda {
                     required: false,
                     default: "",
                     validate: {
-                        validator: function(v) {
-                        if (!v) return true; 
-                        return /^https?:\/\/.+\.(jpg|jpeg|png|webp|svg|gif)$/.test(v);
-                        },
-                        message: props => `${props.value} não é um link de imagem válido!`
-                    }
+                    validator: function (v) {
+                        if (!v) return true;
+                        return /\.(jpg|jpeg|png|webp|svg|gif)$/i.test(v);
+                    },
+                    message: props => `${props.value} não é um nome de imagem válido!`
+                }
                 },
                 subdescricao: { type: String, required: [true, "A subdescrição da demanda é obrigatória!"]},
                 tipo: { type: String, required: [true, "O tipo da demanda é obrigatório!"]},

@@ -95,7 +95,7 @@ describe("Modelo TipoDemanda", () => {
       error = err;
     }
 
-    expect(error.errors.link_imagem.message).toBe("arquivo.txt não é um link de imagem válido!");
+    expect(error.errors.link_imagem.message).toBe("arquivo.txt não é um nome de imagem válido!");
   });
 
   it("Deve retornar erro ao criar demanda com ícone inválido", async () => {
@@ -103,7 +103,7 @@ describe("Modelo TipoDemanda", () => {
       titulo: "Demanda",
       descricao: "desc",
       subdescricao: "subdesc",
-      icone: "imagem.png",
+      icone: "imagem",
       tipo: "geral"
     });
 
@@ -114,7 +114,7 @@ describe("Modelo TipoDemanda", () => {
       error = err;
     }
 
-    expect(error.errors.icone.message).toBe("imagem.png não é um link de imagem válido!");
+    expect(error.errors.icone.message).toBe("imagem não é um nome de imagem válido!");
   });
 
   it("Deve retornar erro ao criar demanda sem subdescrição", async () => {
