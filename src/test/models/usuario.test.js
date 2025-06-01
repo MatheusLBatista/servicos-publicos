@@ -64,12 +64,11 @@ let mongoServer;
 
 // Configuração antes de todos os testes
 beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-
-    await mongoose.connect(uri, {
-        // Opções de conexão não são necessárias no Mongoose 6+
-    });
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
+  await mongoose.connect(uri);
+  await mongoose.connection.db.dropDatabase();
+  await mongoose.model('usuarios').syncIndexes(); // força criação dos índices
 });
 
 // Limpeza após todos os testes
