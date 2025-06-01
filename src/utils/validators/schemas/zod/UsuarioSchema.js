@@ -12,11 +12,13 @@ const senhaRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*
 const UsuarioSchema = z.object({
   nome: z
     .string()
-    .min(1, 'Campo nome é obrigatório.'),
+    .nonempty('Campo nome é obrigatório.')
+    .min(1, 'Nome inválido.'),
   email: z
     .string()
     .email('Formato de email inválido.')
-    .min(3, 'Campo email é obrigatório.'),
+    .nonempty('Campo email é obrigatório.')
+    .min(3, 'Email inválido.'),
   senha: z
     .string()
     .min(8, 'A senha deve ter pelo menos 8 caracteres.')

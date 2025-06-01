@@ -51,7 +51,7 @@ describe('SecretariaSchema', () => {
     });
 
     it('deve falhar quando email tiver menos de 5 caracteres', () => {
-        const result = SecretariaSchema.safeParse({ ...dadosBase, email: "a@b" }); // 4 caracteres
+        const result = SecretariaSchema.safeParse({ ...dadosBase, email: "a@b" }); 
         expect(result.success).toBe(false);
         expect(result.error.issues[0].message).toBe("Email deve ter pelo menos 5 caracteres.");
     });
