@@ -1,6 +1,3 @@
-
----
-
 # Plano de Teste
 
 **Serviços Públicos - Vilhena+ Pública**
@@ -101,5 +98,5 @@ ID 	|Nivel de Severidade |	Descrição
 4	|Pequena |	●	Quase nenhum impacto na funcionalidade porém atrapalha a experiência  <br>●	Erro ortográfico<br>● Pequenos erros de UI
 
 
-### 8 - 	Definição de Pronto 
+### 8 - Definição de Pronto 
 Será considerada pronta as funcionalidades que passarem pelas verificações e testes descritas nos casos de teste, não apresentarem bugs com a severidade acima de moderada, e passarem por uma validação da equipe.

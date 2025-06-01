@@ -74,9 +74,9 @@ O nosso sistema tem como objetivo, possibilitar uma comunicação entre a prefei
 - Permitir que um usuario, do tipo munícipe crie uma nova demanda, informando os dados necessários.
 
 #### Regras de Negócio
-- Os dados da requisição (body) deve e=conter os dados válidos.
+- Os dados da requisição (body) e deve conter os dados válidos.
 - Caso algum campo obrigatório esteja ausente ou inválido, a validação Zod impedirá a criação e retornará um erro 400.
-- A demanda é criada com status inicial (por exemplo, "pendente") e *vinculada a uma secretaria (Millestone 3)*.
+- A demanda é criada com status inicial ("pendente") e *vinculada a uma secretaria (Millestone 3)*.
 
 #### Resultado Esperado
 - O sistema registra a nova demanda e retorna uma confirmação de criação com os dados fornecidos, além do ID gerado automaticamente.
