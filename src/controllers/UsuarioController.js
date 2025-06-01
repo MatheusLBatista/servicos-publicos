@@ -103,7 +103,7 @@ class UsuarioController {
         /**
      * Faz upload de uma foto para um usuário.
      */
-    /*
+    ///*
     async fotoUpload(req, res, next) {
         try {
             console.log('Estou no fotoUpload em UsuarioController');
@@ -219,7 +219,7 @@ class UsuarioController {
             return next(error);
         }
     }
-    */
+    //*/
 }
 
 export default UsuarioController;

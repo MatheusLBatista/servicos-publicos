@@ -245,12 +245,12 @@ describe('UsuarioController', () => {
         });
     });
 
-    /*
+    ///*
     describe('fotoUpload', () => {
 
         it('deve chamar next com erro quando a extensão do arquivo for inválida', async () => { 
             const mockFile = {
-                name: 'foto.pdf', // extensão inválida
+                name: 'foto.pdf', 
                 data: fs.readFileSync(path.resolve(__dirname, 'mocks', 'foto.png')),
                 size: 12345,
                 md5: 'fake-md5-hash',
@@ -330,5 +330,5 @@ describe('UsuarioController', () => {
             expect(next).toHaveBeenCalledWith(expect.any(CustomError));
         });
     });
-    */
+    //*/
 });
