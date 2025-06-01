@@ -98,6 +98,35 @@ describe("Modelo TipoDemanda", () => {
     expect(error.errors.link_imagem.message).toBe("arquivo.txt não é um nome de imagem válido!");
   });
 
+  it("Deve aceitar demanda com link_imagem vazio", async () => {
+    const demanda = new TipoDemanda({
+      titulo: "Imagem vazia",
+      descricao: "desc",
+      link_imagem: "",
+      icone: "https://exemplo.com/imagem.png",
+      subdescricao: "subdesc",
+      tipo: "geral"
+    });
+
+    const salva = await demanda.save();
+
+    expect(salva.link_imagem).toBe("");
+  });
+
+  it("Deve aceitar demanda sem link_imagem", async () => {
+    const demanda = new TipoDemanda({
+      titulo: "Sem imagem",
+      descricao: "desc",
+      icone: "https://exemplo.com/imagem.png",
+      subdescricao: "subdesc",
+      tipo: "geral"
+    });
+
+    const salva = await demanda.save();
+
+    expect(salva.link_imagem).toBe("");
+  });
+
   it("Deve retornar erro ao criar demanda com ícone inválido", async () => {
     const demanda = new TipoDemanda({
       titulo: "Demanda",
@@ -115,6 +144,33 @@ describe("Modelo TipoDemanda", () => {
     }
 
     expect(error.errors.icone.message).toBe("imagem não é um nome de imagem válido!");
+  });
+
+  it("Deve aceitar demanda com ícone vazio", async () => {
+    const demanda = new TipoDemanda({
+      titulo: "Ícone vazio",
+      descricao: "desc",
+      icone: "",
+      subdescricao: "subdesc",
+      tipo: "geral"
+    });
+
+    const salva = await demanda.save();
+
+    expect(salva.icone).toBe("");
+  });
+
+  it("Deve aceitar demanda sem ícone", async () => {
+    const demanda = new TipoDemanda({
+      titulo: "Sem ícone",
+      descricao: "desc",
+      subdescricao: "subdesc",
+      tipo: "geral"
+    });
+
+    const salva = await demanda.save();
+
+    expect(salva.icone).toBe("");
   });
 
   it("Deve retornar erro ao criar demanda sem subdescrição", async () => {
