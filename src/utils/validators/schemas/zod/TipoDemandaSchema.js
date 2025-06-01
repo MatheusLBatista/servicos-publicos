@@ -28,12 +28,12 @@ const TipoDemandaSchema = z.object({
   icone: z
     .string()
     .url('Deve ser uma URL válida.')
-    .refine((val) => /\.(jpg|jpeg|png|gif|svg)$/i.test(val), {
+    .refine((val) => !val || /\.(jpg|jpeg|png|gif|svg)$/i.test(val), {
         message: 'A URL deve apontar para uma imagem válida (jpg, png, etc).',
     }),
    link_imagem: z
     .string()
-    .refine((val) => /\.(jpg|jpeg|png|gif|svg)$/i.test(val), {
+    .refine((val) => !val || /\.(jpg|jpeg|png|gif|svg)$/i.test(val), {
         message: 'A URL deve apontar para uma imagem válida (jpg, png, etc).',
     }),
     tipo: z.string().min(3, 'Campo Tipo é obrigatório.'),
