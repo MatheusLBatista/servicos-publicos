@@ -16,8 +16,8 @@ router
     .delete("/usuarios/:id", asyncWrapper(usuarioController.deletar.bind(usuarioController)))
 
     //foto
-    .post("/usuarios/:id/foto", asyncWrapper(usuarioController.fotoUpload.bind(usuarioController)))
-    .get("/usuarios/:id/foto", asyncWrapper(usuarioController.getFoto.bind(usuarioController)));
+    //.post("/usuarios/:id/foto", asyncWrapper(usuarioController.fotoUpload.bind(usuarioController)))
+    //.get("/usuarios/:id/foto", asyncWrapper(usuarioController.getFoto.bind(usuarioController)));
 
     console.log("Rotas de usuário carregadas");
 

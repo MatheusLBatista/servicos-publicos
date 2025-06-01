@@ -2,7 +2,7 @@
 // import bcrypt from 'bcrypt';
 // import { PermissoesArraySchema } from '../utils/validators/schemas/zod/PermissaoValidation.js';
 // import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
-// import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
+import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
 // import AuthHelper from '../utils/AuthHelper.js';
 import mongoose from 'mongoose';
 import UsuarioRepository from '../repository/UsuarioRepository.js';
@@ -72,6 +72,16 @@ class UsuarioService {
 
     async ensureUserExists(id){
         const usuarioExistente = await this.repository.buscarPorID(id);
+
+        if (!usuarioExistente) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.NOT_FOUND.code,
+                errorType: 'resourceNotFound',
+                field: 'Usuário',
+                details: [],
+                customMessage: 'Usuário não encontrado.'
+            });
+        }
 
         return usuarioExistente;
     }
