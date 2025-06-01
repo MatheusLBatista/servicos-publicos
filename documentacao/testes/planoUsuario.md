@@ -1,6 +1,3 @@
-
----
-
 # Plano de Teste para Model de Usuário (Sprint 5)
 
 | Funcionalidade           | Comportamento Esperado                                                         | Verificações                                 | Critérios de Aceite                                                |
