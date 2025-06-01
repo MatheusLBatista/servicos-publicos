@@ -47,23 +47,21 @@
 
 ---
 
-# Plano de Teste para TipoDemandaRepository (Sprint X)
+# Plano de Teste para `SecretariaRepository` (Sprint 5)
 
-| Método            | Caso de Teste                         | Comportamento Esperado                                  | Verificações                                             | Critério de Aceite                  |
-| ----------------- | ------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------- |
-| `buscarPorID`     | Encontrar tipo de demanda por ID      | Retorna o documento correto quando encontrado           | `findOne` chamado com filtro `_id`                       | Retorna tipo de demanda correto     |
-|                   | Tipo de demanda não encontrado        | Lança `CustomError` quando não encontra documento       | `findOne` chamado, resultado `null`                      | Lança erro                          |
-| `buscarPorTitulo` | Encontrar tipo de demanda pelo título | Retorna tipo de demanda com título específico           | `findOne` chamado com filtro `titulo`                    | Retorna tipo de demanda correto     |
-|                   | Ignorar um ID ao buscar por título    | Busca por título ignorando um `_id` específico          | `findOne` chamado com filtro `titulo` e `_id: {$ne: id}` | Retorna tipo de demanda correto     |
-| `buscarPorTipo`   | Encontrar tipo de demanda pelo tipo   | Retorna tipo de demanda com tipo específico             | `findOne` chamado com filtro `tipo`                      | Retorna tipo de demanda correto     |
-|                   | Ignorar um ID ao buscar por tipo      | Busca por tipo ignorando um `_id` específico            | `findOne` chamado com filtro `tipo` e `_id: {$ne: id}`   | Retorna tipo de demanda correto     |
-| `listar`          | Buscar por ID via `req.params.id`     | Retorna tipo de demanda específico pelo id              | `findById` chamado, converte com `toObject()`            | Retorna tipo de demanda correto     |
-|                   | Erro ao buscar por ID não encontrado  | Lança `CustomError` se tipo de demanda não encontrado   | `findById` retorna `null`                                | Lança erro                          |
-|                   | Listar com paginação e filtros        | Retorna lista paginada de tipos de demandas             | `paginate` chamado com filtros e opções                  | Retorna lista paginada corretamente |
-|                   | Listagem vazia                        | Lança erro se não encontrar nenhum tipo de demanda      | `paginate` retorna `docs: []`                            | Lança erro                          |
-| `criar`           | Criar novo tipo de demanda            | Salva novo tipo de demanda com dados fornecidos         | Construtor do modelo chamado com dados + `save` chamado  | Retorna tipo de demanda criada      |
-| `atualizar`       | Atualizar tipo de demanda existente   | Atualiza tipo de demanda e retorna documento atualizado | `findByIdAndUpdate` chamado com `{ new: true }`          | Retorna tipo de demanda atualizada  |
-|                   | Atualizar tipo de demanda inexistente | Lança erro se tipo de demanda não for encontrado        | `findByIdAndUpdate` retorna `null`                       | Lança erro                          |
-| `deletar`         | Deletar tipo de demanda               | Deleta tipo de demanda pelo ID                          | `findByIdAndDelete` chamado                              | Retorna tipo de demanda deletada    |
+| Funcionalidade                           | Comportamento Esperado                                       | Verificações                                                                                | Critérios de Aceite                                                                           |
+| ---------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Buscar secretaria por ID                 | Deve retornar secretaria se encontrada pelo ID               | Chamada do método findOne com filtro \_id<br>Retorna o objeto secretaria                    | Secretaria retornada corretamente<br>findOne chamado com filtro correto                       |
+| Buscar secretaria por ID não encontrada  | Deve lançar erro CustomError se secretaria não encontrada    | findOne retorna null<br>Lança erro CustomError                                              | Erro lançado quando secretaria não existe                                                     |
+| Buscar secretaria por nome               | Deve retornar secretaria se nome existir                     | findOne chamado com filtro nome<br>Retorna a secretaria correspondente                      | Secretaria retornada<br>findOne chamado com nome correto                                      |
+| Buscar secretaria por nome ignorando ID  | Deve retornar secretaria ignorando ID informado              | findOne chamado com filtro nome e \_id: { \$ne: idIgnorado }                                | Secretaria retornada<br>Filtro de exclusão de ID aplicado corretamente                        |
+| Listar secretaria por ID (req.params.id) | Deve retornar secretaria pelo ID quando id for informado     | findById chamado com o ID<br>Retorna secretaria encontrada                                  | Secretaria retornada convertida com toObject<br>findById chamado com ID correto               |
+| Listar secretaria por ID não encontrada  | Deve lançar erro CustomError ao buscar ID inexistente        | findById retorna null<br>Lança erro CustomError                                             | Erro lançado quando secretaria não existe                                                     |
+| Listar secretarias com paginação         | Deve retornar lista paginada com filtros e paginação         | paginate chamado com filtros e opções<br>Retorna lista com objetos convertidos via toObject | Lista paginada retornada corretamente<br>paginate chamado                                     |
+| Listar secretarias vazia                 | Deve lançar erro CustomError se não encontrar secretarias    | paginate retorna docs vazios<br>Lança erro CustomError                                      | Erro lançado quando lista de secretarias estiver vazia                                        |
+| Criar nova secretaria                    | Deve criar e salvar nova secretaria                          | Chamada do construtor do modelo com dados<br>save chamado no objeto criado                  | Objeto criado e salvo<br>Construtor e save chamados                                           |
+| Atualizar secretaria existente           | Deve atualizar secretaria e retornar objeto atualizado       | findByIdAndUpdate chamado com ID, dados e {new: true}<br>Retorna objeto atualizado          | Atualização realizada e objeto retornado<br>findByIdAndUpdate chamado com parâmetros corretos |
+| Atualizar secretaria inexistente         | Deve lançar erro CustomError ao tentar atualizar inexistente | findByIdAndUpdate retorna null<br>Lança erro CustomError                                    | Erro lançado ao atualizar secretaria inexistente                                              |
+| Deletar secretaria existente             | Deve deletar secretaria e retornar objeto deletado           | findByIdAndDelete chamado com ID<br>Retorna objeto deletado                                 | Exclusão realizada e objeto retornado<br>findByIdAndDelete chamado com ID correto             |
 
----
+------
