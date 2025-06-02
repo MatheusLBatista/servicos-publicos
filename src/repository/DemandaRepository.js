@@ -17,9 +17,9 @@ class DemandaRepository {
     async buscarPorID(id, includeTokens = false) {
         let query = this.modelDemanda.findById(id);
 
-        if (includeTokens) {
-            query = query.select('+refreshtoken +accesstoken');
-        }
+        // if (includeTokens) {
+        //     query = query.select('+refreshtoken +accesstoken');
+        // }
 
         const demanda = await query;
 
