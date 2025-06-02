@@ -3,16 +3,16 @@ import { estadosBrasil } from '../../../../models/Usuario.js';
 import mongoose from 'mongoose';
 import objectIdSchema from '../zod/ObjectIdSchema.js'
 
-export const tiposDemanda = z.enum([
+export const tiposDemanda = [
   "Coleta",
   "Iluminação",
   "Saneamento",
   "Árvores",
   "Animais",
   "Pavimentação"
-]);
+];
 
-export const statusDemanda = z.enum([ "Em aberto", "Em andamento", "Concluída" ]);
+export const statusDemanda = [ "Em aberto", "Em andamento", "Concluída" ];
 
 export const enderecoSchema = z.object({
         logradouro: z.string().min(2, "O logradouro não pode ser vazio."),
@@ -34,19 +34,12 @@ const distinctObjectIdArray = z
   );
 
 const DemandaSchema = z.object ({
-    tipo: z
-      .string()
-      .refine((val) => tiposDemanda.includes(val),
-        {
-        message: "Tipo inválido. Deve ser um dos valores permitidos.",
-        }
-    ),
-    status: z
-      .string()
-      .refine((val) => statusDemanda.includes(val),
-      {
-        message: "Status inválido. Deve ser um dos valores permitidos."
-      }),
+    tipo: z.string().refine((val) => tiposDemanda.includes(val), {
+      message: "Tipo inválido",
+    }),
+    status: z.string().refine((val) => statusDemanda.includes(val), {
+    message: "Status inválido",
+  }),
     data: z
       .string(),
     resolucao: z
