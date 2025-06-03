@@ -1,6 +1,8 @@
 import { DemandaSchema, DemandaUpdateSchema } from '../../../utils/validators/schemas/zod/DemandaSchema';
 import mongoose from 'mongoose';
 
+const validObjectId = () => new mongoose.Types.ObjectId().toString();
+
 const validDemanda = {
   tipo: "Coleta",
   status: "Em aberto",
@@ -13,7 +15,9 @@ const validDemanda = {
     cidade: "Vilhena",
     estado: "RO"
   },
-  usuarios: [new mongoose.Types.ObjectId()],
+  usuarios: [
+    { id: validObjectId() }
+  ],
   resolucao: "Resolvido com sucesso.",
   feedback: 4,
   avaliacao_resolucao: "Ótima",
@@ -64,8 +68,11 @@ describe('DemandaSchema', () => {
   });
 
   it('rejeita usuários com ObjectIds repetidos', () => {
-    const id = new mongoose.Types.ObjectId();
-    const invalid = { ...validDemanda, usuarios: [id, id] };
+    const id = validObjectId(); 
+    const invalid = {
+      ...validDemanda,
+      usuarios: [{ id }, { id }] 
+    };
     const result = DemandaSchema.safeParse(invalid);
     expect(result.success).toBe(false);
     expect(result.error.issues[0].message).toContain("Não pode conter ids repetidos");

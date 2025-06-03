@@ -26,12 +26,16 @@ export const enderecoSchema = z.object({
         })
       });
 
-const distinctObjectIdArray = z
-  .array(objectIdSchema)
-  .refine(
-    (arr) => new Set(arr.map((id) => id.toString())).size === arr.length,
-    { message: 'Não pode conter ids repetidos.'}
-  );
+      const objectIdWrapperSchema = z.object({
+        id: z.string().regex(/^[0-9a-fA-F]{24}$/), 
+      });
+
+      const distinctObjectIdArray = z
+        .array(objectIdWrapperSchema)
+        .refine(
+          (arr) => new Set(arr.map((obj) => obj.id)).size === arr.length,
+          { message: 'Não pode conter ids repetidos.' }
+      );
 
 const DemandaSchema = z.object ({
     tipo: z.string().refine((val) => tiposDemanda.includes(val), {
