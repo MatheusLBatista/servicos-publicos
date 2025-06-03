@@ -3,9 +3,16 @@ import { estadosBrasil } from '../../../../models/Usuario.js';
 import mongoose from 'mongoose';
 import objectIdSchema from '../zod/ObjectIdSchema.js'
 
-export const tiposDemanda = [ "Coleta", "Iluminação", "Saneamento", "Árvores", "Animais", "Pavimentação" ];
+export const tiposDemanda = [
+  "Coleta",
+  "Iluminação",
+  "Saneamento",
+  "Árvores",
+  "Animais",
+  "Pavimentação"
+];
 
-export const statusDemanda = [ "Em aberto", "Em andamento", "Concluída" ]
+export const statusDemanda = [ "Em aberto", "Em andamento", "Concluída" ];
 
 export const enderecoSchema = z.object({
         logradouro: z.string().min(2, "O logradouro não pode ser vazio."),
@@ -19,27 +26,13 @@ export const enderecoSchema = z.object({
         })
       });
 
-const distinctObjectIdArray = z
-  .array(objectIdSchema)
-  .refine(
-    (arr) => new Set(arr.map((id) => id.toString())).size === arr.length,
-    { message: 'Não pode conter ids repetidos.'}
-  );
-
 const DemandaSchema = z.object ({
-    tipo: z
-      .string()
-      .refine((val) => tiposDemanda.includes(val),
-        {
-        message: "Tipo inválido. Deve ser um dos valores permitidos.",
-        }
-    ),
-    status: z
-      .string()
-      .refine((val) => statusDemanda.includes(val),
-      {
-        message: "Status inválido. Deve ser um dos valores permitidos."
-      }),
+    tipo: z.string().refine((val) => tiposDemanda.includes(val), {
+      message: "Tipo inválido",
+    }),
+    status: z.string().refine((val) => statusDemanda.includes(val), {
+    message: "Status inválido",
+  }),
     data: z
       .string(),
     resolucao: z
@@ -69,7 +62,11 @@ const DemandaSchema = z.object ({
       })
       .optional(),
     endereco: enderecoSchema,
-    usuarios: distinctObjectIdArray.default([])
+    usuarios: z.array(
+    z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: "ID inválido",
+    })
+  )
 })
 
 const DemandaUpdateSchema = DemandaSchema.partial();

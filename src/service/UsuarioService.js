@@ -20,7 +20,6 @@ class UsuarioService {
         return data;
     }
 
-    //TODO: alterar formato de dados do endereco.numero
     async criar(parsedData) {
         console.log("Estou em criar no UsuarioService")
         

@@ -17,9 +17,9 @@ class DemandaRepository {
     async buscarPorID(id, includeTokens = false) {
         let query = this.modelDemanda.findById(id);
 
-        if (includeTokens) {
-            query = query.select('+refreshtoken +accesstoken');
-        }
+        // if (includeTokens) {
+        //     query = query.select('+refreshtoken +accesstoken');
+        // }
 
         const demanda = await query;
 
@@ -56,12 +56,12 @@ class DemandaRepository {
             return data;
         }
 
-        const { tipo, status, data, resolucao, feedback, avaliacao_resulucao, link_imagem, motivo_devolucao, link_imagem_resolucao, endereco, usuario, page = 1 } = req.query;
+        const { tipo, status, data_inicio, data_fim, endereco, usuario, page = 1 } = req.query;
         const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
 
         const filterBuilder = new DemandaFilterBuild()
             .comTipo(tipo || '')
-            .comData(data || '')
+            .comData(data_inicio, data_fim || '')
             .comEndereco(endereco || '')
             .comStatus(status || '')
 

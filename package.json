@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "seed": "node src/seeds/seeds.js",
-    "test": "jest --coverage --detectOpenHandles",
+    "test": "jest --config=jest.config.js --coverage --detectOpenHandles",
     "start": "node server.js"
   },
   "dependencies": {

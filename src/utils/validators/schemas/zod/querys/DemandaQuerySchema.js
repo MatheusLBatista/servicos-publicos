@@ -1,34 +1,43 @@
 import { z } from "zod";
 import mongoose from 'mongoose';
-import { enderecoSchema, tiposDemanda, statusDemanda } from "../DemandaSchema.js";
-//TODO: revisar se essas importações afetaram o teste
+import { enderecoSchema } from "../DemandaSchema.js";
+
+export const TipoDemandaEnum = z.enum([
+  "Coleta",
+  "Iluminação",
+  "Saneamento",
+  "Árvores",
+  "Animais",
+  "Pavimentação"
+]);
+
+export const StatusDemandaEnum = z.enum([
+  "Em aberto",
+  "Em andamento",
+  "Concluída"
+]);
 
 export const DemandaIdSchema = z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
     message: "ID inválido",
 });
 
 export const DemandaQuerySchema = z.object({
-    tipo: z
+    tipo: TipoDemandaEnum
+        .optional(),
+    status: StatusDemandaEnum
+        .optional(),
+    data_inicio: z
         .string()
-        .optional()
-        .transform((val) => val?.trim().toLowerCase())
-        .refine((val) => tiposDemanda.includes(val), {
-            message: "Tipo inválido. Deve ser um dos valores permitidos."
-        }),
-    status: z
-        .string()
-        .transform((val) => val?.trim().toLocaleLowerCase())
-        .optional()
-        .refine((val) => statusDemanda.includes(val),{
-            message: "Status inválido. Deve ser um dos valores permitidos."
-        }),
-    data: z
+        .optional(),
+    data_fim: z
         .string()
         .optional(),
     usuarios: z
         .string()
         .optional()
-        .refine((val) => val?.trim()),
+        .refine((val) => !val || mongoose.Types.ObjectId.isValid(val), {
+            message: "Usuário inválido. Tente novamente!",
+        }),
     endereco: enderecoSchema
         .optional(),
     page: z
