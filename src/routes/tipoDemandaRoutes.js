@@ -1,5 +1,5 @@
 import express from "express";
-import TipoDemandaController from '../controllers/tipoDemandaController.js';
+import TipoDemandaController from '../controllers/TipoDemandaController.js';
 import { asyncWrapper } from '../utils/helpers/index.js';
 import mongoose from 'mongoose';
 

@@ -103,14 +103,14 @@ class UsuarioController {
         /**
      * Faz upload de uma foto para um usuário.
      */
+    ///*
     async fotoUpload(req, res, next) {
         try {
             console.log('Estou no fotoUpload em UsuarioController');
 
-            const { id } = req.params || {};
+            const { id } = req.params;
             UsuarioIdSchema.parse(id);
 
-            // Verificar se o arquivo foi enviado
             const file = req.files?.file;
             if (!file) {
                 throw new CustomError({
@@ -122,55 +122,13 @@ class UsuarioController {
                 });
             }
 
-            // Validar extensão do arquivo
-            const extensaoArquivo = path.extname(file.name).slice(1).toLowerCase();
-            const extensoesValidas = ["jpg", "jpeg", "png", "svg"];
-            if (!extensoesValidas.includes(extensaoArquivo)) {
-                throw new CustomError({
-                    statusCode: HttpStatusCodes.BAD_REQUEST.code,
-                    errorType: 'validationError',
-                    field: 'file',
-                    details: [],
-                    customMessage: 'Extensão de arquivo inválida. Permitido: jpg, jpeg, png, svg.'
-                });
-            }
-
-            // Preparar o nome do arquivo
-            const fileName = uuidv4() + '.' + extensaoArquivo;
-            const uploadsDir = path.join(getDirname(), '..', '../uploads');
-            const uploadPath = path.join(uploadsDir, fileName);
-
-            // Cria a pasta de uploads se não existir
-            if (!fs.existsSync(uploadsDir)) {
-                fs.mkdirSync(uploadsDir, { recursive: true });
-            }
-
-            // Redimensiona a imagem para 400x400 (corte centralizado)
-            const imageBuffer = await sharp(file.data)
-                .resize(400, 400, {
-                    fit: sharp.fit.cover,
-                    position: sharp.strategy.entropy
-                })
-                .toBuffer();
-
-            // Salva a imagem redimensionada
-            await fs.promises.writeFile(uploadPath, imageBuffer);
-
-            // Atualiza o link_foto no usuário
-            const dados = { link_foto: fileName };
-            UsuarioUpdateSchema.parse(dados);
-
-            const updatedUser = await this.service.atualizar(id, dados);
+            // delega toda a lógica de validação e processamento ao service
+            const { fileName, metadata } = await this.service.processarFoto(id, file);
 
             return CommonResponse.success(res, {
                 message: 'Arquivo recebido e usuário atualizado com sucesso.',
                 dados: { link_foto: fileName },
-                metadados: {
-                    fileName,
-                    fileExtension: extensaoArquivo,
-                    fileSize: file.size,
-                    md5: file.md5
-                }
+                metadados: metadata
             });
         } catch (error) {
             console.error('Erro no fotoUpload:', error);
@@ -221,6 +179,7 @@ class UsuarioController {
             return next(error);
         }
     }
+
 }
 
 export default UsuarioController;

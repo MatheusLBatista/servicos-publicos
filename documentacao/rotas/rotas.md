@@ -1,349 +1,376 @@
-# Endpoints com Foco em Casos de Uso
 
-## 1. `/login` (Endpoint de Autenticação)
+# Documentação da API - Serviços Públicos - Vilhena+ Pública
 
-#### Função de Negócio
-Permitir que os usuários (ou sistemas externos) entrem no sistema e obtenham acesso às funcionalidades internas.
-
-#### Regras de Negócio Envolvidas
-- **Verificação de Credenciais**: Validar login/senha ou outro método de autenticação.
-- **Bloqueio de Usuários**: Impedir o acesso de usuários inativos ou sem autorização específica.
-- **Gestão de Tokens**: Gerar e armazenar tokens de acesso e refresh (se aplicável) de forma segura, permitindo revogação futura.
-
-#### Resultado Esperado
-- Retorno dos tokens de acesso e refresh (se aplicável).
-- Retorno da página principal de acordo com o tipo de usuário que fizer o login no sistema.
+O nosso sistema tem como objetivo, possibilitar uma comunicação entre a prefeitura de Vilhena-RO e seus munícipes, facilitando o acesso aos serviços públicos, onde o site irá permitir cadastro e gerenciamento de usuários e demandas.
 
 ---
 
-## 2. `/registro` (Endpoint de Cadastro)
+## 1. Autenticação
 
-#### Função de Negócio
-Permitir que novos usuários (ou sistemas externos) se cadastrem na plataforma, criando uma conta para acesso futuro aos serviços internos.
+### 1.1 POST /login *(millestone 3)*
 
-#### Regras de Negócio Envolvidas
-- **Validação de Dados Obrigatórios**: Garantir que informações essenciais (nome, e-mail, senha) sejam fornecidas corretamente.
-- **Exclusividade de Identificadores**: Verificar que campos únicos, como e-mail ou CPF/CNPJ, não estejam já cadastrados.
-- **Segurança na Senha**: Aplicar critérios de complexidade mínima (ex.: tamanho mínimo, caracteres especiais).
-- **Status Inicial**: Definir um status inicial para o novo usuário (ex.: ativo, pendente de verificação de e-mail).
-- **Envio de Confirmação**: Enviar um e-mail ou SMS de verificação para confirmação da identidade.
+#### Caso de Uso
+- Permitir que os usuários (ou sistemas externos) entrem no sistema e obtenham acesso às funcionalidades internas.
+
+#### Regras de Negócio
+- Verificação de Credenciais: Validar login/senha.
+- Bloqueio de Usuários:  Impedir o acesso de usuários desativados ou não confirmados.
+- Gestão de Tokens: Gerar e armazenar tokens de acesso e refresh de forma segura, permitindo revogação futura.
+
+#### Resultado Esperado
+- Retorno dos tokens de acesso e refresh.
+- Retorno da página principal de acordo com o tipo de usuário que fizer o login no sistema.
+- Em caso de erro, mensagem de erro: "E-mail já cadastrado" ou "Dados inválidos".
+
+### 1.2 POST  /register
+
+#### Caso de Uso
+- Permitir que novos usuários se cadastrem no sistema para acessar as funcionalidades do aplicativo, criando uma conta com suas informações pessoais.
+
+#### Regras de Negócio
+- Validação de Dados: Verificar se os campos obrigatórios (nome, e-mail, senha, telefone) 
+- Exclusividade de Identificadores: Verificar que campos únicos, como e-mail ou CPF/CNPJ, não estejam já cadastrados.
+- Status Inicial: Definir um status inicial para o novo usuári
+- Criptografia de Senha: Armazenar a senha de forma segura.
 
 #### Resultado Esperado
 - Criação bem-sucedida de uma nova conta de usuário, armazenando todos os dados fornecidos com segurança.
 - Retorno da página inicial logada com todas as funcionalidades do sistema disponíveis ao usuário.
 - Em caso de falha, retorno de mensagens de erro específicas (ex.: "E-mail já cadastrado", "Senha fora do padrão").
 
----
 
-## 3. CRUD Principal
+## 2. Demandas
 
-### 3.1 `GET /`
+### 2.1 GET /demandas 
+
 #### Caso de Uso
-Carregar a página inicial com categorias de demandas e informações do sistema.
+- O sistema deve retornar todas as demandas registradas, podendo aplicar filtros por query string (como status, secretariaId, etc).
 
 #### Regras de Negócio
-- Exibir categorias disponíveis (Coleta, Animais, Árvores, etc.).
-- Mostrar um resumo textual sobre o sistema.
+- Se houver query, será validada por DemandaQuerySchema.
+- Se não houver query, lista tudo.
+- Pode ser usado por secretarias, operadores ou administradores para visualizar o fluxo de demandas.
 
-#### Resultado
-Página carregada com sucesso mostrando categorias e informações básicas do sistema.
+#### Resultado Esperado
+-O sistema retorna uma lista com todas as demandas existentes, contendo informações como título, descrição, status, data de criação, etc.
 
----
+### 2.2 GET /demandas/:id
 
-### 3.2 `GET /coleta/`
 #### Caso de Uso
-Listar subtipos da demanda de coleta disponíveis para seleção.
+- Obter os detalhes completos de uma demanda específica a partir do seu ID.
 
 #### Regras de Negócio
-- Disponibilizar apenas subtipos ativos ou permitidos no sistema.
-- Retornar uma breve descrição de cada subtipo.
+- O ID da demanda é validado por DemandaIdSchema.
+- Caso o ID não seja válido, o sistema retorna um erro 400.
+- Deve retornar apenas uma demanda correspondente ao ID fornecido.
 
-#### Resultado
-Lista de subtipos retornada com sucesso. Em caso de falha, mensagem de erro adequada.
+#### Resultado Esperado
+- O sistema retorna todas as informações da demanda solicitada, como título, descrição, status atual, data de criação e a secretaria vinculada.
+- Em caso de não encontrar, retorna "Recurso não encontrado em demanda.".
 
----
+### 2.3 POST /demandas
 
-### 3.3 `POST /coleta/criar`
 #### Caso de Uso
-Enviar informações iniciais da demanda (tipo de serviço, tipo de pedido, descrição e imagem).
+- Permitir que um usuario, do tipo munícipe crie uma nova demanda, informando os dados necessários.
 
 #### Regras de Negócio
-- Validação dos campos obrigatórios.
-- Validação do formato e tamanho da imagem.
-- Status inicial da demanda como "pendente".
-- Não permitir criação sem seleção de serviço.
+- Os dados da requisição (body) e deve conter os dados válidos.
+- Caso algum campo obrigatório esteja ausente ou inválido, a validação Zod impedirá a criação e retornará um erro 400.
+- A demanda é criada com status inicial ("pendente") e *vinculada a uma secretaria (Millestone 3)*.
 
-#### Resultado
-Demanda preliminar criada (sem endereço), retornando o ID da demanda.
+#### Resultado Esperado
+- O sistema registra a nova demanda e retorna uma confirmação de criação com os dados fornecidos, além do ID gerado automaticamente.
 
----
+### 2.4 PATCH /demandas/:id e PUT /demandas/:id
 
-### 3.4 `POST /coleta/criar/endereco`
 #### Caso de Uso
-Adicionar endereço a uma demanda já criada.
+- Atualizar informações de uma demanda existente. Pode ser uma atualização parcial (PATCH) ou total (PUT).
 
 #### Regras de Negócio
-- Campos obrigatórios: número, bairro, logradouro e tipo de logradouro.
-- Verificar existência da demanda antes de adicionar o endereço.
+- O ID da demanda é validado (DemandaIdSchema).
+- Os dados enviados devem seguir ser válidos (DemandaUpdateSchema).
+- Campos internos como tipo e data são excluídos da resposta por segurança ou consistência.
+- A atualização só é realizada se a demanda existir.
 
-#### Resultado
-Endereço vinculado com sucesso à demanda. Em caso de falha, mensagem de erro.
+#### Resultado Esperado
+- O sistema atualiza os campos da demanda e retorna uma mensagem de sucesso junto com os novos dados modificados, exceto os campos ocultados.
 
----
+### 2.5 DELETE /demandas/:id
 
-## 4. `/operador` (Endpoints de Gerenciamento de Demandas)
-
-### 4.1 `GET /operador/demandas/recebidas`
 #### Caso de Uso
-Listar todas as demandas recebidas atribuídas ao operador.
+- Excluir uma demanda registrada no sistema, geralmente por decisão administrativa ou erro de criação.
 
 #### Regras de Negócio
-- Validar existência da demanda.
-- Ordenar demandas mais recentes primeiro.
+- O ID informado na URL é validado pelo DemandaIdSchema.
+- Caso o ID não seja fornecido ou seja inválido, o sistema retorna um erro personalizado informando a necessidade do ID.
+- Se a demanda existir, ela será excluída do banco de dados.
 
-#### Resultado
-Listar demandas atribuídas ao operador.
+#### Resultado Esperado
+- O sistema remove a demanda e retorna uma mensagem de confirmação informando que a exclusão foi concluída com sucesso, junto com os dados da demanda que foi excluída.
 
----
+### 2.6 PATCH /demandas/:id/atribuir *(Millestone 3)*
 
-### 4.2 `POST /operador/demandas/recebidas/{id}/concluir`
 #### Caso de Uso
-Concluir uma demanda atribuída.
+- Permitir que um usuario do tipo operador responsável por uma secretaria atribua uma demanda a um operador para execução.
 
 #### Regras de Negócio
-- Garantir que dados essenciais sejam fornecidos.
-- Atualizar status para "em andamento" e depois "concluído".
+- O ID da demanda é validado (DemandaIdSchema).
+- O corpo da requisição deve conter o ID do operador que irá executar a demanda.
+- Apenas usuários com permissão (secretaria ou administrador) podem atribuir.
+- A demanda deve estar em status "pendente" para ser atribuída.
+- Atribuir uma demanda muda o status para "em andamento".
 
-#### Resultado
-Demanda concluída com sucesso.
+#### Resultado Esperado
+- O sistema atualiza a demanda com o operador designado e retorna uma mensagem confirmando a atribuição com sucesso, incluindo o nome ou ID do operador.
 
----
+### 2.7 PATCH /demandas/:id/resolver *(Millestone 3)*
 
-### 4.3 `POST /operador/demandas/recebidas/{id}/devolver`
 #### Caso de Uso
-Devolver uma demanda à secretaria.
+- Permitir que o operador responsável pela demanda marque-a como concluída, indicando que a execução foi finalizada.
 
 #### Regras de Negócio
-- Garantir que motivo da devolução seja informado.
-- Apenas o operador atribuído pode devolver.
+- O ID da demanda é validado (DemandaIdSchema).
+- A demanda deve estar atribuída ao operador que está tentando resolvê-la.
+- O operador deve enviar uma imagem de comprovação e descrição da execução.
+- A mudança de status vai de “em andamento” para “concluída”.
 
-#### Resultado
-Operador removido e status atualizado para "aberto".
+#### Resultado Esperado
+- A demanda é atualizada com o status “concluída”, salvando a imagem e a descrição do serviço realizado. O sistema retorna uma mensagem de sucesso com os dados atualizados da demanda.
 
----
+### 2.8 PATCH /demandas/:id/devolver *(Millestone 3)*
 
-### 4.4 `GET /operador/demandas/historico`
 #### Caso de Uso
-Listar o histórico de demandas concluídas pelo operador.
+- Permitir que o operador devolva uma demanda que foi atribuída a ele, caso não possa executar por algum motivo.
 
 #### Regras de Negócio
-- Validar existência da demanda.
+- O ID da demanda é validado (DemandaIdSchema).
+- A devolução só pode ser feita se o operador estiver vinculado à demanda.
+- A demanda deve estar em status "em andamento".
+- Após a devolução, o status volta para “pendente” e o campo operador é removido.
 
-#### Resultado
-Histórico de demandas concluídas exibido.
+#### Resultado Esperado
+- A demanda é desatribuída do operador, o status volta para “pendente” e o sistema retorna uma mensagem confirmando a devolução da demanda.
 
----
+## 3. Secretarias
 
-### 4.5 `GET /operador/demandas/historico/:id`
+### 3.1 GET /secretaria
+
 #### Caso de Uso
-Detalhar uma demanda concluída específica.
+- Permitir que o sistema ou um usuário autorizado liste todas as secretarias cadastradas, com possibilidade de filtro via query.
 
 #### Regras de Negócio
-- Confirmar se a demanda pertence ao operador e está concluída.
+- Pode ou não conter filtros por nome e/ou sigla.
+- As queries devem ser validadas por SecretariaQuerySchema.
 
-#### Resultado
-Detalhamento completo da demanda.
+#### Resultado Esperado
+- Retorna um array com todas as secretarias cadastradas, contendo dados como nome, sigla, e-mail, e telefone.
 
----
+### 3.2 GET /secretaria/:id
 
-## 5. `/pedidos` e `/perfil`
-
-### 5.1 `GET /pedidos`
 #### Caso de Uso
-Listar todas as demandas existentes com opção de filtros e paginação.
+- Permitir que o sistema ou um usuário autorizado recupere os dados completos de uma secretaria específica pelo ID.
 
 #### Regras de Negócio
-- Implementar paginação.
-- Permitir filtragem por tipo, status e data.
+- O ID fornecido na rota deve ser válido conforme o SecretariaIDSchema.
+- Caso não exista secretaria com esse ID, retorna erro 404.
 
-#### Resultado
-Lista de demandas com metadados de paginação.
+#### Resultado Esperado
+- Retorna os dados detalhados da secretaria correspondente ao ID fornecido, como nome, e-mail e telefone.
 
----
+### 3.3 POST /secretaria
 
-### 5.2 `GET /pedidos/:id`
 #### Caso de Uso
-Obter detalhes de uma demanda específica.
+- Permitir que o administrador do sistema cadastre uma nova secretaria no banco de dados.
 
 #### Regras de Negócio
-- Confirmar existência da demanda.
-- Só aceitar avaliação se a demanda estiver concluída.
+- O corpo da requisição deve seguir as validações definidas no SecretariaSchema.
+- Todos os campos obrigatórios devem ser enviados.
+- Não pode haver outra secretaria com o mesmo nome ou sigla.
 
-#### Resultado
-Detalhamento completo da demanda.
+#### Resultado Esperado
+- A nova secretaria é criada com sucesso no banco e retorna os dados da secretaria recém-criada, incluindo seu ID.
 
----
+### 3.4 PATCH /secretaria/:id e PUT /secretaria/:id
 
-### 5.3 `POST /pedidos/:id/avaliar`
 #### Caso de Uso
-Enviar avaliação da conclusão da demanda.
+- Permitir que o administrador do sistema atualize parcialmente ou totalmente os dados de uma secretaria existente.
 
 #### Regras de Negócio
-- Confirmar status de conclusão.
+- O ID da secretaria deve ser válido (SecretariaIDSchema).
+- O corpo da requisição deve respeitar o SecretariaUpdateSchema.
+- O nome ou sigla não pode ser duplicado em relação a outra secretaria.
 
-#### Resultado
-Avaliação enviada com sucesso.
+#### Resultado Esperado
+- A secretaria é atualizada com os novos dados fornecidos e o sistema retorna a confirmação da atualização com os dados atualizados.
 
----
+### 3.5 DELETE /secretaria/:id
 
-### 5.4 `GET /perfil`
 #### Caso de Uso
-Obter dados do perfil do usuário.
+- Permitir que o administrador delete uma secretaria do sistema, caso ela não esteja vinculada a demandas ativas.
 
 #### Regras de Negócio
-- Confirmar existência dos dados.
+- O ID deve ser válido (SecretariaIDSchema).
+- Caso a secretaria tenha demandas ativas vinculadas, não pode ser deletada(*Millestone 3*).
+- O sistema deve validar a existência da secretaria antes da exclusão.
 
-#### Resultado
-Dados do usuário retornados.
+#### Resultado Esperado
+- A secretaria é excluída do banco de dados e o sistema retorna uma mensagem de sucesso confirmando a exclusão e os dados da secretraia excluída.
 
----
+### 3.6 GET /secretaria/:id/demandas *(Millestone 3)*
 
-### 5.5 `POST /perfil/atualizar`
 #### Caso de Uso
-Atualizar informações do perfil do usuário.
+- Permitir que uma secretaria visualize todas as demandas vinculadas a ela, independentemente do status (pendente, em andamento, concluída).
 
 #### Regras de Negócio
-- Validar dados antes da atualização.
+- O ID da secretaria informado deve ser válido.
+- A listagem retorna apenas demandas que possuem o campo secretaria igual ao ID fornecido.
 
-#### Resultado
-Mensagem de sucesso ou erro conforme a operação.
+#### Resultado Esperado
+- O sistema retorna uma lista com todas as demandas atribuídas à secretaria informada, podendo incluir informações como status, título, descrição, operador responsável (se houver), e datas de criação e conclusão.
 
----
+## 4. Tipos de Demanda
 
-## 6. `/secretaria` (Endpoints de Gerenciamento de Demandas)
+### 4.1 GET /tipoDemanda
 
-### 6.1 `GET /secretaria/demandas`
 #### Caso de Uso
-A secretaria pode visualizar todas as demandas enviadas pelos munícipes.
+- Permitir que o sistema ou um usuário autorizado liste todos os tipos de demanda disponíveis no sistema.
 
 #### Regras de Negócio
-- Exibir demandas com filtros para status (pendente, em andamento, concluída) e tipo de demanda.
-- Mostrar progresso das demandas e informações de quem foi designado.
+- As queries são validadas via Zod.
+- A listagem ocorre mesmo se nenhuma query for enviada.
 
-#### Resultado
-Lista de demandas com seus respectivos status, tipo e operador atribuído (se aceito).
+#### Resultado Esperado
+- Retorna um array com todos os tipos de demanda cadastrados, contendo dados como nome, descrição e status.
 
----
+### 4.2 GET /tipoDemanda/:id
 
-### 6.2 `GET /secretaria/demandas/{id}`
 #### Caso de Uso
-A secretaria pode visualizar o detalhamento de uma demanda específica.
+- Permitir que o sistema ou um usuário autorizado recupere os dados de um tipo de demanda específico, utilizando o ID como parâmetro.
 
 #### Regras de Negócio
-- Exibir todas as informações da demanda (status, tipo, data de criação, histórico de movimentações).
-- Incluir informações sobre o operador designado.
+- O ID da rota deve ser validado pelo TipoDemandaIDSchema.
+- Caso o ID não exista no banco, deve retornar erro 404.
 
-#### Resultado
-Detalhamento completo da demanda.
+#### Resultado Esperado
+- Retorna os dados do tipo de demanda correspondente ao ID fornecido, como titulo, descrição, icone, etc.
 
----
+### 4.3 `POST /tipoDemanda
 
-### 6.3 `POST /secretaria/demandas/{id}/atribuir`
 #### Caso de Uso
-A secretaria pode atribuir um operador a uma demanda específica.
+- Permitir que o administrador cadastre um novo tipo de demanda no sistema.
 
 #### Regras de Negócio
-- A secretaria escolhe o operador responsável pela demanda.
+- O corpo da requisição deve seguir o TipoDemandaSchema.
+- Campos obrigatórios como nome e descrição devem ser enviados.
+- Não deve permitir a criação de tipos de demanda com nomes duplicados.
 
-#### Resultado
-Atribuição de operador à demanda com sucesso.
+#### Resultado Esperado
+- O tipo de demanda é criado com sucesso e retorna os dados do registro recém-criado, incluindo seu ID.
 
----
+### 4.4 PATCH /tipoDemanda/:id e PUT /tipoDemanda/:id
 
-### 6.4 `POST /secretaria/demandas/{id}/rejeitar`
 #### Caso de Uso
-A secretaria pode rejeitar uma demanda enviada pelo munícipe, fornecendo um motivo para a rejeição.
+- Permitir que o administrador atualize parcialmente ou totalmente os dados de um tipo de demanda existente.
 
 #### Regras de Negócio
-- Fornecer motivo válido para rejeitar.
-- Demanda rejeitada terá status alterado para "recusado".
-- Motivo da rejeição visível para secretaria e munícipe.
+- O ID deve ser validado com o TipoDemandaIDSchema.
+- Os dados enviados devem seguir o TipoDemandaUpdateSchema.
+- Não pode haver duplicação de nomes com outros tipos de demanda.
 
-#### Resultado
-Demanda rejeitada com sucesso.
+#### Resultado Esperado
+- Os dados do tipo de demanda são atualizados com sucesso e o sistema retorna os novos dados com uma mensagem de confirmação.
 
----
+### 4.5 DELETE /tipoDemanda/:id
 
-### 6.5 `GET /secretaria/demandas/{id}/devolucao`
 #### Caso de Uso
-A secretaria pode visualizar o motivo da rejeição de uma demanda.
+- Permitir que o administrador exclua um tipo de demanda do sistema, caso ele não esteja vinculado a nenhuma demanda ativa.
 
 #### Regras de Negócio
-- Exibir o motivo apenas para demandas com status "recusado".
-- Incluir tipo, data e operador que rejeitou.
+- O ID deve ser válido e validado com TipoDemandaIDSchema.
+- Caso o tipo de demanda esteja associado a demandas existentes, a exclusão deve ser impedida (verificado no service).
+- A existência do tipo de demanda deve ser verificada antes de excluí-lo.
 
-#### Resultado
-Motivo da rejeição exibido.
+#### Resultado Esperado
+- O tipo de demanda é removido com sucesso do banco de dados e o sistema retorna uma mensagem de sucesso e os dados do TipoDemanda excluído.
 
----
+## 5. Usuários
 
-## 7. `/administrador` (Endpoints de Administração)
+### 5.1 GET /usuarios e GET /usuarios/:id
 
-### 7.1 `POST /admin/colaboradores`
 #### Caso de Uso
-Cadastrar novos colaboradores (operadores e funcionários).
+- Listar todos os usuários ou consultar um usuário específico pelo ID.
 
 #### Regras de Negócio
-- Preencher informações obrigatórias: CPF e e-mail.
-- Enviar e-mail automático com instruções de acesso.
-- Verificar duplicidade de CPF e e-mail.
+- Se o parâmetro id for passado, deve ser validado.
+- A consulta pode aceitar filtros via query string, validados pelo UsuarioQuerySchema.
+- Se o usuário solicitado não existir, retorna erro 404.
 
-#### Resultado
-Novo colaborador cadastrado no sistema.
+#### Resultado Esperado
+- Retorna uma lista de usuários (ou um usuário específico) com os dados públicos, exceto os campos ocultados.
 
----
+### 5.2 POST /usuarios
 
-### 7.2 `POST /admin/empresas`
 #### Caso de Uso
-Cadastrar novas empresas terceirizadas.
+- Criar um novo usuário no sistema.
 
 #### Regras de Negócio
-- Informar dados obrigatórios: CNPJ e e-mail.
-- Validar CNPJ para evitar duplicidade.
+- Os dados recebidos devem obedecer ao UsuarioSchema.
+- Campos obrigatórios, como nome, email e senha, devem ser fornecidos.
+- Campos internos como senha são excluídos da resposta por segurança.
+- Deve garantir que o email seja único.
 
-#### Resultado
-Empresa cadastrada.
+#### Resultado Esperado
+- Usuário criado com sucesso, retornando os dados do usuário criado, sem a senha.
 
----
+### 5.3 PATCH /usuarios/:id e PUT /usuarios/:id
 
-### 7.3 `GET /admin/grafico-demandas`
 #### Caso de Uso
-Visualizar gráficos analíticos das demandas.
+- Atualizar os dados de um usuário existente.
 
 #### Regras de Negócio
-- Exibir quantidade de demandas por tipo, status e período.
+- O ID do usuário deve ser validado.
+- Os dados atualizados devem estar no formato do UsuarioUpdateSchema.
+- Campos internos como senha e email são excluídos da resposta por segurança.
+- A atualização só é realizada se o usuario existir.
 
-#### Resultado
-Exibição de gráficos analíticos.
+#### Resultado Esperado
+- O sistema atualiza os campos de usuario e retorna uma mensagem de sucesso junto com os novos dados modificados, exceto os campos ocultados.
 
----
+### 5.4 DELETE /usuarios/:id
 
-### 7.4 `GET /admin/mapa-demandas`
 #### Caso de Uso
-Visualizar no mapa a localização das demandas.
+- Excluir um usuário do sistema.
 
 #### Regras de Negócio
-- Exibir tipo da demanda com ícones.
-- Indicar status com cores diferentes.
+- O ID deve ser validado.
+- O usuário deve existir para ser excluído, caso contrário erro 404.
+- Se o ID não for fornecido, retorna erro 400.
 
-#### Resultado
-Mapa interativo com distribuição das demandas.
+#### Resultado Esperado
+- Usuário excluído com sucesso, com mensagem confirmando a exclusão.
 
----
+### 5.5 POST /usuarios/:id/foto
 
-## Considerações Finais
+#### Caso de Uso
+- Permitir que o usuário faça upload de uma foto de perfil.
 
-- **Segurança**: Implementar autenticação, autorização e registro de logs.
-- **Validação e Tratamento de Erros**: Mensagens claras e específicas.
-- **Escalabilidade e Performance**: Aplicar filtros, paginação e caching.
-- **Documentação e Monitoramento**: Manter a documentação atualizada e monitorar o sistema.
+#### Regras de Negócio
+- O ID do usuário deve ser validado.
+- Um arquivo de imagem deve ser enviado; caso contrário, retorna erro 400.
+- O serviço processa e salva a imagem, atualizando o usuário com o link da foto.
+
+#### Resultado Esperado
+- Upload realizado com sucesso, retornando mensagem de sucesso, link para a foto e metadados do arquivo.
+
+### 5.6 GET /usuarios/:id/foto
+
+#### Caso de Uso
+- Permitir download ou visualização da foto de perfil do usuário.
+
+#### Regras de Negócio
+- O ID deve ser validado.
+- Se o usuário não possuir foto, retorna erro 404.
+- O arquivo é enviado com o content-type adequado conforme extensão.
+
+#### Resultado Esperado
+- Imagem da foto do usuário é enviada no response com o cabeçalho correto.
