@@ -106,7 +106,6 @@ describe("DemandaController", ()=> {
       expect(serviceStub.listar).toHaveBeenCalled();
     })
 
-    //todo: revisar esse listar
     it('deve listar uma demanda sem query', async () => {
       jest.spyOn(CommonResponse, 'success').mockImplementation(() => {});
 

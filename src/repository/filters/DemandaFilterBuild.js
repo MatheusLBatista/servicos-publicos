@@ -29,26 +29,47 @@ class DemandaFilterBuild {
         return this;
     }
 
+    // comData(inicio, fim) {
+    //     if (inicio || fim) {
+    //         this.filtros.data = {};
+
+    //         if (inicio) {
+    //         const dataInicio = new Date(inicio);
+    //         dataInicio.setHours(0, 0, 0, 0);
+    //         this.filtros.data.$gte = dataInicio;
+    //         }
+
+    //         if (fim) {
+    //         const dataFim = new Date(fim);
+    //         dataFim.setHours(23, 59, 59, 999);
+    //         this.filtros.data.$lte = dataFim;
+    //         }
+    //     }
+
+    //     return this;
+    // }
+
     comData(inicio, fim) {
         if (inicio || fim) {
             this.filtros.data = {};
 
             if (inicio) {
-            const dataInicio = new Date(inicio);
-            dataInicio.setHours(0, 0, 0, 0);
-            this.filtros.data.$gte = dataInicio;
+                const [ano, mes, dia] = inicio.split('-').map(Number);
+                // Cria data UTC sem deslocamento
+                const dataInicio = new Date(Date.UTC(ano, mes - 1, dia, 0, 0, 0, 0));
+                this.filtros.data.$gte = dataInicio;
             }
 
             if (fim) {
-            const dataFim = new Date(fim);
-            dataFim.setHours(23, 59, 59, 999);
-            this.filtros.data.$lte = dataFim;
+                const [ano, mes, dia] = fim.split('-').map(Number);
+                // Data fim às 23:59:59.999 UTC
+                const dataFim = new Date(Date.UTC(ano, mes - 1, dia, 23, 59, 59, 999));
+                this.filtros.data.$lte = dataFim;
             }
         }
 
         return this;
     }
-
 
     comEndereco(endereco) {
         if(endereco) {

@@ -1,16 +1,30 @@
 import { z } from "zod";
 import mongoose from 'mongoose';
-import { enderecoSchema, tiposDemanda, statusDemanda } from "../DemandaSchema.js";
-//TODO: revisar se essas importações afetaram o teste
+import { enderecoSchema } from "../DemandaSchema.js";
+
+export const TipoDemandaEnum = z.enum([
+  "Coleta",
+  "Iluminação",
+  "Saneamento",
+  "Árvores",
+  "Animais",
+  "Pavimentação"
+]);
+
+export const StatusDemandaEnum = z.enum([
+  "Em aberto",
+  "Em andamento",
+  "Concluída"
+]);
 
 export const DemandaIdSchema = z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
     message: "ID inválido",
 });
 
 export const DemandaQuerySchema = z.object({
-    tipo: tiposDemanda
+    tipo: TipoDemandaEnum
         .optional(),
-    status: statusDemanda
+    status: StatusDemandaEnum
         .optional(),
     data_inicio: z
         .string()
