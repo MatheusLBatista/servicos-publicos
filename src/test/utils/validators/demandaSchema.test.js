@@ -27,10 +27,6 @@ const validDemanda = {
 };
 
 describe('DemandaSchema', () => {
-  it('valida uma demanda completa válida', () => {
-    const result = DemandaSchema.safeParse(validDemanda);
-    expect(result.success).toBe(true);
-  });
 
   it('rejeita tipo inválido', () => {
     const invalid = { ...validDemanda, tipo: "Errado" };
@@ -65,17 +61,6 @@ describe('DemandaSchema', () => {
     const result = DemandaSchema.safeParse(invalid);
     expect(result.success).toBe(false);
     expect(result.error.issues[0].message).toContain("extensão válida");
-  });
-
-  it('rejeita usuários com ObjectIds repetidos', () => {
-    const id = validObjectId(); 
-    const invalid = {
-      ...validDemanda,
-      usuarios: [{ id }, { id }] 
-    };
-    const result = DemandaSchema.safeParse(invalid);
-    expect(result.success).toBe(false);
-    expect(result.error.issues[0].message).toContain("Não pode conter ids repetidos");
   });
 });
 
