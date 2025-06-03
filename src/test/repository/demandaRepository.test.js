@@ -1,4 +1,4 @@
-import { CommonResponse, CustomError, HttpStatusCodes } from "../../utils/helpers";
+import { CommonResponse, CustomError, HttpStatusCodes } from "../../utils/helpers/index.js";
 import DemandaRepository from '../../repository/DemandaRepository.js';
 // import DemandaFilterBuild from "../../repository/filters/DemandaFilterBuild.js";
 
