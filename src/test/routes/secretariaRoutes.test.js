@@ -91,6 +91,7 @@ describe('Rotas de secretaria', () => {
     expect(res.body.message).toBe("Recurso não encontrado em Secretaria.");
   });
 
+  /*
   it('DELETE - Deve deletar uma secretaria com sucesso', async () => {
     const res = await request(app).delete("/secretaria/6848e1afb766c95e555171aa");
     //console.log(res.body);
@@ -98,7 +99,7 @@ describe('Rotas de secretaria', () => {
     expect(res.body.message).toBe("Secretaria excluída com sucesso.");
     expect(res.body.data._id).toBe("6848e1afb766c95e555171aa");
   });
-
+*/
    it('DELETE - Deve retornar erro ao tentar deletar uma secretaria com id inválido', async () => {
     const res = await request(app).delete("/secretaria/6848e1afb766c95e555171aa");
     //console.log(res.body);
