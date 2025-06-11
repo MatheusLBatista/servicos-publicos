@@ -34,12 +34,22 @@ beforeAll(async () => {
     };
 
     const res = await request(app).post('/demandas').send(novaDemandaFake);
-    demandaId = res.body._id;
+    demandaId = res.body.data._id;
 });
 
 //todo: organize afterall
 afterAll(async () => {
-  await DbConnect.desconectar();
+  try {
+    // Remove a demanda criada durante o teste (se ainda existir)
+    if (demandaId) {
+      await request(app).delete(`/demandas/${demandaId}`);
+    }
+
+    // Desconecta do banco após todos os testes
+    await DbConnect.desconectar();
+    } catch (error) {
+        console.error("Erro no afterAll:", error);
+    }
 });
 
 describe("Rotas de demanda", () => {
