@@ -63,6 +63,7 @@ class UsuarioRepository {
     }
 
     async buscarPorEmail(email, idIgnorado = null) {
+        console.log(email);
         const filtro = { email };
 
         if (idIgnorado) {

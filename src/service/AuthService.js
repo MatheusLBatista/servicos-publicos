@@ -19,6 +19,7 @@ class AuthService {
     }
 
     async login(body){
+        console.log(body)
         const userEncontrado = await this.repository.buscarPorEmail(body.email);
         if(!userEncontrado) {
             throw new CustomError({

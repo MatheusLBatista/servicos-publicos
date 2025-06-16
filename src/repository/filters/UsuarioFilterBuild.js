@@ -32,7 +32,7 @@ class UsuarioFilterBuild {
         return this;
     }
 
-    comNivelAcesso(nivelAcesso) {//
+    comNivelAcesso(nivelAcesso) {
         if (nivelAcesso) {
             const chave = `nivel_acesso.${nivelAcesso}`;
             this.filtros[chave] = true;
