@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
 //todo: verify this importation
@@ -7,12 +7,13 @@ import { v4 as uuid } from 'uuid';
 import TokenUtil from '../utils/TokenUtil.js';
 import AuthHelper from '../utils/AuthHelper.js';
 //todo: check what this importation do
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 
 import UsuarioRepository from "../repository/UsuarioRepository.js";
 
 class AuthService {
-    constructor( {tokenUtil: injectedToken = {}} ) {
+    constructor(params = {}) {
+        const { tokenUtil: injectedToken } = params;
         this.TokenUtil = injectedToken || tokenUtil;
         this.repository = new UsuarioRepository();
     }
@@ -25,7 +26,7 @@ class AuthService {
                 errorType: 'notFound',
                 field:"Email",
                 details:[],
-                customMessage: messages.error.unauthorized("Email ou senha.") 
+                customMessage: messages.error.unauthorized("Email") 
             })
         }
 
@@ -72,7 +73,7 @@ class AuthService {
 
         await this.repository.armazenarTokens(userEncontrado._id, accessToken, refreshtoken);
 
-        const userLogado = this.repository.buscarPorEmail(body.email);
+        const userLogado = await this.repository.buscarPorEmail(body.email);
         delete userLogado.senha;
 
         const userObject = userLogado.toObject();

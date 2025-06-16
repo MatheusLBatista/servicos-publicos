@@ -13,6 +13,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "bind": "^0.1.6",
     "dotenv": "^16.5.0",
