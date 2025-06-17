@@ -1,14 +1,9 @@
-// import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
-//todo: verify this importation
 import tokenUtil from '../utils/TokenUtil.js';
 import bcrypt from 'bcrypt'; 
-import { v4 as uuid } from 'uuid';
-import TokenUtil from '../utils/TokenUtil.js';
 import AuthHelper from '../utils/AuthHelper.js';
-//todo: check what this importation do
-// import fetch from 'node-fetch';
+// import fetch from 'node-fetch'; - importacao de biblioteca para utilizar api externa
 
 import UsuarioRepository from "../repository/UsuarioRepository.js";
 
@@ -38,8 +33,7 @@ class AuthService {
                 errorType:'notFound',
                 field:'Senha',
                 details:[],
-                //todo: change for 'credenciais invalidas' after i fix the problem
-                customMessage: messages.error.unauthorized('Senha')
+                customMessage: messages.error.unauthorized('Credenciais inválidas')
             })
         }
 

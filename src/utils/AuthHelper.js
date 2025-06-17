@@ -11,7 +11,8 @@ class AuthHelper {
     }
 
     static async hashPassword(password) {
-        return await bcrypt.hash(password, 10);
+        const hashed = await bcrypt.hash(password, 10);
+        return { senha: hashed };
     }
 }
 

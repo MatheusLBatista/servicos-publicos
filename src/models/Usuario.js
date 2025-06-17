@@ -12,7 +12,6 @@ class Usuario {
     constructor() {
         const usuarioSchema = new mongoose.Schema(
             {
-                //TODO: implementar unique no service
                 cpf: { type: String, unique: true },
                 email: { type: String, unique: true },
                 celular: { type: String },
@@ -33,8 +32,7 @@ class Usuario {
                 ativo: { type: Boolean, default: true }, 
                 nome_social: { type: String }, 
                 portaria_nomeacao: { type: String },
-                //todo: change to false when it works
-                senha: { type: String },
+                senha: { type: String, select: false },
                 endereco: {
                     logradouro: { type: String },
                     cep: { type: String },

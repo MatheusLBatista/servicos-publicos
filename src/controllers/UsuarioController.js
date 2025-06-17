@@ -58,8 +58,7 @@ class UsuarioController {
 
         let usuarioLimpo = data.toObject();
 
-        // todo: uncomment this when it works
-        // delete usuarioLimpo.senha;
+        delete usuarioLimpo.senha;
 
         return CommonResponse.created(res, usuarioLimpo);
     }
