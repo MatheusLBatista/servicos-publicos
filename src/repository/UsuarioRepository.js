@@ -10,7 +10,7 @@ class UsuarioRepository {
         this.modelUsuario = usuarioModel;
     }
 
-    async armazenarTokens(id, accessToken, refreshToken) {
+    async armazenarTokens(id, accesstoken, refreshtoken) {
         const document = await this.modelUsuario.findById(id);
         if(!document) {
             throw new CustomError({
@@ -21,8 +21,8 @@ class UsuarioRepository {
                 customMessage: messages.error.resourceNotFound("Usuário")
             })
         }
-        document.accessToken = accessToken;
-        document.refreshToken = refreshToken;
+        document.accesstoken = accesstoken;
+        document.refreshtoken = refreshtoken;
         const data = document.save();
         return data;
     }
@@ -63,7 +63,7 @@ class UsuarioRepository {
     }
 
     async buscarPorEmail(email, idIgnorado = null) {
-        console.log(email);
+        //todo: come back here to add trim
         const filtro = { email };
 
         if (idIgnorado) {

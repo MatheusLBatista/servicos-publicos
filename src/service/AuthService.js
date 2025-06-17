@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
 //todo: verify this importation
 import tokenUtil from '../utils/TokenUtil.js';
+import bcrypt from 'bcrypt'; 
 import { v4 as uuid } from 'uuid';
 import TokenUtil from '../utils/TokenUtil.js';
 import AuthHelper from '../utils/AuthHelper.js';
@@ -19,7 +20,6 @@ class AuthService {
     }
 
     async login(body){
-        console.log(body)
         const userEncontrado = await this.repository.buscarPorEmail(body.email);
         if(!userEncontrado) {
             throw new CustomError({
@@ -27,18 +27,19 @@ class AuthService {
                 errorType: 'notFound',
                 field:"Email",
                 details:[],
-                customMessage: messages.error.unauthorized("Email") 
+                customMessage: messages.error.unauthorized("Credenciais inválidas") 
             })
         }
 
-        const senhaValida = await bycript.compare(body.senha, userEncontrado.senha);
+        const senhaValida = await bcrypt.compare(body.senha, userEncontrado.senha);
         if(!senhaValida) {
             throw new CustomError({
                 statusCode: 401,
                 errorType:'notFound',
                 field:'Senha',
                 details:[],
-                customMessage: messages.error.unauthorized('Email ou senha')
+                //todo: change for 'credenciais invalidas' after i fix the problem
+                customMessage: messages.error.unauthorized('Senha')
             })
         }
 

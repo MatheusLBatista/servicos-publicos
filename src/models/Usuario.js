@@ -33,7 +33,8 @@ class Usuario {
                 ativo: { type: Boolean, default: true }, 
                 nome_social: { type: String }, 
                 portaria_nomeacao: { type: String },
-                senha: { type: String, selected: false },
+                //todo: change to false when it works
+                senha: { type: String },
                 endereco: {
                     logradouro: { type: String },
                     cep: { type: String },
@@ -44,8 +45,8 @@ class Usuario {
                     estado: { type: String, enum: estadosBrasil }
                 },
                 tokenUnico: { type: String, select: false }, // Token único para validação de email, recuperação de senha e autenticação
-                refreshtoken: { type: String, select: false }, // Refresh token para geração de access token de autenticação longa duração 7 dias para invalidação
-                accesstoken: { type: String, select: false }, // Refresh token para  autenticação curta longa 15 minutos para invalidação
+                refreshtoken: { type: String, select: false },  
+                accesstoken: { type: String, select: false },
                
                 codigo_recupera_senha: { type: String, select: false, unique: true }, // Código de recuperação de senha, usado para validar a recuperação de senha do usuário
                 exp_codigo_recupera_senha: { type: Date, select: false } // Data de expiração do código de recuperação de senha, usado para validar a recuperação de senha do usuário
