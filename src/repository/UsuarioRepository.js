@@ -104,7 +104,7 @@ class UsuarioRepository {
             .comNivelAcesso(nivel_acesso || '')
             .comCargo(cargo || '')
             .comFormacao(formacao || '')
-            .comAtivo(ativo || '')
+            .comAtivo(ativo)
 
         if(typeof filterBuilder.build !== 'function') {
             throw new CustomError({
@@ -124,7 +124,7 @@ class UsuarioRepository {
             sort: { nome: 1 },
         };
 
-        const resultado = await this.modelUsuario.paginate({}, { page: 1, limit: 10 });
+        const resultado = await this.modelUsuario.paginate(filtros, options);
 
         resultado.docs = resultado.docs.map(doc => {
             const usuarioObj = typeof doc.toObject === 'function' ? doc.toObject() : doc;

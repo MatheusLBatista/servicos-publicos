@@ -40,14 +40,14 @@ class UsuarioFilterBuild {
         return this;
     }
 
-    comCargo(cargo) {//
+    comCargo(cargo) {
         if(cargo) {
             this.filtros.cargo = { $regex: cargo, $options: 'i' }
         }
         return this;
     }
 
-    comFormacao(formacao) {//
+    comFormacao(formacao) {
         if(formacao) {
             this.filtros.formacao = { $regex: formacao, $options: 'i' }
         }
