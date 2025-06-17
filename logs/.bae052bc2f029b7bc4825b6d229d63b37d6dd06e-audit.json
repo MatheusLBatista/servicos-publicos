@@ -6,11 +6,6 @@
     "auditLog": "/home/giullia_chiarotti/Documentos/FabricaII/fabrica/servicos-publicos/logs/.bae052bc2f029b7bc4825b6d229d63b37d6dd06e-audit.json",
     "files": [
         {
-            "date": 1747181562109,
-            "name": "/home/giullia_chiarotti/Documentos/FabricaII/fabrica/servicos-publicos/logs/combined-2025-05-13.log",
-            "hash": "740946fd32c7f591eb2ada743bf34a780989d5ddc82c754008263da30bbcbd7f"
-        },
-        {
             "date": 1747782825957,
             "name": "/home/giullia_chiarotti/Documentos/FabricaII/fabrica/servicos-publicos/logs/combined-2025-05-20.log",
             "hash": "a6a3efd6ed936b73874b378861fefb7acd6759f47a476a77df1e090028075ad6"
@@ -24,6 +19,11 @@
             "date": 1749598721747,
             "name": "/home/giullia_chiarotti/Documentos/FabricaII/fabrica/servicos-publicos/logs/combined-2025-06-10.log",
             "hash": "702353e9caaa397abc761d9fd6b64c650eaf2e46e9db0569a9e2cf8287d4923e"
+        },
+        {
+            "date": 1750203426815,
+            "name": "/home/giullia_chiarotti/Documentos/FabricaII/fabrica/servicos-publicos/logs/combined-2025-06-17.log",
+            "hash": "3c3ae9c3858bda953a5f9e525e47f7bc2b24e7d6470046dbbbd619eb9f84b7c0"
         }
     ],
     "hashType": "sha256"
