@@ -13,6 +13,7 @@ import {
     StatusService,
     asyncWrapper
 } from '../utils/helpers/index.js';
+import TokenUtil from '../utils/TokenUtil.js';
 
 // Importações necessárias para o upload de arquivos
 import fileUpload from 'express-fileupload';
@@ -28,6 +29,7 @@ const getDirname = () => path.dirname(fileURLToPath(import.meta.url));
 class UsuarioController {
     constructor() {
         this.service = new UsuarioService();
+        this.TokenUtil = TokenUtil;
     }
     
     async listar(req, res){
