@@ -27,6 +27,26 @@ class UsuarioRepository {
         return data;
     }
 
+    async removerTokens(id) {
+        const parsedData = {
+            refreshtoken: null,
+            accesstoken: null
+        };
+        const usuario = await this.modelUsuario.findByIdAndUpdate(id, parsedData, { new: true }).exec();
+
+        if(!document) {
+            throw new CustomError({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: "Usuário",
+                details: [],
+                customMessage: messages.error.resourceNotFound("Usuário")
+            })
+        }
+
+        return usuario;
+    }
+
     async buscarPorID(id, includeTokens = false) {
         let query = this.modelUsuario.findById(id);
 
