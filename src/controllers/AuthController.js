@@ -57,7 +57,6 @@ class AuthController {
         // encaminha o token para o serviço de logout
         const data = await this.service.logout(decodedId, token);
 
-        //TODO: check this messages.success.logout
         return CommonResponse.success(res, null, messages.success.logout);
     }
 }
