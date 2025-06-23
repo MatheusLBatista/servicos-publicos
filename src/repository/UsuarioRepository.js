@@ -27,6 +27,27 @@ class UsuarioRepository {
         return data;
     }
 
+    async removerTokens(id) {
+        const parsedData = {
+            refreshtoken: null,
+            accesstoken: null
+        };
+
+        const usuario = await this.modelUsuario.findByIdAndUpdate(id, parsedData, { new: true }).exec();
+
+        if (!usuario) {
+            throw new CustomError({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: "Usuário",
+                details: [],
+                customMessage: messages.error.resourceNotFound("Usuário")
+            });
+        }
+
+        return usuario;
+    }
+
     async buscarPorID(id, includeTokens = false) {
         let query = this.modelUsuario.findById(id);
 
@@ -63,7 +84,6 @@ class UsuarioRepository {
     }
 
     async buscarPorEmail(email, idIgnorado = null) {
-        //todo: come back here to add trim
         const filtro = { email };
 
         if (idIgnorado) {

@@ -77,6 +77,11 @@ class AuthService {
         return { user: { accessToken, refreshtoken, ...userObject } }
 
     }
+
+    async logout(id) {
+        const data = await this.repository.removerTokens(id);
+        return { data };
+    }
 }
 
 export default AuthService;
