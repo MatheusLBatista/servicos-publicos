@@ -13,5 +13,6 @@ const usuarioController = new UsuarioController();
 router 
     .post("/login", asyncWrapper(authController.login.bind(authController)))
     .post("/logout", asyncWrapper(authController.logout.bind(authController)))
+    .post("/revoke", asyncWrapper(authController.revoke.bind(authController)))
 
 export default router;
