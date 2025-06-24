@@ -59,6 +59,13 @@ class AuthController {
 
         return CommonResponse.success(res, null, messages.success.logout);
     }
+
+    revoke = async(req, res) => {
+        const id = req.body.id;
+        const data = await this.service.revoke(id);
+
+        return CommonResponse.success(res);
+    }
 }
 
 export default AuthController;
