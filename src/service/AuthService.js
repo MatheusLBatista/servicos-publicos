@@ -14,6 +14,11 @@ class AuthService {
         this.repository = new UsuarioRepository();
     }
 
+    async carregatokens(id, token) {
+        const data = await this.repository.buscarPorID(id, { includeTokens: true })
+        return { data };
+    }
+
     async login(body){
         const userEncontrado = await this.repository.buscarPorEmail(body.email);
         if(!userEncontrado) {
