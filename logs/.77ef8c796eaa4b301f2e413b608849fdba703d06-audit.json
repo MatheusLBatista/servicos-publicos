@@ -6,21 +6,6 @@
     "auditLog": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/.77ef8c796eaa4b301f2e413b608849fdba703d06-audit.json",
     "files": [
         {
-            "date": 1747853328383,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/error-2025-05-21.log",
-            "hash": "a53f6abff165202df108eb8739abffd513039c2cb363d0b1ee732e5ba8a36c28"
-        },
-        {
-            "date": 1747940917945,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/error-2025-05-22.log",
-            "hash": "9cb7225465d06d38c4cee6c36fbbde3d4d2d6c117ed6d27fd352d27c3018dc68"
-        },
-        {
-            "date": 1748116836286,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/error-2025-05-24.log",
-            "hash": "6dbc1e33177e55a6415219669ca43694bbc0fe85e655806093073daa9e1739da"
-        },
-        {
             "date": 1748145726738,
             "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/error-2025-05-25.log",
             "hash": "921fbb09999921cb93b140e8738886ca941a3892b7a5c2a1aa42f98429245690"
@@ -84,6 +69,11 @@
             "date": 1750385007894,
             "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/error-2025-06-19.log",
             "hash": "4cba9e9aff8c231dc5f49fd9604eb2653bb2ec3edbbc76f345eb1178c99f9add"
+        },
+        {
+            "date": 1750721797067,
+            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/error-2025-06-23.log",
+            "hash": "74475f2415f0bcecd42ef65475b5ed525f8e8695aec752463160e702dea6ef50"
         }
     ],
     "hashType": "sha256"

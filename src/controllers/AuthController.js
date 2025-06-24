@@ -61,7 +61,7 @@ class AuthController {
     }
 
     revoke = async(req, res) => {
-        const id = req.params.id;
+        const id = req.body.id;
         const data = await this.service.revoke(id);
 
         return CommonResponse.success(res);
