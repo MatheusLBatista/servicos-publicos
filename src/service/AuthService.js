@@ -82,6 +82,11 @@ class AuthService {
         const data = await this.repository.removerTokens(id);
         return { data };
     }
+
+    async revoke(id) {
+        const data = await this.repository.removerTokens(id);
+        return { data };
+    }
 }
 
 export default AuthService;
