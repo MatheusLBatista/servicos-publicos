@@ -10,9 +10,16 @@ class DemandaService {
 
     async listar(req) {
         console.log("Estou em Demanda Service");
-        const data = await this.repository.listar(req);
+        const demandas = await this.repository.listar(req);
         console.log('Estou retornando os dados em DemandaService para o controller');
-        return data;
+
+        const user = req.user_id;
+
+        const demandasFiltradas = demandas.map(demanda =>
+            this.filtrarDemandaPorUser(demanda, user)
+        )
+        
+        return demandasFiltradas;
     }
 
     async criar(parsedData) {
@@ -49,6 +56,16 @@ class DemandaService {
         const demandaExistente = await this.repository.buscarPorID(id);
 
         return demandaExistente;
+    }
+
+    async filtrarDemandaPorUser(demanda, user) {
+        if(user.nivel_acesso?.administrador) {
+            return {
+                tipo: demanda.tipo
+            }
+        }
+
+        return demanda;
     }
 } 
 
