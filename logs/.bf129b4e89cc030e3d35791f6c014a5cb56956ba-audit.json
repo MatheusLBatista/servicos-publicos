@@ -6,46 +6,6 @@
     "auditLog": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/.bf129b4e89cc030e3d35791f6c014a5cb56956ba-audit.json",
     "files": [
         {
-            "date": 1747583611069,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-18.log",
-            "hash": "2c963a961d022f006a97fac6b6509f40af5a1c51d64760f3769947409a14d2a3"
-        },
-        {
-            "date": 1747768827752,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-20.log",
-            "hash": "95812e61628b2cfd621e117b7422601c855bb50a612ff0668c8d048596755c88"
-        },
-        {
-            "date": 1747853328384,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-21.log",
-            "hash": "0e99ede0a313910b91710fc247f88ac003634459de660eca62f869c5fd7623e0"
-        },
-        {
-            "date": 1747940917946,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-22.log",
-            "hash": "0dacf8bae4b260dba93f36acdb5d0ae6da90871aec8659902b3dce8c1f3a669e"
-        },
-        {
-            "date": 1748116836287,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-24.log",
-            "hash": "781d507b0d601c734b20d956735e734a801ec7b4a0d383f9a3b8ef68288af41c"
-        },
-        {
-            "date": 1748145726739,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-25.log",
-            "hash": "97ebb68aca18037b95c82313c004aad967170a94494e4743024781a662df8c34"
-        },
-        {
-            "date": 1748361201896,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-27.log",
-            "hash": "a735094f92edfffa16448205ddfbd2650af0265fb49aa3ad7c90f027af8de57c"
-        },
-        {
-            "date": 1748454030669,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-28.log",
-            "hash": "5f06c5d538c56f2484f5dea7636b4052981649bf8056ce2668cf58faaf37521d"
-        },
-        {
             "date": 1748567189986,
             "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-29.log",
             "hash": "4a152aaa55a22dfe74181582514a031a39567c251cad06c95fb7f49d9672efaa"
@@ -89,6 +49,21 @@
             "date": 1750002967885,
             "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-06-15.log",
             "hash": "cfd52f98d3c678d30a66c5927e3aab61355d31d9a27f1dc989b7ff60b045e5c7"
+        },
+        {
+            "date": 1750988752996,
+            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-06-26.log",
+            "hash": "ec29d921291313e0bfc5dda09b0acbb2894338d67c11ef1c5986628cf1b2e545"
+        },
+        {
+            "date": 1750999494681,
+            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-06-27.log",
+            "hash": "95010cceac7211fd8a554e45437fa4da256e3e89a4f2ba99b1d2416cf3d7042a"
+        },
+        {
+            "date": 1751139111493,
+            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-06-28.log",
+            "hash": "441bc97e63e7bb9477d30c3337c8e9045eec34f5cdbbf196bc042d632dd9a88c"
         }
     ],
     "hashType": "sha256"
