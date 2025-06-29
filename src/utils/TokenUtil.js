@@ -7,7 +7,8 @@ class TokenUtil {
       jwt.sign(
         { id },
         process.env.JWT_SECRET_ACCESS_TOKEN,
-        { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION || '15m' },
+        //TODO: mudar expiration do access token
+        { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION || '1d' },
         (err, token) => {
           if (err) {
             return reject(err);

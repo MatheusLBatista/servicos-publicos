@@ -50,6 +50,16 @@ class DemandaService {
 
         return demandaExistente;
     }
+
+    async filtrarDemandaPorUser(demanda, user) {
+        if(user.nivel_acesso?.administrador) {
+            return {
+                tipo: demanda.tipo
+            }
+        }
+
+        return demanda;
+    }
 } 
 
 export default DemandaService;

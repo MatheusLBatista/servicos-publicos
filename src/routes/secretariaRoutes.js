@@ -2,18 +2,19 @@ import express from "express";
 import SecretariaController from '../controllers/SecretariaController.js';
 import { asyncWrapper } from '../utils/helpers/index.js';
 import mongoose from 'mongoose';
+import AuthMiddleware from "../middlewares/AuthMiddleware.js";
 
 const router = express.Router();
 
 const secretariaController = new SecretariaController();
 
 router
-    .get("/secretaria", asyncWrapper(secretariaController.listar.bind(secretariaController)))
-    .get("/secretaria/:id", asyncWrapper(secretariaController.listar.bind(secretariaController)))
-    .post("/secretaria", asyncWrapper(secretariaController.criar.bind(secretariaController)))
-    .patch("/secretaria/:id", asyncWrapper(secretariaController.atualizar.bind(secretariaController)))
-    .put("/secretaria/:id", asyncWrapper(secretariaController.atualizar.bind(secretariaController)))
-    .delete("/secretaria/:id", asyncWrapper(secretariaController.deletar.bind(secretariaController)))
+    .get("/secretaria", AuthMiddleware, asyncWrapper(secretariaController.listar.bind(secretariaController)))
+    .get("/secretaria/:id",AuthMiddleware, asyncWrapper(secretariaController.listar.bind(secretariaController)))
+    .post("/secretaria",AuthMiddleware, asyncWrapper(secretariaController.criar.bind(secretariaController)))
+    .patch("/secretaria/:id",AuthMiddleware, asyncWrapper(secretariaController.atualizar.bind(secretariaController)))
+    .put("/secretaria/:id",AuthMiddleware, asyncWrapper(secretariaController.atualizar.bind(secretariaController)))
+    .delete("/secretaria/:id",AuthMiddleware, asyncWrapper(secretariaController.deletar.bind(secretariaController)))
 
     console.log("Rotas de Secretaria carregadas");
 
