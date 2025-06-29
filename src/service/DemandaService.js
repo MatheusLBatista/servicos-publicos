@@ -10,10 +10,28 @@ class DemandaService {
 
     async listar(req) {
         console.log("Estou em Demanda Service");
+
         const data = await this.repository.listar(req);
         console.log('Estou retornando os dados em DemandaService para o controller');
+
+        console.log("Usuário logado:", req.user);
+
+        const nivel = req.user?.nivel_acesso || {};
+        if (nivel.administrador) {
+            console.log("Usuário é admin");
+            
+            data.docs.forEach((demanda) => {
+                delete demanda.tipo;
+            });
+
+            console.log(data);
+        } else {
+            console.log("Usuário NÃO é admin");
+        }
+
         return data;
     }
+
 
     async criar(parsedData) {
         console.log("Estou em Demanda Service");

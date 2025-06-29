@@ -5,10 +5,12 @@ import AuthenticationError from '../utils/errors/AuthenticationError.js';
 import TokenExpiredError from '../utils/errors/TokenExpiredError.js';
 import { CustomError } from '../utils/helpers/index.js';
 import AuthService from '../service/AuthService.js';
+import UsuarioRepository from '../repository/UsuarioRepository.js';
 
 class AuthMiddleware {
   constructor() {
    this.service = new AuthService();
+   this.userRepository = new UsuarioRepository();
 
     /**
      * Vinculação para grantir ao método handle o contexto 'this' correto
@@ -53,7 +55,20 @@ class AuthMiddleware {
       }
 
       // Se o token for válido, anexa o user_id à requisição
-      req.user_id = decoded.id;
+      // Recupera o usuário completo pelo ID decodificado
+      const usuario = await this.userRepository.buscarPorID(decoded.id);
+
+      if (!usuario) {
+        throw new CustomError({
+          statusCode: 401,
+          errorType: 'unauthorized',
+          field: 'Usuário',
+          details: [],
+          customMessage: 'Usuário não encontrado!'
+        });
+      }
+
+      req.user = usuario;
       next();
 
     } catch (err) {
@@ -62,7 +77,7 @@ class AuthMiddleware {
       } else if (err.name === 'TokenExpiredError') {
         next(new TokenExpiredError("O token JWT está expirado!"));
       } else {
-        next(err); // Passa outros erros para o errorHandler
+        next(err); 
       }
     }
   }
