@@ -10,16 +10,9 @@ class DemandaService {
 
     async listar(req) {
         console.log("Estou em Demanda Service");
-        const demandas = await this.repository.listar(req);
+        const data = await this.repository.listar(req);
         console.log('Estou retornando os dados em DemandaService para o controller');
-
-        const user = req.user_id;
-
-        const demandasFiltradas = demandas.map(demanda =>
-            this.filtrarDemandaPorUser(demanda, user)
-        )
-        
-        return demandasFiltradas;
+        return data;
     }
 
     async criar(parsedData) {

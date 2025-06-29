@@ -6,26 +6,6 @@
     "auditLog": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/.bf129b4e89cc030e3d35791f6c014a5cb56956ba-audit.json",
     "files": [
         {
-            "date": 1748361201896,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-27.log",
-            "hash": "a735094f92edfffa16448205ddfbd2650af0265fb49aa3ad7c90f027af8de57c"
-        },
-        {
-            "date": 1748454030669,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-28.log",
-            "hash": "5f06c5d538c56f2484f5dea7636b4052981649bf8056ce2668cf58faaf37521d"
-        },
-        {
-            "date": 1748567189986,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-29.log",
-            "hash": "4a152aaa55a22dfe74181582514a031a39567c251cad06c95fb7f49d9672efaa"
-        },
-        {
-            "date": 1748608042230,
-            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-30.log",
-            "hash": "b29b231826e77ac44c3e7ee81cfeb23debdfd062db66ecaedbf1dffd29a9fc0a"
-        },
-        {
             "date": 1748710740748,
             "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-05-31.log",
             "hash": "bf45d1d8bf1f74d81600dad659f5a2df616d4c3f69cce83d1788a1b83061aec7"
@@ -74,6 +54,11 @@
             "date": 1750739311776,
             "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-06-24.log",
             "hash": "2bae9f04033bc7ea6dd64303d682f4b2ad8acb68b8346d0eebc4b75970b6713d"
+        },
+        {
+            "date": 1751237909622,
+            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-06-29.log",
+            "hash": "64aaa9fcefcc652d3f0478a1f5fecbfd70c471eeb91e15c3c700c20dab1b722c"
         }
     ],
     "hashType": "sha256"
