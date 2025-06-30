@@ -2,36 +2,31 @@ import mongoose from "mongoose";
 import DemandaRepository from "../repository/DemandaRepository.js";
 import { parse } from 'dotenv';
 import CustomError from "../utils/helpers/CustomError.js";
+import UsuarioRepository from "../repository/UsuarioRepository.js";
 
 class DemandaService {
     constructor(){
         this.repository = new DemandaRepository()
+        this.userRepository = new UsuarioRepository()
     }
 
     async listar(req) {
         console.log("Estou em Demanda Service");
 
+        const usuario = await this.userRepository.buscarPorID(req.user_id);
+        const nivel = usuario.nivel_acesso || {};
+
         const data = await this.repository.listar(req);
-        console.log('Estou retornando os dados em DemandaService para o controller');
 
-        console.log("Usuário logado:", req.user);
-
-        const nivel = req.user?.nivel_acesso || {};
-        if (nivel.administrador) {
-            console.log("Usuário é admin");
-            
-            data.docs.forEach((demanda) => {
-                delete demanda.tipo;
-            });
-
-            console.log(data);
-        } else {
-            console.log("Usuário NÃO é admin");
+        if (!nivel.secretario) {
+            data.docs = await Promise.all(
+                data.docs.map(demanda => this.filtrarDemandaPorUser(demanda, usuario))
+            );
         }
 
+        console.log('Estou retornando os dados em DemandaService para o controller');
         return data;
     }
-
 
     async criar(parsedData) {
         console.log("Estou em Demanda Service");
@@ -69,12 +64,31 @@ class DemandaService {
         return demandaExistente;
     }
 
-    async filtrarDemandaPorUser(demanda, user) {
-        if(user.nivel_acesso?.administrador) {
-            return {
-                tipo: demanda.tipo
+    async nivelAcesso(nivelAcesso) {
+        const permissoes = { 
+            //TODO: revisar com cliente
+            secretario: ["_id", "tipo", "status", "data", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem", "motivo_devolucao", "link_imagem_resolucao", "usuarios", "createdAt", "updatedAt", "estatisticas", "endereco"], 
+            administrador: ["_id", "tipo", "status", "data", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem", "motivo_devolucao", "link_imagem_resolucao", "usuarios", "createdAt", "updatedAt", "estatisticas", "endereco"],
+            municipe: ["tipo", "_id", "status", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem_resolucao", "link_imagem", "endereco", "createdAt", "updatedAt", "estatisticas"],
+            //removi usuário
+            operador: ["_id", "tipo", "status", "data", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem", "motivo_devolucao", "link_imagem_resolucao", "createdAt", "updatedAt", "estatisticas", "endereco"]
+        };
+
+        const niveis = ['administrador', 'secretario', 'operador', 'municipe'];
+
+        const nivelAtivo = niveis.find(nivel => nivelAcesso[nivel]);
+
+        return permissoes[nivelAtivo] || [];
+    }
+
+    async filtrarDemandaPorUser(demanda, usuario) {
+        const camposPermitidos = await this.nivelAcesso(usuario.nivel_acesso);
+
+        Object.keys(demanda).forEach(campo => {
+            if(!camposPermitidos.includes(campo)){
+                delete demanda[campo];
             }
-        }
+        });
 
         return demanda;
     }
