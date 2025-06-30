@@ -50,7 +50,12 @@ const fakeMappings = {
       estado: () => {
         return estadosBrasil[Math.floor(Math.random() * estadosBrasil.length)];
       }
-  }
+    },
+    tokenUnico: () => "",
+    accesstoken: () => "",
+    refreshtoken: () => "",
+    codigo_recupera_senha: () => "",
+    exp_codigo_recupera_senha: () => undefined
   },
 
   Secretaria: {
@@ -59,7 +64,7 @@ const fakeMappings = {
       return values[Math.floor(Math.random() * values.length)]
     },
     sigla: () => fakebr.lorem.word(),
-    email_secretaria: () => fakebr.internet.email(),
+    email: () => fakebr.internet.email(),
     telefone: () => fakebr.phone.number('(##) 9####-####')
   },
 
