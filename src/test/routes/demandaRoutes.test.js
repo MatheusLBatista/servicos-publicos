@@ -23,15 +23,6 @@ describe('Rotas de demanda', () => {
     expect(res.body.message).toBe("Requisição bem-sucedida");
   });
 
-  // 
-  // it('GET - Deve retornar erro ao não encontrar rota', async () => {
-  //   const res = await request(app).get("/demanda");
-  //   expect(res.status).toBe(404);
-  //   expect(res.body.message).toBe("Recurso não encontrado em null.");
-  //   expect(Array.isArray(res.body.errors)).toBe(true);
-  //   expect(res.body.errors[0].message).toBe("Rota não encontrada.");
-  // });
-
   it('GET - Deve retornar uma demanda pelo ID', async () => {
     const res = await request(app).get("/demandas/6848d8204febcca70f394222");
     expect(res.status).toBe(200);
