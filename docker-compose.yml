@@ -1,0 +1,19 @@
+
+services:
+  mongodb:
+    container_name: mongodb-servicos
+    image: mongo:8
+    volumes:
+      - vol-mongodb-servicos:/data/db
+    ports:
+      - 27017:27017
+  api:
+    container_name: api
+    build: ./
+    environment:
+      - DB_URL=mongodb://mongodb-servicos:27017/exemplo
+    ports:
+      - 5011:5011
+
+volumes:
+  vol-mongodb-servicos: 

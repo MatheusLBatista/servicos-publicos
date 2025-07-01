@@ -38,8 +38,14 @@ export const UsuarioQuerySchema = z.object({
             message: "Nível de acesso inválido."
         }),
     ativo: z
-        .boolean()
-        .optional(),
+        .preprocess(
+            (val) => {
+                if (val === 'true' || val === true || val === 1 || val === '1') return true;
+                if (val === 'false' || val === false || val === 0 || val === '0') return false;
+                return undefined;
+            },
+            z.boolean().optional()
+        ),
     page: z
         .string()
         .optional()

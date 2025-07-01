@@ -1,10 +1,10 @@
 // /src/services/UsuarioService.js
-// import bcrypt from 'bcrypt';
 // import { PermissoesArraySchema } from '../utils/validators/schemas/zod/PermissaoValidation.js';
 // import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
-// import AuthHelper from '../utils/AuthHelper.js';
+import AuthHelper from '../utils/AuthHelper.js';
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 import UsuarioRepository from '../repository/UsuarioRepository.js';
 import { parse } from 'dotenv';
 
@@ -26,9 +26,14 @@ class UsuarioService {
         //valida email único
         await this.validateEmail(parsedData.email);
 
+        //gerar senha hash
+        if(parsedData.senha) {
+            const { senha: senhaValidada } = await AuthHelper.hashPassword(parsedData.senha);
+            parsedData.senha = senhaValidada;
+        }
+
         //chama o repositório
         const data = await this.repository.criar(parsedData);
-
         return data;
     }
 
