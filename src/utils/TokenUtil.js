@@ -3,14 +3,35 @@ import jwt from 'jsonwebtoken';
 
 class TokenUtil {
   generateAccessToken(id) {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION
+    return new Promise((resolve, reject) => {
+      jwt.sign(
+        { id },
+        process.env.JWT_SECRET_ACCESS_TOKEN,
+        //TODO: mudar expiration do access token
+        { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION || '1d' },
+        (err, token) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(token);
+        }
+      );
     });
   }
 
   generateRefreshToken(id) {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION
+    return new Promise((resolve, reject) => {
+      jwt.sign(
+        { id },
+        process.env.JWT_SECRET_REFRESH_TOKEN,
+        { expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION || '7d' },
+        (err, token) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(token);
+        }
+      );
     });
   }
 }
