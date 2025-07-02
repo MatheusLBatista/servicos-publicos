@@ -52,7 +52,7 @@ async function seedDemanda() {
         complemento: globalFakeMapping.endereco.complemento()
       },
       usuarios: [usuarioAleatorio._id],
-      secretaria: [secretariaAleatoria._id]
+      secretarias: [secretariaAleatoria._id]
     });
   }
 

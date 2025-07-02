@@ -57,7 +57,7 @@ async function seedUsuario() {
         cidade: globalFakeMapping.endereco.cidade(),
         estado: globalFakeMapping.endereco.estado(),
       },
-      secretaria: [secretariaAleatoria._id]
+      secretarias: [secretariaAleatoria._id]
     });
   }
 
