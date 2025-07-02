@@ -41,7 +41,8 @@ class DemandaRepository {
 
         if(id) {
             const data = await this.modelDemanda.findById(id)
-                .populate('usuarios');
+                .populate('usuarios')
+                .populate('secretarias');
 
             if(!data) {
                 throw new CustomError({
@@ -82,7 +83,10 @@ class DemandaRepository {
         const options = {
             page: parseInt(page, 10),
             limit: parseInt(limite, 10),
-            populate: { path: 'usuarios' },
+            populate: [
+                { path: 'usuarios' },
+                { path: 'secretarias' }
+            ],
             sort: { nome: 1 } 
         };
 
