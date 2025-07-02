@@ -3,6 +3,7 @@ import { randomBytes as _randomBytes } from "crypto";
 import Usuario from "../models/Usuario.js";
 import getGlobalFakeMapping from "./globalFakeMapping.js";
 import bcrypt from "bcryptjs";
+import Secretaria from "../models/Secretaria.js"
 
 // Conexão com banco
 import DbConnect from "../config/dbConnect.js";
@@ -21,9 +22,17 @@ const globalFakeMapping = await getGlobalFakeMapping();
 async function seedUsuario() {
   await Usuario.deleteMany();
 
+  const secretarias = await Secretaria.find();
+  
+  if (secretarias.length === 0) {
+    throw new Error("Nenhum usuário encontrado. Rode o seed de usuários primeiro.");
+  }
+
   const usuarios = [];
 
   for (let i = 0; i <= 10; i++) {
+    const secretariaAleatoria = secretarias[Math.floor(Math.random() * secretarias.length)];
+
     usuarios.push({
       link_imagem: globalFakeMapping.link_imagem(),
       ativo: globalFakeMapping.ativo(),
@@ -47,7 +56,8 @@ async function seedUsuario() {
         complemento: globalFakeMapping.endereco.complemento(),
         cidade: globalFakeMapping.endereco.cidade(),
         estado: globalFakeMapping.endereco.estado(),
-      }
+      },
+      secretaria: [secretariaAleatoria._id]
     });
   }
 

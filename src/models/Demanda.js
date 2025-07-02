@@ -45,6 +45,13 @@ class Demanda {
                         type: mongoose.Schema.Types.ObjectId,
                         ref: 'usuarios'
                     }
+                ],
+
+                secretarias: [
+                    {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'secretarias',
+                    }
                 ]
             }, 
             {

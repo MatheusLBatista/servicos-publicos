@@ -15,7 +15,7 @@ const fakeMappings = {
       const values =  [ "Coleta", "Iluminação", "Animais", "Pavimentação", "Árvores", "Saneamento" ]
       return values[Math.floor(Math.random() * values.length)]
     },
-
+    secretarias: () => [{ _id: new mongoose.Types.ObjectId().toString() }],
   }, 
 
   Usuario: {
