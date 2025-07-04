@@ -10,6 +10,8 @@ class UsuarioRepository {
         this.modelUsuario = usuarioModel;
     }
 
+    //TODO: adicionar regra de negócio que apenas operador e secretario tem secretaria de atributo? talvez
+
     async armazenarTokens(id, accesstoken, refreshtoken) {
         const document = await this.modelUsuario.findById(id);
         if(!document) {
@@ -116,7 +118,7 @@ class UsuarioRepository {
             return data;
         }
 
-        const { nome, email, nivel_acesso, cargo, formacao, ativo, page = 1 } = req.query;
+        const { nome, email, nivel_acesso, cargo, formacao, secretaria, ativo, page = 1 } = req.query;
         const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
         
         const filterBuilder = new UsuarioFilterBuild()
@@ -126,6 +128,8 @@ class UsuarioRepository {
             .comCargo(cargo || '')
             .comFormacao(formacao || '')
             .comAtivo(ativo)
+
+            await filterBuilder.comSecretaria(secretaria || '');
 
         if(typeof filterBuilder.build !== 'function') {
             throw new CustomError({

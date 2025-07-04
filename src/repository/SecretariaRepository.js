@@ -32,7 +32,6 @@ class SecretariaRepository {
         return secretaria;
     }
 
-
     async buscarPorNome(nome, idIgnorado = null) {
         const filtro = { nome };
 

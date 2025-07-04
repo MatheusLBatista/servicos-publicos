@@ -57,7 +57,7 @@ class DemandaRepository {
             return data;
         }
 
-        const { tipo, status, data_inicio, data_fim, endereco, usuario, page = 1 } = req.query;
+        const { tipo, status, data_inicio, data_fim, endereco, usuario, secretaria, page = 1 } = req.query;
         const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
 
         const filterBuilder = new DemandaFilterBuild()
@@ -67,6 +67,7 @@ class DemandaRepository {
             .comStatus(status || '')
 
         await filterBuilder.comUsuario(usuario || '');
+        await filterBuilder.comSecretaria(secretaria || '');
 
         if (typeof filterBuilder.build !== 'function') {
             throw new CustomError({
@@ -84,7 +85,7 @@ class DemandaRepository {
             page: parseInt(page, 10),
             limit: parseInt(limite, 10),
             populate: [
-                { path: 'usuarios' },
+                { path: 'usuarios', populate: { path: 'secretarias' } },
                 { path: 'secretarias' }
             ],
             sort: { nome: 1 } 
