@@ -6,49 +6,9 @@
     "auditLog": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\.8e9fdd827ce65d0afdb390ad295c48fb304140d8-audit.json",
     "files": [
         {
-            "date": 1748132443453,
-            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\error-2025-05-24.log",
-            "hash": "ad2eb96e305d20bddf48ca10723374f876095a8be6a3dca1d38288646264cd10"
-        },
-        {
-            "date": 1748213229678,
-            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\error-2025-05-25.log",
-            "hash": "a11c1a508b7c80c7efc8bff707d1ea39b2554a7e1d85115cbe18f0f5a3c7c098"
-        },
-        {
-            "date": 1748315945157,
-            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\error-2025-05-26.log",
-            "hash": "584225490cf648c1593a425c725ac9247fd92904b14eda74a14c27abb8ff3e38"
-        },
-        {
-            "date": 1748318534214,
-            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\error-2025-05-27.log",
-            "hash": "0871f54d0e691bd2c19dc86bce21db3e0867f67fbf126ccf8a81db25d1427e89"
-        },
-        {
-            "date": 1748447202947,
-            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\error-2025-05-28.log",
-            "hash": "d1e34b8fe11c479ab1d11ffca11d1d19d30561715f8f6eb32ff3ec3ad31ce1f8"
-        },
-        {
-            "date": 1748545845336,
-            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\error-2025-05-29.log",
-            "hash": "e2ef0a1a644b698de648b052b188b3202917d253d5ea9e769de14e3029c93187"
-        },
-        {
-            "date": 1748624853554,
-            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\error-2025-05-30.log",
-            "hash": "e5179791a10bed919878b192d2b128eb16f6eba0c844dc855273f189f8fadc87"
-        },
-        {
-            "date": 1748728106318,
-            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\error-2025-05-31.log",
-            "hash": "bab6ba2210d2550762b78a33760f5058b54125d947aac9fe90a1ce68c8e03983"
-        },
-        {
-            "date": 1748750959471,
-            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\error-2025-06-01.log",
-            "hash": "0d2d672de33683c3511705b755a7ed23b72ad6e98931a29ab9c300d1da707031"
+            "date": 1751657870675,
+            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\error-2025-07-04.log",
+            "hash": "d46f3c915ca76f7df537699a392c93ea600d87460001cc4a80d7131805b617fb"
         }
     ],
     "hashType": "sha256"
