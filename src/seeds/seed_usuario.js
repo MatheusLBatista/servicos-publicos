@@ -123,7 +123,7 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    secretarias: ["683bc2d062191c4b92f76fb2"]
+    secretarias: ["68673315cc04b34531e4fd1e"]
   });
 
   // Usuário operador fixo
@@ -156,7 +156,7 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    secretarias: ["683bc2d062191c4b92f76fb2"]
+    secretarias: ["68673315cc04b34531e4fd1e"]
   });
 
   // Usuário munícipe fixo

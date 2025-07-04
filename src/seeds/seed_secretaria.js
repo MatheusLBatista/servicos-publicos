@@ -19,7 +19,7 @@ async function seedSecretaria() {
     secretararia.push({
       nome: globalFakeMapping.nome_secretaria(),
       sigla: globalFakeMapping.sigla(),
-      email: globalFakeMapping.email_secretaria(),
+      email: globalFakeMapping.email(),
       telefone: globalFakeMapping.telefone()
     });
   }

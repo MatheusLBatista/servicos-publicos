@@ -9,7 +9,7 @@ class DemandaService {
         this.repository = new DemandaRepository()
         this.userRepository = new UsuarioRepository()
     }
-
+/* 
     async listar(req) {
         console.log("Estou em Demanda Service");
 
@@ -18,6 +18,16 @@ class DemandaService {
 
         const data = await this.repository.listar(req);
 
+        if (nivel.secretario || nivel.operador) {
+            const secretariasUsuario = usuario.secretarias?.map(s => s._id.toString());
+
+            data.docs = data.docs.filter(demanda => {
+                const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
+                return secretariasDemanda.some(id => secretariasUsuario.includes(id));
+            });
+        }
+
+        // Se NÃO for secretario, filtra por campos visíveis
         if (!nivel.secretario) {
             data.docs = await Promise.all(
                 data.docs.map(demanda => this.filtrarDemandaPorUser(demanda, usuario))
@@ -27,7 +37,17 @@ class DemandaService {
         console.log('Estou retornando os dados em DemandaService para o controller');
         return data;
     }
+*/
 
+    async listar(req) {
+        console.log("Estou em Demanda Service");
+        const data = await this.repository.listar(req);
+        console.log('Estou retornando os dados em DemandaService para o controller');
+        return data;
+    }
+    
+    //todo: direcionar demanda pra secretaria responsável?
+    //todo: ajustar verificação de obrigatoriedade na demanda
     async criar(parsedData) {
         console.log("Estou em Demanda Service");
 

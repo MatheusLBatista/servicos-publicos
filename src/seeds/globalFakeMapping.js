@@ -65,7 +65,7 @@ const fakeMappings = {
     },
     sigla: () => fakebr.lorem.word(),
     email: () => fakebr.internet.email(),
-    telefone: () => fakebr.phone.number('(##) 9####-####')
+    telefone: () => faker.phone.number('(##) 9####-####')
   },
 
   TipoDemanda: {
