@@ -10,6 +10,44 @@ class UsuarioRepository {
         this.modelUsuario = usuarioModel;
     }
 
+    async armazenarTokens(id, accesstoken, refreshtoken) {
+        const document = await this.modelUsuario.findById(id);
+        if(!document) {
+            throw new CustomError({
+                statusCode: 401,
+                errorType: "resourceNotFound",
+                field: "Usuário",
+                details: [],
+                customMessage: messages.error.resourceNotFound("Usuário")
+            })
+        }
+        document.accesstoken = accesstoken;
+        document.refreshtoken = refreshtoken;
+        const data = document.save();
+        return data;
+    }
+
+    async removerTokens(id) {
+        const parsedData = {
+            refreshtoken: null,
+            accesstoken: null
+        };
+
+        const usuario = await this.modelUsuario.findByIdAndUpdate(id, parsedData, { new: true }).exec();
+
+        if (!usuario) {
+            throw new CustomError({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: "Usuário",
+                details: [],
+                customMessage: messages.error.resourceNotFound("Usuário")
+            });
+        }
+
+        return usuario;
+    }
+
     async buscarPorID(id, includeTokens = false) {
         let query = this.modelUsuario.findById(id);
 
@@ -32,18 +70,18 @@ class UsuarioRepository {
         return user;
     }
 
-async buscarPorNome(nome, idIgnorado = null) {
-    const filtro = {
-        nome: { $regex: nome, $options: 'i' }
-    };
+    async buscarPorNome(nome, idIgnorado = null) {
+        const filtro = {
+            nome: { $regex: nome, $options: 'i' }
+        };
 
-    if (idIgnorado) {
-        filtro._id = { $ne: idIgnorado };
+        if (idIgnorado) {
+            filtro._id = { $ne: idIgnorado };
+        }
+
+        const documentos = await this.modelUsuario.findOne(filtro);
+        return documentos;
     }
-
-    const documentos = await this.modelUsuario.findOne(filtro);
-    return documentos;
-}
 
     async buscarPorEmail(email, idIgnorado = null) {
         const filtro = { email };
@@ -86,7 +124,7 @@ async buscarPorNome(nome, idIgnorado = null) {
             .comNivelAcesso(nivel_acesso || '')
             .comCargo(cargo || '')
             .comFormacao(formacao || '')
-            .comAtivo(ativo || '')
+            .comAtivo(ativo)
 
         if(typeof filterBuilder.build !== 'function') {
             throw new CustomError({
@@ -106,7 +144,7 @@ async buscarPorNome(nome, idIgnorado = null) {
             sort: { nome: 1 },
         };
 
-        const resultado = await this.modelUsuario.paginate({}, { page: 1, limit: 10 });
+        const resultado = await this.modelUsuario.paginate(filtros, options);
 
         resultado.docs = resultado.docs.map(doc => {
             const usuarioObj = typeof doc.toObject === 'function' ? doc.toObject() : doc;

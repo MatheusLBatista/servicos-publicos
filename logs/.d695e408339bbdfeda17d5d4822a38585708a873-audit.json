@@ -6,14 +6,9 @@
     "auditLog": "/home/matheus_batista/Documentos/fabrica-software/servicos-publicos/logs/.d695e408339bbdfeda17d5d4822a38585708a873-audit.json",
     "files": [
         {
-            "date": 1746667131701,
-            "name": "/home/matheus_batista/Documentos/fabrica-software/servicos-publicos/logs/error-2025-05-07.log",
-            "hash": "47b67fab27098558773ac3bd06aa9c1c0a3af4e88c3cf2a4ef56b697b013567d"
-        },
-        {
-            "date": 1747185852374,
-            "name": "/home/matheus_batista/Documentos/fabrica-software/servicos-publicos/logs/error-2025-05-13.log",
-            "hash": "5346f621c5f4614920e08c9eb18359d520e298162461725b494586607aa19b5f"
+            "date": 1751072492852,
+            "name": "/home/matheus_batista/Documentos/fabrica-software/servicos-publicos/logs/error-2025-06-27.log",
+            "hash": "34b2a0effe3d2e000ca9cdaac2ca4b6e48564345c865ac6416ebe5a720224035"
         }
     ],
     "hashType": "sha256"

@@ -12,7 +12,6 @@ class Usuario {
     constructor() {
         const usuarioSchema = new mongoose.Schema(
             {
-                //TODO: implementar unique no service
                 cpf: { type: String, unique: true },
                 email: { type: String, unique: true },
                 celular: { type: String },
@@ -33,7 +32,7 @@ class Usuario {
                 ativo: { type: Boolean, default: true }, 
                 nome_social: { type: String }, 
                 portaria_nomeacao: { type: String },
-                senha: { type: String },
+                senha: { type: String, select: false },
                 endereco: {
                     logradouro: { type: String },
                     cep: { type: String },
@@ -42,7 +41,13 @@ class Usuario {
                     complemento: { type: String },
                     cidade: { type: String },
                     estado: { type: String, enum: estadosBrasil }
-                }
+                },
+                tokenUnico: { type: String, select: false }, // Token único para validação de email, recuperação de senha e autenticação
+                refreshtoken: { type: String, select: false },  
+                accesstoken: { type: String, select: false },
+               
+                codigo_recupera_senha: { type: String, select: false, unique: true }, // Código de recuperação de senha, usado para validar a recuperação de senha do usuário
+                exp_codigo_recupera_senha: { type: Date, select: false } // Data de expiração do código de recuperação de senha, usado para validar a recuperação de senha do usuário
             }, 
             {
                 timestamps: true,
