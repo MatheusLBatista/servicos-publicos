@@ -3,20 +3,29 @@ import secretariaRoutes from '../../routes/secretariaRoutes.js';
 import DbConnect from '../../config/dbConnect.js';
 import request from 'supertest';
 import errorHandler from '../../utils/helpers/errorHandler.js';
+import authRoutes from '../../routes/authRoutes.js'
 
 let app; 
+let token;
 
 beforeAll(async () => {
   app = express(); 
   await DbConnect.conectar(); 
   app.use(express.json());
+  app.use(authRoutes);
   app.use(secretariaRoutes);
   app.use(errorHandler)
+
+  const loginRes = await request(app)
+      .post('/login')
+      .send({ email: "admin@exemplo.com", senha: "Senha@123" });
+  
+    token = loginRes.body.data.user.accessToken;
 });
 
 describe('Rotas de secretaria', () => {
   it('GET - Deve retornar uma lista das secretarias cadastradas', async () => {
-    const res = await request(app).get("/secretaria");
+    const res = await request(app).get("/secretaria").set('Authorization', `Bearer ${token}`);
     //console.log(res.body);
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Requisição bem-sucedida");
@@ -31,15 +40,15 @@ describe('Rotas de secretaria', () => {
   });*/
 
   it('GET - Deve retornar uma secretaria pelo ID', async () => {
-    const res = await request(app).get("/secretaria/6848e1d65608a74a1f050104");
+    const res = await request(app).get("/secretaria/68673315cc04b34531e4fd27").set('Authorization', `Bearer ${token}`);
     //console.log(res.body);
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Requisição bem-sucedida");
-    expect(res.body.data._id).toBe("6848e1d65608a74a1f050104");
+    expect(res.body.data._id).toBe("68673315cc04b34531e4fd27");
   });
 
   it('GET - Deve retornar erro de recurso não encontrado em secretaria pelo ID não existente', async () => {
-    const res = await request(app).get("/secretaria/683bc26562191c4b92f76f88");
+    const res = await request(app).get("/secretaria/683bc26562191c4b92f76f88").set('Authorization', `Bearer ${token}`);
     //console.log(res.body);
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("Recurso não encontrado em Secretaria.");
@@ -68,7 +77,7 @@ describe('Rotas de secretaria', () => {
       email: "meioambiente@prefeitura.com",
       telefone: "(69) 99999-9999",
     };
-    const res = await request(app).post("/secretaria").send(novaSecretaria);
+    const res = await request(app).post("/secretaria").send(novaSecretaria).set('Authorization', `Bearer ${token}`);
     //console.log(res.body);
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("message", "Nome já cadastrado.");
@@ -78,7 +87,7 @@ describe('Rotas de secretaria', () => {
     const atualizacao = {
       sigla: "sigla atualizada",
     };
-    const res = await request(app).patch(`/secretaria/6848e18d04ef11946571b3d9`).send(atualizacao);
+    const res = await request(app).patch(`/secretaria/68673315cc04b34531e4fd27`).send(atualizacao).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveProperty("sigla", atualizacao.sigla);
   });
@@ -86,7 +95,7 @@ describe('Rotas de secretaria', () => {
   it('PATCH - Deve retornar erro ao tentar atualizar uma secretaria inexistente', async () => {
     const res = await request(app).patch(`/secretaria/666666666666666666666666`).send({
       sigla: "Teste inválido"
-    });
+    }).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("Recurso não encontrado em Secretaria.");
   });
@@ -101,7 +110,7 @@ describe('Rotas de secretaria', () => {
   });
 */
    it('DELETE - Deve retornar erro ao tentar deletar uma secretaria com id inválido', async () => {
-    const res = await request(app).delete("/secretaria/6848e1afb766c95e555171aa");
+    const res = await request(app).delete("/secretaria/6848e1afb766c95e555171aa").set('Authorization', `Bearer ${token}`); 
     //console.log(res.body);
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("Recurso não encontrado em Secretaria.");
