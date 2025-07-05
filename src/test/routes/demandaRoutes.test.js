@@ -5,33 +5,42 @@ import request from "supertest";
 import errorHandler from "../../utils/helpers/errorHandler.js";
 import fakebr from 'faker-br';
 import { v4 as uuid } from 'uuid';
+import authRoutes from '../../routes/authRoutes.js'
 
 let app;
+let token;
 
 beforeAll(async () => {
   app = express();
   await DbConnect.conectar();
   app.use(express.json());
+  app.use(authRoutes);
   app.use(demandaRoutes);
   app.use(errorHandler);
+
+  const loginRes = await request(app)
+      .post('/login')
+      .send({ email: "admin@exemplo.com", senha: "Senha@123" });
+  
+    token = loginRes.body.data.user.accessToken;
 });
 
 describe('Rotas de demanda', () => {
   it('GET - Deve retornar uma lista das demandas cadastradas', async () => {
-    const res = await request(app).get("/demandas");
+    const res = await request(app).get("/demandas").set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Requisição bem-sucedida");
   });
 
   it('GET - Deve retornar uma demanda pelo ID', async () => {
-    const res = await request(app).get("/demandas/6848d8204febcca70f394222");
+    const res = await request(app).get("/demandas/686734ee81ab0540cadb7c75").set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Requisição bem-sucedida");
-    expect(res.body.data._id).toBe("6848d8204febcca70f394222");
+    expect(res.body.data._id).toBe("686734ee81ab0540cadb7c75");
   });
 
   it('GET - Deve retornar erro de recurso não encontrado em demanda pelo ID não existente', async () => {
-    const res = await request(app).get("/demandas/8948d8204febcca80f394222");
+    const res = await request(app).get("/demandas/8948d8204febcca80f394222").set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("Recurso não encontrado em Demanda.");
   });
@@ -56,7 +65,7 @@ describe('Rotas de demanda', () => {
       },
       usuarios: [],
     };
-    const res = await request(app).post("/demandas").send(novaDemanda);
+    const res = await request(app).post("/demandas").send(novaDemanda).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty("message");
     expect(res.body).toHaveProperty("data");
@@ -82,7 +91,7 @@ describe('Rotas de demanda', () => {
       },
       usuarios: [],
     };
-    const res = await request(app).post("/demandas").send(novaDemanda);
+    const res = await request(app).post("/demandas").send(novaDemanda).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(400);
     expect(res.body.message).toBe("Erro de validação. 4 campo(s) inválido(s).");
   });
@@ -92,7 +101,7 @@ describe('Rotas de demanda', () => {
       status: "Concluída",
       descricao: fakebr.lorem.sentence()
     };
-    const res = await request(app).patch("/demandas/6848d8204febcca70f394222").send(atualizacao);
+    const res = await request(app).patch("/demandas/686734ee81ab0540cadb7c75").send(atualizacao).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveProperty("status", atualizacao.status);
   });
@@ -100,7 +109,7 @@ describe('Rotas de demanda', () => {
   it('PATCH - Deve retornar erro ao tentar atualizar uma demanda inexistente', async () => {
     const res = await request(app).patch("/demandas/6848d8204febcca70f394666").send({
       status: "Em andamento"
-    });
+    }).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("Recurso não encontrado em Demanda.");
   });
@@ -126,19 +135,19 @@ describe('Rotas de demanda', () => {
       usuarios: [],
     };
 
-    const post = await request(app).post("/demandas").send(novaDemanda)
+    const post = await request(app).post("/demandas").send(novaDemanda).set('Authorization', `Bearer ${token}`)
     expect(post.status).toBe(201);
 
     const demandaId = post.body.data._id;
 
-    const res = await request(app).delete(`/demandas/${demandaId}`);
+    const res = await request(app).delete(`/demandas/${demandaId}`).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Demanda excluída com sucesso!");
     expect(res.body.data._id).toBe(demandaId);
   });
 
   it('DELETE - Deve retornar erro ao tentar deletar uma demanda com id inválido', async () => {
-    const res = await request(app).delete("/demandas/6839c69706ec18da71924bbb");
+    const res = await request(app).delete("/demandas/6839c69706ec18da71924bbb").set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("Recurso não encontrado em Demanda.");
   }); 
