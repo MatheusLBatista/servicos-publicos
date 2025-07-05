@@ -79,11 +79,21 @@ class DemandaService {
     }
     
     //todo: direcionar demanda pra secretaria responsável?
-    //todo: ajustar verificação de obrigatoriedade na demanda
+    //todo: ajustar verificação de obrigatoriedade na demanda dos links
     //todo: ao criar a demanda como municipe, adicionar usuario cadastrado a demanda
     //todo: é importante que o operador veja apenas as demandas atribuidas a ele e da mesma secretaria
-    async criar(parsedData) {
+    async criar(parsedData, req) {
         console.log("Estou em Demanda Service");
+        console.log(req.user_id)
+
+        const usuario = await this.userRepository.buscarPorID(req.user_id)
+        const nivel = usuario.nivel_acesso || {};
+
+        if(nivel.municipe) {
+            parsedData.usuarios = [req.user_id]
+            // todo: verificar essa exclusão
+            // delete parsedData.tipo
+        }
 
         const data = await this.repository.criar(parsedData);
         
@@ -96,7 +106,6 @@ class DemandaService {
         delete parsedData.tipo;
         delete parsedData.data;
 
-        //garantir id
         await this.ensureDemandaExists(id);
 
         const data = await this.repository.atualizar(id, parsedData);
@@ -119,8 +128,7 @@ class DemandaService {
     }
 
     async nivelAcesso(nivelAcesso) {
-        const permissoes = { 
-            //TODO: revisar com cliente
+        const permissoes = {
             secretario: ["_id", "tipo", "status", "data", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem", "motivo_devolucao", "link_imagem_resolucao", "usuarios", "createdAt", "updatedAt", "estatisticas", "endereco"], 
             administrador: ["_id", "tipo", "status", "data", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem", "motivo_devolucao", "link_imagem_resolucao", "usuarios", "secretarias", "createdAt", "updatedAt", "estatisticas", "endereco"],
             municipe: ["tipo", "_id", "status", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem_resolucao", "link_imagem", "endereco", "createdAt", "updatedAt", "estatisticas"],

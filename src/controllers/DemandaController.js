@@ -32,7 +32,7 @@ class DemandaController{
         console.log('Estou no criar em DemandaController');
 
         const parsedData = DemandaSchema.parse(req.body)
-        let data = await this.service.criar(parsedData);
+        let data = await this.service.criar(parsedData, req);
 
         let demandaLimpa = data.toObject();
 
