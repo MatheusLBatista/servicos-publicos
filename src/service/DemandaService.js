@@ -3,6 +3,7 @@ import DemandaRepository from "../repository/DemandaRepository.js";
 import { parse } from 'dotenv';
 import CustomError from "../utils/helpers/CustomError.js";
 import UsuarioRepository from "../repository/UsuarioRepository.js";
+import HttpStatusCodes from "../utils/helpers/HttpStatusCodes.js";
 
 class DemandaService {
     constructor(){
@@ -76,10 +77,19 @@ class DemandaService {
     //todo: é importante que o operador veja apenas as demandas atribuidas a ele e da mesma secretaria
     async criar(parsedData, req) {
         console.log("Estou em Demanda Service");
-        console.log(req.user_id)
 
         const usuario = await this.userRepository.buscarPorID(req.user_id)
         const nivel = usuario.nivel_acesso || {};
+
+        if(!nivel.municipe || !nivel.administrador) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.FORBIDDEN.code,
+                errorType: 'permissionError',
+                field: 'nivel_acesso',
+                details: [],
+                customMessage: "Apenas munícipes podem criar demandas."
+            })
+        }
 
         if(nivel.municipe) {
             parsedData.usuarios = [req.user_id]
