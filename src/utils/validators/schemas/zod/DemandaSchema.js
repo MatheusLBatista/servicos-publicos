@@ -32,9 +32,12 @@ const DemandaSchema = z.object ({
     }),
     status: z.string().refine((val) => statusDemanda.includes(val), {
     message: "Status inválido",
-  }),
+    })
+    .optional(),
+    //todo: melhorar verificacao da data
     data: z
-      .string(),
+      .string()
+      .optional(),
     resolucao: z
       .string()
       .optional(),
@@ -72,6 +75,7 @@ const DemandaSchema = z.object ({
         message: "ID inválido",
       })
     )
+    .optional()
 })
 
 const DemandaUpdateSchema = DemandaSchema.partial();

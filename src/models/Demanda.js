@@ -14,23 +14,16 @@ class Demanda {
                     enum: [ "Em aberto", "Em andamento", "Concluída" ],
                     default: "Em aberto"
                  },
-                data: {type: Date },
+                data: {
+                    type: Date, 
+                    default: new Date() 
+                },
                 resolucao: { type: String },
                 feedback: { type: Number },
                 avaliacao_resolucao: { type: String },
                 link_imagem: { type: String },
                 motivo_devolucao: { type: String },
-                link_imagem_resolucao: {
-                    type: String,
-                    default: "",
-                    validate: {
-                      validator: function(v) {
-                        let validator = /^https?:\/\/.+\.(jpg|jpeg|png|webp|svg|gif)$/.test(v)
-                        return validator ;
-                      },
-                      message: props => `${props.value} não é um link de imagem válido!`
-                    }
-                },
+                link_imagem_resolucao: { type: String },
                 endereco: {
                     logradouro: { type: String },
                     cep: { type: String },

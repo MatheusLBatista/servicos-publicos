@@ -9,35 +9,7 @@ class DemandaService {
         this.repository = new DemandaRepository()
         this.userRepository = new UsuarioRepository()
     }
-/* 
-    async listar(req) {
-        console.log("Estou em Demanda Service");
 
-        const usuario = await this.userRepository.buscarPorID(req.user_id);
-        const nivel = usuario.nivel_acesso || {};
-
-        const data = await this.repository.listar(req);
-
-        if (nivel.secretario || nivel.operador) {
-            const secretariasUsuario = usuario.secretarias?.map(s => s._id.toString());
-
-            data.docs = data.docs.filter(demanda => {
-                const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
-                return secretariasDemanda.some(id => secretariasUsuario.includes(id));
-            });
-        }
-
-        // Se NÃO for secretario, filtra por campos visíveis
-        if (!nivel.secretario) {
-            data.docs = await Promise.all(
-                data.docs.map(demanda => this.filtrarDemandaPorUser(demanda, usuario))
-            );
-        }
-
-        console.log('Estou retornando os dados em DemandaService para o controller');
-        return data;
-    }
-*/
     async listar(req) {
         const { id } = req.params;
 
@@ -60,7 +32,7 @@ class DemandaService {
 
         const data = await this.repository.listar(req);
 
-        if (nivel.secretario || nivel.operador) {
+        if (nivel.secretario) {
             const secretariasUsuario = usuario.secretarias?.map(s => s._id.toString());
 
             data.docs = data.docs.filter(demanda => {
@@ -69,7 +41,27 @@ class DemandaService {
             });
         }
 
-        if (!nivel.secretario && !nivel.operador) {
+        if (nivel.operador) {
+            const secretariasUsuario = usuario.secretarias?.map(s => s._id.toString());
+            const userId = usuario._id.toString();
+
+            data.docs = data.docs.filter(demanda => {
+                const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
+                const demandaUsuarios = (demanda.usuarios || []).map(user => user._id.toString());
+                return secretariasDemanda.some(id => secretariasUsuario.includes(id)) && demandaUsuarios.includes(userId);
+            });
+        }
+
+        if(nivel.municipe) {
+            const userId = usuario._id.toString()
+
+            data.docs = data.docs.filter(demanda => {
+                const demandaUsuarios = (demanda.usuarios || []).map(user => user._id.toString());
+                return demandaUsuarios.includes(userId);
+            })
+        }
+
+        if (!nivel.secretario && !nivel.operador && !nivel.municipe) {
             data.docs = await Promise.all(
                 data.docs.map(demanda => this.filtrarDemandaPorUser(demanda, usuario))
             );
@@ -92,7 +84,9 @@ class DemandaService {
         if(nivel.municipe) {
             parsedData.usuarios = [req.user_id]
             // todo: verificar essa exclusão
-            // delete parsedData.tipo
+            delete parsedData.resolucao;
+            delete parsedData.motivo_devolucao;
+            delete parsedData.link_imagem_resolucao;
         }
 
         const data = await this.repository.criar(parsedData);
@@ -132,7 +126,7 @@ class DemandaService {
             secretario: ["_id", "tipo", "status", "data", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem", "motivo_devolucao", "link_imagem_resolucao", "usuarios", "createdAt", "updatedAt", "estatisticas", "endereco"], 
             administrador: ["_id", "tipo", "status", "data", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem", "motivo_devolucao", "link_imagem_resolucao", "usuarios", "secretarias", "createdAt", "updatedAt", "estatisticas", "endereco"],
             municipe: ["tipo", "_id", "status", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem_resolucao", "link_imagem", "endereco", "createdAt", "updatedAt", "estatisticas"],
-            //removi usuário
+            //todo: verificar porque removi usuário
             operador: ["_id", "tipo", "status", "data", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem", "motivo_devolucao", "link_imagem_resolucao", "createdAt", "updatedAt", "estatisticas", "endereco"]
         };
 
