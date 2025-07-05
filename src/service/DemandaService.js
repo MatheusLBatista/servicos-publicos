@@ -38,16 +38,50 @@ class DemandaService {
         return data;
     }
 */
-
     async listar(req) {
-        console.log("Estou em Demanda Service");
+        const { id } = req.params;
+
+        if (id) {
+            const data = await this.repository.buscarPorID(id);
+            if (!data) {
+                throw new CustomError({
+                    statusCode: 404,
+                    errorType: 'resourceNotFound',
+                    field: 'Demanda',
+                    details: [],
+                    customMessage: messages.error.resourceNotFound('Demanda')
+                });
+            }
+            return data;
+        }
+
+        const usuario = await this.userRepository.buscarPorID(req.user_id);
+        const nivel = usuario.nivel_acesso || {};
+
         const data = await this.repository.listar(req);
-        console.log('Estou retornando os dados em DemandaService para o controller');
+
+        if (nivel.secretario || nivel.operador) {
+            const secretariasUsuario = usuario.secretarias?.map(s => s._id.toString());
+
+            data.docs = data.docs.filter(demanda => {
+                const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
+                return secretariasDemanda.some(id => secretariasUsuario.includes(id));
+            });
+        }
+
+        if (!nivel.secretario && !nivel.operador) {
+            data.docs = await Promise.all(
+                data.docs.map(demanda => this.filtrarDemandaPorUser(demanda, usuario))
+            );
+        }
+
         return data;
     }
     
     //todo: direcionar demanda pra secretaria responsável?
     //todo: ajustar verificação de obrigatoriedade na demanda
+    //todo: ao criar a demanda como municipe, adicionar usuario cadastrado a demanda
+    //todo: é importante que o operador veja apenas as demandas atribuidas a ele e da mesma secretaria
     async criar(parsedData) {
         console.log("Estou em Demanda Service");
 

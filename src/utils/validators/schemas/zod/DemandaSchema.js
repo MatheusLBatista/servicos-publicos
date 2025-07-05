@@ -62,11 +62,16 @@ const DemandaSchema = z.object ({
       })
       .optional(),
     endereco: enderecoSchema,
+    secretarias: z.array(
+      z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "ID inválido",
+      })
+    ),
     usuarios: z.array(
-    z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: "ID inválido",
-    })
-  )
+      z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "ID inválido",
+      })
+    )
 })
 
 const DemandaUpdateSchema = DemandaSchema.partial();
