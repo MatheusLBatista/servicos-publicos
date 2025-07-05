@@ -23,6 +23,10 @@ beforeAll(async () => {
     token = loginRes.body.data.user.accessToken;
 });
 
+const generateUniqueTitle = (base = 'Secretaria da educação') => {
+  return `${base} ${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+};
+
 describe('Rotas de secretaria', () => {
   it('GET - Deve retornar uma lista das secretarias cadastradas', async () => {
     const res = await request(app).get("/secretaria").set('Authorization', `Bearer ${token}`);
@@ -54,22 +58,22 @@ describe('Rotas de secretaria', () => {
     expect(res.body.message).toBe("Recurso não encontrado em Secretaria.");
   });
 
-  /*
+  
    it('POST - Deve cadastrar uma nova secretaria com sucesso', async () => {
     const novaSecretaria = {
-      nome: "secretaria teste 9",
+      nome: generateUniqueTitle(),
       sigla: "sespsp",
       email: "meioambiente@prefeitura.com",
       telefone: "(69) 99999-9999",
     };
-    const res = await request(app).post("/secretaria").send(novaSecretaria);
+    const res = await request(app).post("/secretaria").send(novaSecretaria).set('Authorization', `Bearer ${token}`);
     //console.log(res.body);
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty("message");
     expect(res.body).toHaveProperty("data");
     expect(res.body.data).toHaveProperty("nome", novaSecretaria.nome);
   });
-*/
+
   it('POST - Deve retornar erro ao cadastrar uma nova secretaria com nome repetido', async () => {
     const novaSecretaria = {
       nome: "secretaria teste 5",
@@ -100,15 +104,31 @@ describe('Rotas de secretaria', () => {
     expect(res.body.message).toBe("Recurso não encontrado em Secretaria.");
   });
 
-  /*
   it('DELETE - Deve deletar uma secretaria com sucesso', async () => {
-    const res = await request(app).delete("/secretaria/6848e1afb766c95e555171aa");
-    //console.log(res.body);
-    expect(res.status).toBe(200);
-    expect(res.body.message).toBe("Secretaria excluída com sucesso.");
-    expect(res.body.data._id).toBe("6848e1afb766c95e555171aa");
-  });
-*/
+  const novaSecretaria = {
+    nome: generateUniqueTitle(),
+    sigla: "sespsp",
+    email: "meioambiente@prefeitura.com",
+    telefone: "(69) 99999-9999",
+  };
+
+  const createRes = await request(app)
+    .post("/secretaria")
+    .send(novaSecretaria)
+    .set('Authorization', `Bearer ${token}`);
+
+  expect(createRes.status).toBe(201);
+  expect(createRes.body).toHaveProperty("data._id");
+  const idCriado = createRes.body.data._id;
+  const deleteRes = await request(app)
+    .delete(`/secretaria/${idCriado}`)
+    .set('Authorization', `Bearer ${token}`);
+
+  expect(deleteRes.status).toBe(200);
+  expect(deleteRes.body.message).toBe("Secretaria excluída com sucesso.");
+  expect(deleteRes.body.data._id).toBe(idCriado);
+});
+
    it('DELETE - Deve retornar erro ao tentar deletar uma secretaria com id inválido', async () => {
     const res = await request(app).delete("/secretaria/6848e1afb766c95e555171aa").set('Authorization', `Bearer ${token}`); 
     //console.log(res.body);
