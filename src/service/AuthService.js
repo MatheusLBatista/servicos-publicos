@@ -92,6 +92,61 @@ class AuthService {
         const data = await this.repository.removerTokens(id);
         return { data };
     }
+
+    async refresh(id, token) {
+        const userEncontrado = await this.repository.buscarPorID(id, { includeTokens: true });
+
+        if (!userEncontrado) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.NOT_FOUND.code,
+                field: 'Token',
+                details: [],
+                customMessage: HttpStatusCodes.NOT_FOUND.message
+            });
+        }
+
+        if (userEncontrado.refreshtoken !== token) {
+            console.log('Token inválido');
+            throw new CustomError({
+                statusCode: HttpStatusCodes.UNAUTHORIZED.code,
+                errorType: 'invalidToken',
+                field: 'Token',
+                details: [],
+                customMessage: messages.error.unauthorized('Token')
+            });
+        }
+
+
+        // Gerar novo access token utilizando a instância injetada
+        const accesstoken = await this.TokenUtil.generateAccessToken(id);
+
+        /**
+         * Se SINGLE_SESSION_REFRESH_TOKEN for true, gera um novo refresh token
+         * Senão, mantém o token armazenado
+         */
+        let refreshtoken = '';
+        if (process.env.SINGLE_SESSION_REFRESH_TOKEN === 'true') {
+            refreshtoken = await this.TokenUtil.generateRefreshToken(id);
+        } else {
+            refreshtoken = userEncontrado.refreshtoken;
+        }
+
+        // Atualiza o usuário com os novos tokens
+        await this.repository.armazenarTokens(id, accesstoken, refreshtoken);
+
+        // monta o objeto de usuário com os tokens para resposta
+        const userLogado = await this.repository.buscarPorID(id, { includeTokens: true });
+        delete userLogado.senha;
+        const userObjeto = userLogado.toObject();
+
+        const userComTokens = {
+            accesstoken,
+            refreshtoken,
+            ...userObjeto
+        };
+
+        return { user: userComTokens };
+    }
 }
 
 export default AuthService;
