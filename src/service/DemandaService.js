@@ -85,7 +85,7 @@ class DemandaService {
             throw new CustomError({
                 statusCode: HttpStatusCodes.FORBIDDEN.code,
                 errorType: 'permissionError',
-                field: 'nivel_acesso',
+                field: 'Usuário',
                 details: [],
                 customMessage: "Apenas munícipes podem criar demandas."
             })
@@ -104,11 +104,77 @@ class DemandaService {
         return data;
     }
 
-    async atualizar(id, parsedData){
+    async atualizar(id, parsedData, req){
         console.log("Estou em atualizar de Demanda Service");
 
         delete parsedData.tipo;
         delete parsedData.data;
+
+        const usuario = await this.userRepository.buscarPorID(req.user_id)
+        const nivel = usuario.nivel_acesso || {};
+        const demanda = await this.repository.buscarPorID(id);
+
+        const userId = usuario._id.toString();
+        const secretariasUsuario = (usuario.secretarias || []).map(s => s._id.toString());
+        const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
+        const usuariosDemanda = (demanda.usuarios || []).map(u => u._id.toString());
+
+        if(nivel.operador) {
+            const permited = 
+                secretariasDemanda.some(id => secretariasUsuario.includes(id)) &&
+                usuariosDemanda.includes(userId);
+            
+            const permitedFields = ["status", "resolucao", "motivo_devolucao", "link_imagem_resolucao"]
+            
+            if(!permited) {
+                throw new CustomError({
+                    statusCode: HttpStatusCodes.FORBIDDEN.code,
+                    errorType: 'permissionError',
+                    field: 'Usuário',
+                    details: [],
+                    customMessage: "Você não tem permissão para atualizar esta demanda."
+                })
+            }
+
+            if(parsedData) {
+                for(let key in parsedData) {
+                    if(!permitedFields.includes(key)) {
+                        delete parsedData.key;
+                    }
+                }
+            }
+        }
+
+        //todo: pode associar apenas usuarios do tipo operador
+        if(nivel.secretario) {
+            const permited = secretariasDemanda.some(id => secretariasUsuario.includes(id))
+
+            const permitedFields = ["status", "resolucao", "link_imagem_resolucao", "usuarios"]
+
+            if(!permited) {
+                throw new CustomError({
+                    statusCode: HttpStatusCodes.FORBIDDEN.code,
+                    errorType: 'permissionError',
+                    field: 'Usuário',
+                    details: [],
+                    customMessage: "Você não tem permissão para atualizar esta demanda."
+                })
+            } 
+            
+            if(parsedData) {
+                for(let key in parsedData) {
+                    if(!permitedFields.includes(key)) {
+                        delete parsedData.key;
+                    }
+                }
+            }
+        }
+
+        if(nivel.municipe) {
+            delete parsedData.resolucao;
+            delete parsedData.motivo_devolucao;
+            delete parsedData.link_imagem_resolucao;
+        }
 
         await this.ensureDemandaExists(id);
 
@@ -116,8 +182,37 @@ class DemandaService {
         return data;
     }
 
-    async deletar(id) {
+    async deletar(id, req) {
         console.log("Estou em deletar de Demanda Service");
+
+        const usuario = await this.userRepository.buscarPorID(req.user_id);
+        const nivel = usuario.nivel_acesso || {};
+
+        const demanda = await this.repository.buscarPorID(id);
+
+        const userId = usuario._id.toString();
+        
+        const usuariosDemanda = (demanda.usuarios || []).map(u=>u._id.toString())
+
+        if (nivel.municipe) {
+            if(!usuariosDemanda.includes(userId)) {
+                throw new CustomError({
+                    statusCode: HttpStatusCodes.FORBIDDEN.code,
+                    errorType: 'permissionError',
+                    field: 'Usuário',
+                    details: [],
+                    customMessage: "Você é apenas permitido à deletar as demandas que criou."
+                });
+            }
+        } else if (nivel.operador || nivel.secretario) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.FORBIDDEN.code,
+                errorType: 'permissionError',
+                field: 'Usuário',
+                details: [],
+                customMessage: "Você não tem permissão para deletar demandas."
+            });
+        }
 
         await this.ensureDemandaExists(id);
 
@@ -136,7 +231,6 @@ class DemandaService {
             secretario: ["_id", "tipo", "status", "data", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem", "motivo_devolucao", "link_imagem_resolucao", "usuarios", "createdAt", "updatedAt", "estatisticas", "endereco"], 
             administrador: ["_id", "tipo", "status", "data", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem", "motivo_devolucao", "link_imagem_resolucao", "usuarios", "secretarias", "createdAt", "updatedAt", "estatisticas", "endereco"],
             municipe: ["tipo", "_id", "status", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem_resolucao", "link_imagem", "endereco", "createdAt", "updatedAt", "estatisticas"],
-            //todo: verificar porque removi usuário
             operador: ["_id", "tipo", "status", "data", "resolucao", "feedback", "avaliacao_resolucao", "link_imagem", "motivo_devolucao", "link_imagem_resolucao", "createdAt", "updatedAt", "estatisticas", "endereco"]
         };
 

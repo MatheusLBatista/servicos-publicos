@@ -47,7 +47,7 @@ class DemandaController{
 
         const parsedData = DemandaUpdateSchema.parse(req.body);
 
-        const data = await this.service.atualizar(id, parsedData)
+        const data = await this.service.atualizar(id, parsedData, req)
 
         let demandaLimpa = data.toObject();
 
@@ -73,7 +73,7 @@ class DemandaController{
             });
         }
 
-        const data = await this.service.deletar(id);
+        const data = await this.service.deletar(id, req);
         return CommonResponse.success(res, data, 200, "Demanda excluída com sucesso!")
     }
 }
