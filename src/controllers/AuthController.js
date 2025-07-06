@@ -66,6 +66,35 @@ class AuthController {
 
         return CommonResponse.success(res);
     }
+
+    /**
+   * Método para fazer o refresh do token 
+   */
+  refresh = async (req, res) => {
+    // Extrai do body o token
+    const token = req.body.refresh_token;
+
+    // Verifica se o cabeçalho Authorization está presente
+    if (!token || token === 'null' || token === 'undefined') {
+      console.log('Cabeçalho Authorization ausente.');
+      throw new CustomError({
+        statusCode: HttpStatusCodes.BAD_REQUEST.code,
+        errorType: 'invalidRefresh',
+        field: 'Refresh',
+        details: [],
+        customMessage: 'Refresh token is missing.'
+      });
+    }
+
+    // Verifica e decodifica o token
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET_REFRESH_TOKEN);
+
+
+    // encaminha o token para o serviço
+    const data = await this.service.refresh(decoded.id, token);
+    return CommonResponse.success(res, data);
+  }
+
 }
 
 export default AuthController;
