@@ -14,6 +14,7 @@ router
     .post("/revoke", asyncWrapper(authController.revoke.bind(authController)))
     .post("/refresh", asyncWrapper(authController.refresh.bind(authController)))
     .post("/recover", asyncWrapper(authController.recuperaSenha.bind(authController)))
+    .post("/introspect", asyncWrapper(authController.pass.bind(authController)))
 
 export default router;
 
