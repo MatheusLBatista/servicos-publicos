@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
 import { LoginSchema } from '../utils/validators/schemas/zod/LoginSchema.js';
-// import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
+import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
 // import { UsuarioIdSchema } from '../utils/validators/schemas/zod/querys/UsuarioQuerySchema.js';
 // import { RequestAuthorizationSchema } from '../utils/validators/schemas/zod/querys/RequestAuthorizationSchema.js';
 
@@ -94,6 +94,22 @@ class AuthController {
     const data = await this.service.refresh(decoded.id, token);
     return CommonResponse.success(res, data);
   }
+
+  /**
+   *  Metodo para recuperar a senha do usuário
+   */
+  recuperaSenha = async (req, res) => {
+    console.log('Estou no logar em RecuperaSenhaController, enviando req para RecuperaSenhaService');
+
+    // 1º validação estrutural - validar os campos passados por body
+    const body = req.body || {};
+
+    // Validar apenas o email
+    const validatedBody = UsuarioUpdateSchema.parse(body);
+    const data = await this.service.recuperaSenha(validatedBody);
+    return CommonResponse.success(res, data);
+  }
+
 
 }
 

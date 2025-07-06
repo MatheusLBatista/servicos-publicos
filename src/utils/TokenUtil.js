@@ -34,6 +34,26 @@ class TokenUtil {
       );
     });
   }
+
+  /**
+   * Gera token único para recuperação de senha com validade de 1 hora (retorna Promise<string>)
+   */
+  generatePasswordRecoveryToken(id) {
+    return new Promise((resolve, reject) => {
+      jwt.sign(
+        { id },
+        process.env.JWT_SECRET_PASSWORD_RECOVERY,
+        { expiresIn: process.env.JWT_PASSWORD_RECOVERY_EXPIRATION || '30m' },
+        (err, token) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(token);
+        }
+      );
+    });
+  }
+
 }
 
 export default new TokenUtil();
