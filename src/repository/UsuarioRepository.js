@@ -179,6 +179,13 @@ class UsuarioRepository {
         const usuario = await this.modelUsuario.findByIdAndDelete(id);
         return usuario;
     }
+
+    async buscarPorPorCodigoRecuperacao(codigo) {
+        console.log('Estou no buscarPorPorCodigoRecuperacao em UsuarioRepository');
+        const filtro = { codigo_recupera_senha: codigo };
+        const documento = await this.modelUsuario.findOne(filtro, ['+senha', '+codigo_recupera_senha', '+exp_codigo_recupera_senha'])
+        return documento;
+    }
 }
 
 export default UsuarioRepository;
