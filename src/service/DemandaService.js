@@ -3,12 +3,14 @@ import DemandaRepository from "../repository/DemandaRepository.js";
 import { parse } from 'dotenv';
 import CustomError from "../utils/helpers/CustomError.js";
 import UsuarioRepository from "../repository/UsuarioRepository.js";
+import SecretariaRepository from "../repository/SecretariaRepository.js";
 import HttpStatusCodes from "../utils/helpers/HttpStatusCodes.js";
 
 class DemandaService {
     constructor(){
         this.repository = new DemandaRepository()
         this.userRepository = new UsuarioRepository()
+        this.secretariaRepository = new SecretariaRepository()
     }
 
     async listar(req) {
@@ -71,17 +73,13 @@ class DemandaService {
         return data;
     }
     
-    //todo: direcionar demanda pra secretaria responsável?
-    //todo: ajustar verificação de obrigatoriedade na demanda dos links
-    //todo: ao criar a demanda como municipe, adicionar usuario cadastrado a demanda
-    //todo: é importante que o operador veja apenas as demandas atribuidas a ele e da mesma secretaria
     async criar(parsedData, req) {
         console.log("Estou em Demanda Service");
 
         const usuario = await this.userRepository.buscarPorID(req.user_id)
         const nivel = usuario.nivel_acesso || {};
 
-        if(!nivel.municipe || !nivel.administrador) {
+        if(!nivel.municipe && !nivel.administrador) {
             throw new CustomError({
                 statusCode: HttpStatusCodes.FORBIDDEN.code,
                 errorType: 'permissionError',
@@ -92,11 +90,16 @@ class DemandaService {
         }
 
         if(nivel.municipe) {
+            const secretaria = await this.secretariaRepository.buscarPorTipo(parsedData.tipo);
+
             parsedData.usuarios = [req.user_id]
-            // todo: verificar essa exclusão
+            delete parsedData.feedback;
+            delete parsedData.avaliacao_resolucao;
             delete parsedData.resolucao;
             delete parsedData.motivo_devolucao;
             delete parsedData.link_imagem_resolucao;
+
+            parsedData.secretarias = [secretaria._id];
         }
 
         const data = await this.repository.criar(parsedData);
@@ -167,6 +170,41 @@ class DemandaService {
                         delete parsedData.key;
                     }
                 }
+
+            if (parsedData.usuarios && parsedData.usuarios.length > 0) {
+                // Busca todos os usuários que o secretário quer associar
+                const usuariosParaAssociar = await this.userRepository.buscarPorIDs(parsedData.usuarios);
+
+                // Garante quae todos são operadores
+                const todosSaoOperadores = usuariosParaAssociar.every(user => user.nivel_acesso?.operador);
+
+                if (!todosSaoOperadores) {
+                    throw new CustomError({
+                        statusCode: HttpStatusCodes.BAD_REQUEST.code,
+                        errorType: 'validationError',
+                        field: 'Usuário',
+                        details: [],
+                        customMessage: "Só é possível associar usuários do tipo operador."
+                    });
+                }
+
+                // Busca os usuários que já estão na demanda (completo, não só o ID)
+                const usuariosOriginais = await this.userRepository.buscarPorIDs(usuariosDemanda);
+
+                // Filtra os que são munícipes
+                const apenasMunicipes = usuariosOriginais
+                    .filter(user => user.nivel_acesso?.municipe)
+                    .map(user => user._id.toString());
+
+                // Junta os operadores novos com os munícipes originais
+                const usuariosFinais = new Set([
+                    ...parsedData.usuarios.map(id => id.toString()),
+                    ...apenasMunicipes
+                ]);
+
+                parsedData.usuarios = Array.from(usuariosFinais);
+            }
+
             }
         }
 

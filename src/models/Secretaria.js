@@ -5,10 +5,11 @@ class Secretaria {
     constructor() {
         const secretariaSchema = new mongoose.Schema(
             {
-                nome: { type: String, required: [true, "O nome da secretaria é obrigatório!"]}, 
-                sigla: { type: String , required: [true, "A sigla da secretaria é obrigatório!"]},
-                email: { type: String, required: [true, "O email da secretaria é obrigatório!"]},
-                telefone: { type: String, required: [true, "O telefone da secretaria é obrigatório!"]}
+                nome: { type: String }, 
+                sigla: { type: String },
+                email: { type: String },
+                telefone: { type: String },
+                tipo: { type: String }
             },
 
             {

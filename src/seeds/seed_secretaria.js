@@ -1,32 +1,62 @@
 import "dotenv/config";
-import { randomBytes as _randomBytes } from "crypto";
-import Secretararia from '../models/Secretaria.js'
-import getGlobalFakeMapping from "./globalFakeMapping.js";
-
-// Conexão com banco
+import Secretararia from '../models/Secretaria.js';
 import DbConnect from "../config/dbConnect.js";
 
+// Conecta ao banco
 await DbConnect.conectar();
-
-const globalFakeMapping = await getGlobalFakeMapping();
 
 async function seedSecretaria() {
   await Secretararia.deleteMany();
 
-  const secretararia = [];
+  const secretariasFixas = [
+    {
+      nome: "Secretaria Municipal de Limpeza Urbana",
+      sigla: "SEMLIMP",
+      email: "coleta@prefeitura.gov.br",
+      telefone: "(69) 3222-1001",
+      tipo: "Coleta"
+    },
+    {
+      nome: "Secretaria Municipal de Iluminação Pública",
+      sigla: "SEMILU",
+      email: "iluminacao@prefeitura.gov.br",
+      telefone: "(69) 3222-1002",
+      tipo: "Iluminação"
+    },
+    {
+      nome: "Secretaria Municipal de Saneamento Básico",
+      sigla: "SEMSAN",
+      email: "saneamento@prefeitura.gov.br",
+      telefone: "(69) 3222-1003",
+      tipo: "Saneamento"
+    },
+    {
+      nome: "Secretaria Municipal de Meio Ambiente",
+      sigla: "SEMMA",
+      email: "arvores@prefeitura.gov.br",
+      telefone: "(69) 3222-1004",
+      tipo: "Árvores"
+    },
+    {
+      nome: "Centro de Controle de Zoonoses",
+      sigla: "CCZ",
+      email: "animais@prefeitura.gov.br",
+      telefone: "(69) 3222-1005",
+      tipo: "Animais"
+    },
+    {
+      nome: "Secretaria Municipal de Obras e Pavimentação",
+      sigla: "SEMOP",
+      email: "pavimentacao@prefeitura.gov.br",
+      telefone: "(69) 3222-1006",
+      tipo: "Pavimentação"
+    }
+  ];
 
-  for (let i = 0; i <= 10; i++) {
-    secretararia.push({
-      nome: globalFakeMapping.nome_secretaria(),
-      sigla: globalFakeMapping.sigla(),
-      email: globalFakeMapping.email(),
-      telefone: globalFakeMapping.telefone()
-    });
-  }
-  const result = await Secretararia.collection.insertMany(secretararia);
-  console.log(`${secretararia.length} secretarias inseridas com sucesso!`);
+  const result = await Secretararia.insertMany(secretariasFixas);
+  console.log(`${result.length} secretarias fixas inseridas com sucesso!`);
 
-  return await Secretararia.find();
+  return result;
 }
 
 export default seedSecretaria;

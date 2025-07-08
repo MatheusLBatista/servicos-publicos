@@ -10,8 +10,6 @@ class UsuarioRepository {
         this.modelUsuario = usuarioModel;
     }
 
-    //TODO: adicionar regra de negócio que apenas operador e secretario tem secretaria de atributo? talvez
-
     async armazenarTokens(id, accesstoken, refreshtoken) {
         const document = await this.modelUsuario.findById(id);
         if(!document) {
@@ -71,6 +69,10 @@ class UsuarioRepository {
         }
 
         return user;
+    }
+
+    async buscarPorIDs(ids) {
+        return await this.modelUsuario.find({ _id: { $in: ids } });
     }
 
     async buscarPorNome(nome, idIgnorado = null) {
