@@ -76,6 +76,12 @@ const DemandaSchema = z.object ({
         message: "ID inválido",
       })
     )
+    .optional(),
+    secretarias: z.array(
+      z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "ID inválido",
+      })
+    )
     .optional()
 })
 
