@@ -6,9 +6,9 @@ import seedTipoDemanda from "./seed_tipoDemanda.js";
  
 async function main() {
     try {
+      await seedSecretaria();
       await seedUsuario();
       await seedDemanda();
-      await seedSecretaria();
       await seedTipoDemanda();
 
       console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");

@@ -28,6 +28,10 @@ async function seedUsuario() {
     throw new Error("Nenhum usuário encontrado. Rode o seed de usuários primeiro.");
   }
 
+  function secretariaRandom() {
+    return [secretarias[Math.floor(Math.random() * secretarias.length)]._id];
+  }
+
   const usuarios = [];
 
   for (let i = 0; i <= 10; i++) {
@@ -57,7 +61,7 @@ async function seedUsuario() {
         cidade: globalFakeMapping.endereco.cidade(),
         estado: globalFakeMapping.endereco.estado(),
       },
-      secretarias: [secretariaAleatoria._id]
+      secretarias: secretariaRandom()
     });
   }
 
@@ -123,7 +127,7 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    secretarias: ["68673315cc04b34531e4fd1e"]
+    secretarias: secretariaRandom()
   });
 
   // Usuário operador fixo
@@ -156,7 +160,7 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    secretarias: ["68673315cc04b34531e4fd1e"]
+    secretarias: secretariaRandom()
   });
 
   // Usuário munícipe fixo

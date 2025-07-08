@@ -1,12 +1,12 @@
 import "dotenv/config";
-import Secretararia from '../models/Secretaria.js';
+import Secretaria from '../models/Secretaria.js';
 import DbConnect from "../config/dbConnect.js";
 
 // Conecta ao banco
 await DbConnect.conectar();
 
 async function seedSecretaria() {
-  await Secretararia.deleteMany();
+  await Secretaria.deleteMany();
 
   const secretariasFixas = [
     {
@@ -53,7 +53,7 @@ async function seedSecretaria() {
     }
   ];
 
-  const result = await Secretararia.insertMany(secretariasFixas);
+  const result = await Secretaria.insertMany(secretariasFixas);
   console.log(`${result.length} secretarias fixas inseridas com sucesso!`);
 
   return result;
