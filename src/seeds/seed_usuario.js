@@ -1,31 +1,41 @@
 import "dotenv/config";
 import { randomBytes as _randomBytes } from "crypto";
-import Usuario from "../models/Usuario.js";
-import getGlobalFakeMapping from "./globalFakeMapping.js";
 import bcrypt from "bcryptjs";
-import Secretaria from "../models/Secretaria.js"
+
+import Usuario from "../models/Usuario.js";
+import Secretaria from "../models/Secretaria.js";
+import Grupo from "../models/Grupo.js";
+import getGlobalFakeMapping from "./globalFakeMapping.js";
 
 // Conexão com banco
 import DbConnect from "../config/dbConnect.js";
-
 await DbConnect.conectar();
 
+// Utilitário para senha
 export function gerarSenhaHash(senhaPura) {
   return bcrypt.hashSync(senhaPura, 8);
 }
 
+//todo: ajustar seeds posteriormente
+
 const senhaPura = "Senha@123";
 const senhaHash = gerarSenhaHash(senhaPura);
-
 const globalFakeMapping = await getGlobalFakeMapping();
 
 async function seedUsuario() {
   await Usuario.deleteMany();
 
   const secretarias = await Secretaria.find();
-  
+  const grupoOperador = await Grupo.findOne({ nome: "Operador" });
+  const grupoSecretario = await Grupo.findOne({ nome: "Secretário" });
+  const grupoAdministrador = await Grupo.findOne({ nome: "Administrador" });
+
   if (secretarias.length === 0) {
-    throw new Error("Nenhum usuário encontrado. Rode o seed de usuários primeiro.");
+    throw new Error("Nenhuma secretaria encontrada. Rode o seed de secretarias primeiro.");
+  }
+
+  if (!grupoOperador || !grupoSecretario || !grupoAdministrador) {
+    throw new Error("Grupos não encontrados. Rode o seed de grupos primeiro.");
   }
 
   function secretariaRandom() {
@@ -34,9 +44,8 @@ async function seedUsuario() {
 
   const usuarios = [];
 
+  // Usuários aleatórios
   for (let i = 0; i <= 10; i++) {
-    const secretariaAleatoria = secretarias[Math.floor(Math.random() * secretarias.length)];
-
     usuarios.push({
       link_imagem: globalFakeMapping.link_imagem(),
       ativo: globalFakeMapping.ativo(),
@@ -95,6 +104,7 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
+    grupo: grupoAdministrador._id
   });
 
   // Usuário secretário fixo
@@ -127,7 +137,8 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    secretarias: secretariaRandom()
+    secretarias: secretariaRandom(),
+    grupo: grupoSecretario._id
   });
 
   // Usuário operador fixo
@@ -160,7 +171,8 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    secretarias: secretariaRandom()
+    secretarias: secretariaRandom(),
+    grupo: grupoOperador._id
   });
 
   // Usuário munícipe fixo
@@ -196,7 +208,7 @@ async function seedUsuario() {
   });
 
   const result = await Usuario.collection.insertMany(usuarios);
-  console.log(Object.keys(result.insertedIds).length + " usuários inseridos!");
+  console.log(`${Object.keys(result.insertedIds).length} usuários inseridos com sucesso!`);
 
   return Usuario.find();
 }

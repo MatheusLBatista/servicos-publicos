@@ -50,7 +50,8 @@ class UsuarioRepository {
 
     async buscarPorID(id, includeTokens = false) {
         let query = this.modelUsuario.findById(id)
-            .populate('secretarias');
+            .populate('secretarias')
+            .populate('grupo');
 
         if (includeTokens) {
             query = query.select('+refreshtoken +accesstoken');
@@ -148,7 +149,7 @@ class UsuarioRepository {
         const options = {
             page: parseInt(page, 10),
             limit: parseInt(limite, 10),
-            populate: { path: 'secretarias' },
+            populate: { path: 'secretarias', path:'grupo' },
             sort: { nome: 1 },
         };
 

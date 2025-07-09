@@ -55,7 +55,10 @@ const fakeMappings = {
     accesstoken: () => "",
     refreshtoken: () => "",
     codigo_recupera_senha: () => "",
-    exp_codigo_recupera_senha: () => undefined
+    exp_codigo_recupera_senha: () => undefined,
+    grupo: () => {
+      return new mongoose.Types.ObjectId().toString();
+    },
   },
 
   Secretaria: {
@@ -97,7 +100,40 @@ const fakeMappings = {
         numero: (Math.floor(Math.random() * 9999) + 1000),
         complemento: fakebr.address.secondaryAddress()
       }
-  }
+  },
+
+  Grupo: {
+    ativo: () => Math.random() < 0.9, // true na maioria das vezes
+    permissoes: () => {
+      // Um array fake com 1 ou 2 permissões
+      return [
+        {
+          rota: 'demandas',
+          dominio: 'localhost',
+          ativo: true,
+          buscar: true,
+          enviar: true,
+          substituir: true,
+          modificar: true,
+          excluir: false,
+        },
+      ];
+    },
+  },
+
+  Rota: {
+    rota: () => {
+      const rotas = ['demandas', 'usuarios', 'secretarias', 'grupos'];
+      return rotas[Math.floor(Math.random() * rotas.length)];
+    },
+    dominio: () => 'localhost',
+    ativo: () => true,
+    buscar: () => true,
+    enviar: () => true,
+    substituir: () => false,
+    modificar: () => false,
+    excluir: () => false,
+  },
 
 }
 

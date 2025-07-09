@@ -72,6 +72,10 @@ class Usuario {
 
         codigo_recupera_senha: { type: String, select: false, unique: false }, // Código de recuperação de senha, usado para validar a recuperação de senha do usuário
         exp_codigo_recupera_senha: { type: Date, select: false }, // Data de expiração do código de recuperação de senha, usado para validar a recuperação de senha do usuário
+        grupo: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Grupo'
+        },
         secretarias: [
           {
             type: mongoose.Schema.Types.ObjectId,

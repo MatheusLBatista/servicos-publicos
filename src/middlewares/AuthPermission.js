@@ -1,21 +1,20 @@
 // middlewares/AuthPermission.js
 
 import jwt from 'jsonwebtoken';
-import PermissionService from '../services/PermissionService.js';
+import PermissionService from '../service/PermissionService.js';
 import Rota from '../models/Rota.js';
 import { CustomError, errorHandler, messages } from '../utils/helpers/index.js';
 
 // Certifique-se de que as variáveis de ambiente estejam carregadas
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET_ACCESS_TOKEN = process.env.JWT_SECRET_ACCESS_TOKEN;
 
 class AuthPermission {
   constructor() {
     this.jwt = jwt;
     this.permissionService = new PermissionService();
     this.Rota = Rota;
-    this.JWT_SECRET = JWT_SECRET;
+    this.JWT_SECRET_ACCESS_TOKEN = JWT_SECRET_ACCESS_TOKEN;
     this.messages = messages;
-    
 
     // Vincula o método handle ao contexto da instância
     this.handle = this.handle.bind(this);
@@ -41,7 +40,7 @@ class AuthPermission {
       // 2. Verifica e decodifica o token
       let decoded;
       try {
-        decoded = this.jwt.verify(token, this.JWT_SECRET);
+        decoded = this.jwt.verify(token, this.JWT_SECRET_ACCESS_TOKEN);
       } catch (err) {
         throw new CustomError({
           statusCode: 401,
@@ -63,6 +62,7 @@ class AuthPermission {
 
       // 4. Busca a rota atual no banco de dados
       const rotaDB = await this.Rota.findOne({ rota: rotaReq, dominio: dominioReq });
+      console.log(rotaDB)
       if (!rotaDB) {
         throw new CustomError({
           statusCode: 404,
