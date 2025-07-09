@@ -18,8 +18,8 @@ async function seedGrupo() {
           rota: "demandas", // sem barra para facilitar comparação no middleware
           dominio: "localhost", // só host:porta (ou só host)
           ativo: true, 
-          buscar: true,  // Ajuste permissões conforme precisa
-          enviar: true,
+          buscar: true,  
+          enviar: false,
           substituir: true,
           modificar: true,
           excluir: false
@@ -36,8 +36,8 @@ async function seedGrupo() {
           dominio: "localhost",
           ativo: true,
           buscar: true,
-          enviar: true,
-          substituir: false,
+          enviar: false,
+          substituir: true,
           modificar: true,
           excluir: false
         }
@@ -46,6 +46,23 @@ async function seedGrupo() {
     {
       nome: "Administrador",
       descricao: "Grupo com acesso de administrador",
+      ativo: true,
+      permissoes: [
+        {
+          rota: "demandas",
+          dominio: "localhost",
+          ativo: true,
+          buscar: true,
+          enviar: true,
+          substituir: true,
+          modificar: true,
+          excluir: true
+        }
+      ]
+    },
+    {
+      nome: "Municipe",
+      descricao: "Grupo com acesso de munícipe",
       ativo: true,
       permissoes: [
         {

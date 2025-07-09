@@ -57,6 +57,21 @@ class DemandaController{
         return CommonResponse.success(res, demandaLimpa, 200, "Demanda atualizada com sucesso!")
     }
 
+    async atribuir(req, res) {
+        console.log('Estou no atribuir em DemandaController');
+
+        const { id } = req.params;
+        DemandaIdSchema.parse(id)
+
+        const parsedData = DemandaUpdateSchema.parse(req.body);
+
+        const data = await this.service.atribuir(id, parsedData, req)
+
+        let demandaLimpa = data.toObject();
+        
+        return CommonResponse.success(res, demandaLimpa, 200, "Demanda atualizada com sucesso!")
+    }
+
     async deletar(req, res) {
         console.log('Estou no deletar em DemandaController');
 

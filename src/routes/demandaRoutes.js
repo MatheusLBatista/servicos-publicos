@@ -11,10 +11,11 @@ const demandaController = new DemandaController();
 
 router
     .get('/demandas', AuthMiddleware, AuthPermission, asyncWrapper(demandaController.listar.bind(demandaController)))
-    .get('/demandas/:id', AuthMiddleware, asyncWrapper(demandaController.listar.bind(demandaController)))
-    .post('/demandas', AuthMiddleware, asyncWrapper(demandaController.criar.bind(demandaController)))
-    .patch("/demandas/:id", AuthMiddleware, asyncWrapper(demandaController.atualizar.bind(demandaController)))
-    .put("/demandas/:id", AuthMiddleware, asyncWrapper(demandaController.atualizar.bind(demandaController)))
-    .delete("/demandas/:id", AuthMiddleware, asyncWrapper(demandaController.deletar.bind(demandaController)));
+    .get('/demandas/:id', AuthMiddleware, AuthPermission, asyncWrapper(demandaController.listar.bind(demandaController)))
+    .post('/demandas', AuthMiddleware, AuthPermission, asyncWrapper(demandaController.criar.bind(demandaController)))
+    .patch("/demandas/:id", AuthMiddleware, AuthPermission, asyncWrapper(demandaController.atualizar.bind(demandaController)))
+    .patch("/demandas/:id/atribuir", AuthMiddleware, AuthPermission, asyncWrapper(demandaController.atribuir.bind(demandaController)))
+    .put("/demandas/:id", AuthMiddleware, AuthPermission, asyncWrapper(demandaController.atualizar.bind(demandaController)))
+    .delete("/demandas/:id", AuthMiddleware, AuthPermission, asyncWrapper(demandaController.deletar.bind(demandaController)));
 
 export default router;

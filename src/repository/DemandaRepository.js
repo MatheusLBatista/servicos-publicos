@@ -100,6 +100,22 @@ class DemandaRepository {
         return demanda;
     }
 
+    async atribuir(id, parsedData){
+        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true });
+
+        if(!demanda) {
+            throw new CustomError ({
+                statusCode: 404,
+                errorType: 'resouceNotFound',
+                field: 'Demanda',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Demanda')
+            })
+        };
+
+        return demanda;
+    }
+
     async deletar(id) {
         const demanda = await this.modelDemanda.findByIdAndDelete(id);
 

@@ -29,6 +29,7 @@ async function seedUsuario() {
   const grupoOperador = await Grupo.findOne({ nome: "Operador" });
   const grupoSecretario = await Grupo.findOne({ nome: "Secretário" });
   const grupoAdministrador = await Grupo.findOne({ nome: "Administrador" });
+  const grupoMunicipe = await Grupo.findOne({ nome: "Municipe" });
 
   if (secretarias.length === 0) {
     throw new Error("Nenhuma secretaria encontrada. Rode o seed de secretarias primeiro.");
@@ -205,6 +206,7 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
+    grupo: grupoMunicipe._id
   });
 
   const result = await Usuario.collection.insertMany(usuarios);
