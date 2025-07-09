@@ -150,19 +150,19 @@ class DemandaService {
 
         //todo: pode associar apenas usuarios do tipo operador
         if(nivel.secretario) {
-            const permited = secretariasDemanda.some(id => secretariasUsuario.includes(id))
+            const permited = secretariasDemanda.some(id => secretariasUsuario.includes(id));
 
-            const permitedFields = ["status", "resolucao", "link_imagem_resolucao", "usuarios"]
+            const permitedFields = ["status", "resolucao", "link_imagem_resolucao", "usuarios"];
 
-            if(!permited) {
+            if (!permited) {
                 throw new CustomError({
                     statusCode: HttpStatusCodes.FORBIDDEN.code,
                     errorType: 'permissionError',
                     field: 'Usuário',
                     details: [],
                     customMessage: "Você não tem permissão para atualizar esta demanda."
-                })
-            } 
+                });
+            }
             
             if(parsedData) {
                 for(let key in parsedData) {
@@ -172,10 +172,8 @@ class DemandaService {
                 }
 
             if (parsedData.usuarios && parsedData.usuarios.length > 0) {
-                // Busca todos os usuários que o secretário quer associar
                 const usuariosParaAssociar = await this.userRepository.buscarPorIDs(parsedData.usuarios);
 
-                // Garante quae todos são operadores
                 const todosSaoOperadores = usuariosParaAssociar.every(user => user.nivel_acesso?.operador);
 
                 if (!todosSaoOperadores) {
@@ -188,7 +186,6 @@ class DemandaService {
                     });
                 }
 
-                // Busca os usuários que já estão na demanda (completo, não só o ID)
                 const usuariosOriginais = await this.userRepository.buscarPorIDs(usuariosDemanda);
 
                 // Filtra os que são munícipes
@@ -196,7 +193,6 @@ class DemandaService {
                     .filter(user => user.nivel_acesso?.municipe)
                     .map(user => user._id.toString());
 
-                // Junta os operadores novos com os munícipes originais
                 const usuariosFinais = new Set([
                     ...parsedData.usuarios.map(id => id.toString()),
                     ...apenasMunicipes
