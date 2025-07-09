@@ -67,7 +67,46 @@ const tipoDemandaRoutes = {
                 }
             ],
             responses: {
-                200: commonResponses[200]("#/components/schemas/ExampleDetalhes"),
+                200: commonResponses[200]("#/components/schemas/tipoDemandaDetalhes"),
+                400: commonResponses[400](),
+                401: commonResponses[401](),
+                404: commonResponses[404](),
+                498: commonResponses[498](),
+                500: commonResponses[500]()
+            }
+        },
+    },
+    "/tipoDemanda": {
+        post: {
+            tags: ["TipoDemanda"],
+            summary: "Obtém detalhes de um tipo Demanda",
+            description: `
+            + Caso de uso: Consulta de detalhes de um tipoDemanda específico.
+            
+            + Função de Negócio:
+                - Permitir à front-end obter todas as informações de um tipoDemanda cadastrado.
+                + Recebe como path parameter:
+                    - **id**: identificador do tipoDemanda (MongoDB ObjectId).
+
+            + Regras de Negócio:
+                - Validação do formato do ID.
+
+            + Resultado Esperado:
+                - HTTP 200 OK com corpo conforme **tipoDemandaDetalhes**, contendo dados completos do tipoDemanda.
+        `,
+            security: [{ bearerAuth: [] }],
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    required: true,
+                    schema: {
+                        type: "string",
+                    }
+                }
+            ],
+            responses: {
+                200: commonResponses[200]("#/components/schemas/tipoDemandaPost"),
                 400: commonResponses[400](),
                 401: commonResponses[401](),
                 404: commonResponses[404](),
