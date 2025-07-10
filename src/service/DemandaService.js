@@ -97,61 +97,29 @@ class DemandaService {
         return data;
     }
 
-    //todo: criar metodo resolucao e devolver
     async atualizar(id, parsedData, req) {
         console.log("Estou em atualizar de Demanda Service");
 
-        delete parsedData.tipo;
-        delete parsedData.data;
+        this.removerCampos(parsedData, ["tipo", "data"]);
 
         const usuario = await this.userRepository.buscarPorID(req.user_id);
         const nivel = usuario.nivel_acesso || {};
-        const userId = usuario._id.toString();
 
         const demanda = await this.repository.buscarPorID(id);
-        const secretariasUsuario = (usuario.secretarias || []).map(s => s._id.toString());
-        const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
-        const usuariosDemanda = (demanda.usuarios || []).map(u => u._id.toString());
 
-        if (nivel.operador) {
-            const permited =
-            secretariasDemanda.some(id => secretariasUsuario.includes(id)) &&
-            usuariosDemanda.includes(userId);
-
-            const permitedFields = ["status", "resolucao", "motivo_devolucao", "link_imagem_resolucao"];
-
-            if (!permited) {
-                throw new CustomError({
-                    statusCode: HttpStatusCodes.FORBIDDEN.code,
-                    errorType: 'permissionError',
-                    field: 'Usuário',
-                    details: [],
-                    customMessage: "Você não tem permissão para atualizar esta demanda."
-                });
-            }
-
-            for (let key in parsedData) {
-                if (!permitedFields.includes(key)) {
-                    delete parsedData[key];
-                }
-            }
-        }
-
-        if (nivel.secretario) {
+        if (!nivel.municipe) {
             throw new CustomError({
                 statusCode: HttpStatusCodes.FORBIDDEN.code,
                 errorType: 'permissionError',
                 field: 'Usuário',
                 details: [],
-                customMessage: "Secretários só podem alterar demandas via rota de atribuição."
+                customMessage: "Somente os munícipes podem atualizar uma demanda através dessa rota."
             });
         }
-
-        if (nivel.municipe) {
-            delete parsedData.resolucao;
-            delete parsedData.motivo_devolucao;
-            delete parsedData.link_imagem_resolucao;
-        }
+            
+        delete parsedData.resolucao;
+        delete parsedData.motivo_devolucao;
+        delete parsedData.link_imagem_resolucao;
 
         await this.ensureDemandaExists(id);
 
@@ -228,6 +196,8 @@ class DemandaService {
 
         await this.ensureDemandaExists(id);
 
+        this.manterCampos(parsedData, ['usuarios'])
+
         const data = await this.repository.atribuir(id, {
             usuarios: Array.from(usuariosFinais),
             status: "Em andamento"
@@ -257,10 +227,41 @@ class DemandaService {
 
         const novaListaUsuarios = usuariosDemanda.filter(u => u._id.toString() !== userId);
 
+        this.manterCampos(parsedData, ['motivo_devolucao']);
+
         const data = await this.repository.devolver(id, {
             motivo_devolucao: parsedData.motivo_devolucao,
             usuarios: novaListaUsuarios,
             status: "Em aberto"
+        });
+
+        return data;
+    }
+
+    async resolver(id, parsedData, req) {
+        console.log("Estou em resolver de Demanda Service");
+
+        const usuario = await this.userRepository.buscarPorID(req.user_id);
+        const nivel = usuario.nivel_acesso || {};
+
+        if (!nivel.operador) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.FORBIDDEN.code,
+                errorType: 'permissionError',
+                field: 'Usuário',
+                customMessage: "Apenas operadores podem resolver uma demanda."
+            });
+        }
+
+        const demanda = await this.repository.buscarPorID(id);
+
+        this.manterCampos(parsedData, ["link_imagem_resolucao", "resolucao"])
+
+        const data = await this.repository.resolver(id, {
+            link_imagem_resolucao: parsedData.link_imagem_resolucao,
+            resolucao: parsedData.resolucao,
+            motivo_devolucao: "",
+            status: "Concluída"
         });
 
         return data;
@@ -327,6 +328,20 @@ class DemandaService {
         });
 
         return demanda;
+    }
+
+    removerCampos(obj, campos) {
+        for(const campo of campos){
+            delete obj[campo];
+        }
+    }
+
+    manterCampos(obj, camposPermitidos) {
+        Object.keys(obj).forEach((key) => {
+            if (!camposPermitidos.includes(key)) {
+                delete obj[key];
+            }
+        });
     }
 } 
 

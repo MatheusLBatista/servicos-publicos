@@ -87,6 +87,21 @@ class DemandaController{
         return CommonResponse.success(res, demandaLimpa, 200, "Demanda devolvida com sucesso!")
     }
 
+    async resolver(req, res) {
+        console.log('Estou no resolver em DemandaController');
+
+        const { id } = req.params;
+        DemandaIdSchema.parse(id)
+
+        const parsedData = DemandaUpdateSchema.parse(req.body);
+
+        const data = await this.service.resolver(id, parsedData, req)
+
+        let demandaLimpa = data.toObject();
+        
+        return CommonResponse.success(res, demandaLimpa, 200, "Demanda resolvida com sucesso!")
+    }
+
     async deletar(req, res) {
         console.log('Estou no deletar em DemandaController');
 
