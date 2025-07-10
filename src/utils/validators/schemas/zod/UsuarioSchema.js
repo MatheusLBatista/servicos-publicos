@@ -83,6 +83,13 @@ const UsuarioSchema = z.object({
       })
     )
     .optional(),
+  grupo: z
+    .array(
+      z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "ID inválido",
+      })
+    )
+    .optional(),
 });
 
 const UsuarioUpdateSchema = UsuarioSchema.partial();

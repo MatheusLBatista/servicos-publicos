@@ -97,67 +97,66 @@ class DemandaService {
         return data;
     }
 
+    //todo: criar metodo resolucao e devolver
     async atualizar(id, parsedData, req) {
-    console.log("Estou em atualizar de Demanda Service");
+        console.log("Estou em atualizar de Demanda Service");
 
-    delete parsedData.tipo;
-    delete parsedData.data;
+        delete parsedData.tipo;
+        delete parsedData.data;
 
-    const usuario = await this.userRepository.buscarPorID(req.user_id);
-    const nivel = usuario.nivel_acesso || {};
-    const userId = usuario._id.toString();
+        const usuario = await this.userRepository.buscarPorID(req.user_id);
+        const nivel = usuario.nivel_acesso || {};
+        const userId = usuario._id.toString();
 
-    const demanda = await this.repository.buscarPorID(id);
-    const secretariasUsuario = (usuario.secretarias || []).map(s => s._id.toString());
-    const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
-    const usuariosDemanda = (demanda.usuarios || []).map(u => u._id.toString());
+        const demanda = await this.repository.buscarPorID(id);
+        const secretariasUsuario = (usuario.secretarias || []).map(s => s._id.toString());
+        const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
+        const usuariosDemanda = (demanda.usuarios || []).map(u => u._id.toString());
 
-    if (nivel.operador) {
-        const permited =
-        secretariasDemanda.some(id => secretariasUsuario.includes(id)) &&
-        usuariosDemanda.includes(userId);
+        if (nivel.operador) {
+            const permited =
+            secretariasDemanda.some(id => secretariasUsuario.includes(id)) &&
+            usuariosDemanda.includes(userId);
 
-        const permitedFields = ["status", "resolucao", "motivo_devolucao", "link_imagem_resolucao"];
+            const permitedFields = ["status", "resolucao", "motivo_devolucao", "link_imagem_resolucao"];
 
-        if (!permited) {
-        throw new CustomError({
-            statusCode: HttpStatusCodes.FORBIDDEN.code,
-            errorType: 'permissionError',
-            field: 'Usuário',
-            details: [],
-            customMessage: "Você não tem permissão para atualizar esta demanda."
-        });
+            if (!permited) {
+                throw new CustomError({
+                    statusCode: HttpStatusCodes.FORBIDDEN.code,
+                    errorType: 'permissionError',
+                    field: 'Usuário',
+                    details: [],
+                    customMessage: "Você não tem permissão para atualizar esta demanda."
+                });
+            }
+
+            for (let key in parsedData) {
+                if (!permitedFields.includes(key)) {
+                    delete parsedData[key];
+                }
+            }
         }
 
-        for (let key in parsedData) {
-        if (!permitedFields.includes(key)) {
-            delete parsedData[key];
+        if (nivel.secretario) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.FORBIDDEN.code,
+                errorType: 'permissionError',
+                field: 'Usuário',
+                details: [],
+                customMessage: "Secretários só podem alterar demandas via rota de atribuição."
+            });
         }
+
+        if (nivel.municipe) {
+            delete parsedData.resolucao;
+            delete parsedData.motivo_devolucao;
+            delete parsedData.link_imagem_resolucao;
         }
-    }
 
-    // ❌ Secretário não pode atualizar nada via rota de atualização
-    if (nivel.secretario) {
-        throw new CustomError({
-        statusCode: HttpStatusCodes.FORBIDDEN.code,
-        errorType: 'permissionError',
-        field: 'Usuário',
-        details: [],
-        customMessage: "Secretários só podem alterar demandas via rota de atribuição."
-        });
-    }
+        await this.ensureDemandaExists(id);
 
-    if (nivel.municipe) {
-        delete parsedData.resolucao;
-        delete parsedData.motivo_devolucao;
-        delete parsedData.link_imagem_resolucao;
-        // Aqui você pode deletar outros campos se quiser limitar mais ainda
-    }
-
-    await this.ensureDemandaExists(id);
-
-    const data = await this.repository.atualizar(id, parsedData);
-    return data;
+        const data = await this.repository.atualizar(id, parsedData);
+        return data;
     }
 
     async atribuir(id, parsedData, req) {
@@ -232,6 +231,36 @@ class DemandaService {
         const data = await this.repository.atribuir(id, {
             usuarios: Array.from(usuariosFinais),
             status: "Em andamento"
+        });
+
+        return data;
+    }
+
+    async devolver(id, parsedData, req) {
+        console.log("Estou em devolver de Demanda Service");
+
+        const usuario = await this.userRepository.buscarPorID(req.user_id);
+        const nivel = usuario.nivel_acesso || {};
+        const userId = usuario._id.toString();
+
+        if (!nivel.operador) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.FORBIDDEN.code,
+                errorType: 'permissionError',
+                field: 'Usuário',
+                customMessage: "Apenas operadores podem devolver uma demanda."
+            });
+        }
+
+        const demanda = await this.repository.buscarPorID(id);
+        const usuariosDemanda = demanda.usuarios || [];
+
+        const novaListaUsuarios = usuariosDemanda.filter(u => u._id.toString() !== userId);
+
+        const data = await this.repository.devolver(id, {
+            motivo_devolucao: parsedData.motivo_devolucao,
+            usuarios: novaListaUsuarios,
+            status: "Em aberto"
         });
 
         return data;

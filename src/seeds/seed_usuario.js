@@ -1,3 +1,4 @@
+// ... seus imports existentes
 import "dotenv/config";
 import { randomBytes as _randomBytes } from "crypto";
 import bcrypt from "bcryptjs";
@@ -7,7 +8,6 @@ import Secretaria from "../models/Secretaria.js";
 import Grupo from "../models/Grupo.js";
 import getGlobalFakeMapping from "./globalFakeMapping.js";
 
-// Conexão com banco
 import DbConnect from "../config/dbConnect.js";
 await DbConnect.conectar();
 
@@ -15,8 +15,6 @@ await DbConnect.conectar();
 export function gerarSenhaHash(senhaPura) {
   return bcrypt.hashSync(senhaPura, 8);
 }
-
-//todo: ajustar seeds posteriormente
 
 const senhaPura = "Senha@123";
 const senhaHash = gerarSenhaHash(senhaPura);
@@ -35,18 +33,28 @@ async function seedUsuario() {
     throw new Error("Nenhuma secretaria encontrada. Rode o seed de secretarias primeiro.");
   }
 
-  if (!grupoOperador || !grupoSecretario || !grupoAdministrador) {
+  if (!grupoOperador || !grupoSecretario || !grupoAdministrador || !grupoMunicipe) {
     throw new Error("Grupos não encontrados. Rode o seed de grupos primeiro.");
   }
 
-  function secretariaRandom() {
-    return [secretarias[Math.floor(Math.random() * secretarias.length)]._id];
+  function randomCollection(collection) {
+    return [collection[Math.floor(Math.random() * collection.length)]._id];
+  }
+
+  function determinarGrupoPorNivel(nivel_acesso) {
+    if (nivel_acesso.administrador) return grupoAdministrador._id;
+    if (nivel_acesso.secretario) return grupoSecretario._id;
+    if (nivel_acesso.operador) return grupoOperador._id;
+    if (nivel_acesso.municipe) return grupoMunicipe._id;
   }
 
   const usuarios = [];
 
   // Usuários aleatórios
   for (let i = 0; i <= 10; i++) {
+    const nivel_acesso = globalFakeMapping.nivel_acesso();
+    const grupoId = determinarGrupoPorNivel(nivel_acesso);
+
     usuarios.push({
       link_imagem: globalFakeMapping.link_imagem(),
       ativo: globalFakeMapping.ativo(),
@@ -57,7 +65,7 @@ async function seedUsuario() {
       data_nomeacao: globalFakeMapping.data_nomeacao(),
       cargo: globalFakeMapping.cargo(),
       formacao: globalFakeMapping.formacao(),
-      nivel_acesso: globalFakeMapping.nivel_acesso(),
+      nivel_acesso,
       nome: globalFakeMapping.nome(),
       nome_social: "",
       portaria_nomeacao: globalFakeMapping.portaria_nomeacao(),
@@ -71,11 +79,18 @@ async function seedUsuario() {
         cidade: globalFakeMapping.endereco.cidade(),
         estado: globalFakeMapping.endereco.estado(),
       },
-      secretarias: secretariaRandom()
+      secretarias: randomCollection(secretarias),
+      grupo: grupoId
     });
   }
 
   // Usuário admin fixo
+  const nivelAdmin = {
+    administrador: true,
+    secretario: false,
+    operador: false,
+    municipe: false,
+  };
   usuarios.push({
     link_imagem: "https://example.com/admin.jpg",
     ativo: true,
@@ -86,12 +101,7 @@ async function seedUsuario() {
     data_nomeacao: new Date("2020-01-01"),
     cargo: "Administrador do Sistema",
     formacao: "Sistemas de Informação",
-    nivel_acesso: {
-      administrador: true,
-      secretario: false,
-      operador: false,
-      municipe: false,
-    },
+    nivel_acesso: nivelAdmin,
     nome: "Administrador",
     nome_social: "",
     portaria_nomeacao: "ADM-2020",
@@ -105,10 +115,16 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    grupo: grupoAdministrador._id
+    grupo: determinarGrupoPorNivel(nivelAdmin)
   });
 
   // Usuário secretário fixo
+  const nivelSecretario = {
+    administrador: false,
+    secretario: true,
+    operador: false,
+    municipe: false,
+  };
   usuarios.push({
     link_imagem: "https://example.com/secretario.jpg",
     ativo: true,
@@ -119,12 +135,7 @@ async function seedUsuario() {
     data_nomeacao: new Date("2021-02-15"),
     cargo: "Secretário",
     formacao: "Administração Pública",
-    nivel_acesso: {
-      administrador: false,
-      secretario: true,
-      operador: false,
-      municipe: false,
-    },
+    nivel_acesso: nivelSecretario,
     nome: "Secretário",
     nome_social: "",
     portaria_nomeacao: "SEC-2021",
@@ -138,11 +149,17 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    secretarias: secretariaRandom(),
-    grupo: grupoSecretario._id
+    secretarias: randomCollection(secretarias),
+    grupo: determinarGrupoPorNivel(nivelSecretario)
   });
 
   // Usuário operador fixo
+  const nivelOperador = {
+    administrador: false,
+    secretario: false,
+    operador: true,
+    municipe: false,
+  };
   usuarios.push({
     link_imagem: "https://example.com/operador.jpg",
     ativo: true,
@@ -153,12 +170,7 @@ async function seedUsuario() {
     data_nomeacao: new Date("2022-03-20"),
     cargo: "Operador de Sistema",
     formacao: "Tecnologia da Informação",
-    nivel_acesso: {
-      administrador: false,
-      secretario: false,
-      operador: true,
-      municipe: false,
-    },
+    nivel_acesso: nivelOperador,
     nome: "Operador",
     nome_social: "",
     portaria_nomeacao: "OP-2022",
@@ -172,11 +184,17 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    secretarias: secretariaRandom(),
-    grupo: grupoOperador._id
+    secretarias: randomCollection(secretarias),
+    grupo: determinarGrupoPorNivel(nivelOperador)
   });
 
   // Usuário munícipe fixo
+  const nivelMunicipe = {
+    administrador: false,
+    secretario: false,
+    operador: false,
+    municipe: true,
+  };
   usuarios.push({
     link_imagem: "https://example.com/municipe.jpg",
     ativo: true,
@@ -187,12 +205,7 @@ async function seedUsuario() {
     data_nomeacao: new Date("2023-04-25"),
     cargo: "Munícipe",
     formacao: "Ensino Médio Completo",
-    nivel_acesso: {
-      administrador: false,
-      secretario: false,
-      operador: false,
-      municipe: true,
-    },
+    nivel_acesso: nivelMunicipe,
     nome: "Munícipe",
     nome_social: "",
     portaria_nomeacao: "",
@@ -206,7 +219,7 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    grupo: grupoMunicipe._id
+    grupo: determinarGrupoPorNivel(nivelMunicipe)
   });
 
   const result = await Usuario.collection.insertMany(usuarios);

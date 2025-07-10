@@ -15,6 +15,7 @@ router
     .post('/demandas', AuthMiddleware, AuthPermission, asyncWrapper(demandaController.criar.bind(demandaController)))
     .patch("/demandas/:id", AuthMiddleware, AuthPermission, asyncWrapper(demandaController.atualizar.bind(demandaController)))
     .patch("/demandas/:id/atribuir", AuthMiddleware, AuthPermission, asyncWrapper(demandaController.atribuir.bind(demandaController)))
+    .patch("/demandas/:id/devolver", AuthMiddleware, AuthPermission, asyncWrapper(demandaController.devolver.bind(demandaController)))
     .put("/demandas/:id", AuthMiddleware, AuthPermission, asyncWrapper(demandaController.atualizar.bind(demandaController)))
     .delete("/demandas/:id", AuthMiddleware, AuthPermission, asyncWrapper(demandaController.deletar.bind(demandaController)));
 
