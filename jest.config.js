@@ -5,6 +5,7 @@ export default  {
   "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/src/utils/helpers/index.js",
+      "/src/config/dbConnect.js",
       "/utils/logger.js",
       "/utils/errors",
       "/utils/helpers/errorHandler.js",

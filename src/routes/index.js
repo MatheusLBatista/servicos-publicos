@@ -3,6 +3,10 @@
 import express from "express";
 import logRoutes from "../middlewares/LogRoutesMiddleware.js";
 import dotenv from "dotenv";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUI from "swagger-ui-express";
+import getSwaggerOptions from "../docs/config/head.js";
+
 
 // Importação das rotas
 import usuarioRoutes from "./usuarioRoutes.js";
@@ -19,6 +23,16 @@ const routes = (app) => {
     if (process.env.DEBUGLOG) {
         app.use(logRoutes);
     }
+
+    app.get("/", (req, res) => {
+        res.redirect("/docs");
+    });
+
+    const swaggerDocs = swaggerJSDoc(getSwaggerOptions());
+    app.use(swaggerUI.serve);
+    app.get("/docs", (req, res, next) => {
+        swaggerUI.setup(swaggerDocs)(req, res, next);
+    });
 
     // Rota raiz simples
     app.get("/", (req, res) => {

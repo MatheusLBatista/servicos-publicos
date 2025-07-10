@@ -65,6 +65,22 @@ class UsuarioController {
         return CommonResponse.created(res, usuarioLimpo);
     }
 
+    /**
+     * Cria um novo usuário.
+     */
+    async criarComSenha(req, res) {
+        console.log('Estou no criar em UsuarioController');
+
+        // valida os dados
+        const parsedData = UsuarioSchema.parse(req.body);
+        let data = await this.service.criar(parsedData);
+
+        // Converte o documento Mongoose para um objeto simples
+        let usuarioLimpo = data.toObject();
+
+        return CommonResponse.created(res, usuarioLimpo);
+    }
+
     async atualizar(req, res) {
         console.log('Estou no atualizar em UsuarioController');
 

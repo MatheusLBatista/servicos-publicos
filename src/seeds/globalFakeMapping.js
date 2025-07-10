@@ -57,7 +57,7 @@ const fakeMappings = {
       cidade: () => fakebr.address.city(),
       estado: () => {
         return estadosBrasil[Math.floor(Math.random() * estadosBrasil.length)];
-      },
+      }
     },
     tokenUnico: () => "",
     accesstoken: () => "",
@@ -80,7 +80,7 @@ const fakeMappings = {
     },
     sigla: () => fakebr.lorem.word(),
     email: () => fakebr.internet.email(),
-    telefone: () => faker.phone.number("(##) 9####-####"),
+    telefone: () => faker.phone.number('(##) 9####-####')
   },
 
   TipoDemanda: {
@@ -113,12 +113,45 @@ const fakeMappings = {
     link_imagem_resolucao: () => fakebr.internet.url() + "/" + uuid() + ".jpg",
     usuarios: () => [{ _id: new mongoose.Types.ObjectId().toString() }],
     endereco: {
-      logradouro: fakebr.address.streetName(),
-      cep: fakebr.address.zipCode(),
-      bairro: fakebr.address.county(),
-      numero: Math.floor(Math.random() * 9999) + 1000,
-      complemento: fakebr.address.secondaryAddress(),
+        logradouro: fakebr.address.streetName(),
+        cep: fakebr.address.zipCode(),
+        bairro: fakebr.address.county(),
+        numero: (Math.floor(Math.random() * 9999) + 1000),
+        complemento: fakebr.address.secondaryAddress()
+      }
+  },
+
+  Grupo: {
+    ativo: () => Math.random() < 0.9, // true na maioria das vezes
+    permissoes: () => {
+      // Um array fake com 1 ou 2 permissões
+      return [
+        {
+          rota: 'demandas',
+          dominio: 'localhost',
+          ativo: true,
+          buscar: true,
+          enviar: true,
+          substituir: true,
+          modificar: true,
+          excluir: false,
+        },
+      ];
     },
+  },
+
+  Rota: {
+    rota: () => {
+      const rotas = ['demandas', 'usuarios', 'secretarias', 'grupos'];
+      return rotas[Math.floor(Math.random() * rotas.length)];
+    },
+    dominio: () => 'localhost',
+    ativo: () => true,
+    buscar: () => true,
+    enviar: () => true,
+    substituir: () => false,
+    modificar: () => false,
+    excluir: () => false,
   },
 
   Grupo: {
