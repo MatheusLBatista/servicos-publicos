@@ -3,7 +3,6 @@ import authSchemas from "../schemas/authSchema.js";
 import commonResponses from "../schemas/swaggerCommonResponses.js";
 import { generateParameters } from "./utils/generateParameters.js"; // ajuste o caminho conforme necessário
 
-
 const tipoDemandaRoutes = {
     "/tipoDemanda": {
         get: {
