@@ -1,5 +1,5 @@
 import tipoDemandaSchemas from "../schemas/tipoDemandaSchema.js";
-import authSchemas from "../schemas/authSchema.js";
+//import authSchemas from "../schemas/authSchema.js";
 import commonResponses from "../schemas/swaggerCommonResponses.js";
 import { generateParameters } from "./utils/generateParameters.js"; // ajuste o caminho conforme necessário
 
@@ -43,7 +43,7 @@ const tipoDemandaRoutes = {
             
             + Função de Negócio:
                 - Permitir à front-end permitir cadastrar um tipoDemanda.
-                + Recebe como path parameter:
+                + Recebe no corpo da requisição os seguintes campos:
                     - **titulo**: titulo do tipoDemanda.
                     - **descricao**: descrição do tipoDemanda.
                     - **link_imagem**: link da imagem do tipoDemanda.

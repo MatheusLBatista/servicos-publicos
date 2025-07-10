@@ -4,8 +4,8 @@ import tipoDemandaSchemas from "../schemas/tipoDemandaSchema.js";
 
 // Função para definir as URLs do servidor dependendo do ambiente
 const getServersInCorrectOrder = () => {
-    const devUrl = { url: process.env.SWAGGER_DEV_URL || `http://localhost:${PORT}` };
-    const prodUrl1 = { url: process.env.SWAGGER_PROD_URL || "https://api-servicos.exemplo.com" };
+    const devUrl = { url: process.env.SWAGGER_DEV_URL || `http://localhost:5011` };
+    const prodUrl1 = { url: process.env.SWAGGER_PROD_URL || "http://localhost:5011/servicos" };
 
     if (process.env.NODE_ENV === "production") return [prodUrl1, devUrl];
     else return [devUrl, prodUrl1];
@@ -28,7 +28,7 @@ const getSwaggerOptions = () => {
             servers: getServersInCorrectOrder(),
             tags: [
                 {
-                    name: "tipoDemanda",
+                    name: "TipoDemanda",
                     description: "Rotas para o gerenciamento de tipoDemanda"
                 },
             ],

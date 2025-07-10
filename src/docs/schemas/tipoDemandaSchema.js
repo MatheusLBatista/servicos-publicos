@@ -70,7 +70,7 @@ Object.entries(removalMapping).forEach(([schemaKey, fields]) => {
 });
 
 // Utiliza o schema do Mongoose para detectar referências automaticamente
-const tipoDemandaMongooseSchema = TipoDemanda.schema;
+const TipoDemandaMongooseSchema = TipoDemanda.schema;
 
 // Gera os exemplos automaticamente para cada schema, passando o schema do Mongoose para detecção de referências
 tipoDemandaSchemas.TipoDemandaListagem.example = await generateExample(tipoDemandaSchemas.TipoDemandaListagem, null, TipoDemandaMongooseSchema);
