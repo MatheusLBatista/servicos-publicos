@@ -12,19 +12,29 @@ async function seedGrupo() {
     {
       nome: "Secretário",
       descricao: "Grupo com acesso de secretário",
-      ativo: true,  // Não esqueça de ativar o grupo
+      ativo: true, // Não esqueça de ativar o grupos
       permissoes: [
         {
           rota: "demandas", // sem barra para facilitar comparação no middleware
           dominio: "localhost", // só host:porta (ou só host)
-          ativo: true, 
-          buscar: true,  
+          ativo: true,
+          buscar: true,
           enviar: false,
           substituir: true,
           modificar: true,
-          excluir: false
-        }
-      ]
+          excluir: false,
+        },
+        {
+          rota: "grupos",
+          dominio: "localhost",
+          ativo: false,
+          buscar: false,
+          enviar: false,
+          substituir: false,
+          modificar: false,
+          excluir: false,
+        },
+      ],
     },
     {
       nome: "Operador",
@@ -39,9 +49,19 @@ async function seedGrupo() {
           enviar: false,
           substituir: true,
           modificar: true,
-          excluir: false
-        }
-      ]
+          excluir: false,
+        },
+        {
+          rota: "grupos",
+          dominio: "localhost",
+          ativo: false,
+          buscar: false,
+          enviar: false,
+          substituir: false,
+          modificar: false,
+          excluir: false,
+        },
+      ],
     },
     {
       nome: "Administrador",
@@ -56,9 +76,19 @@ async function seedGrupo() {
           enviar: true,
           substituir: true,
           modificar: true,
-          excluir: true
-        }
-      ]
+          excluir: true,
+        },
+        {
+          rota: "grupos",
+          dominio: "localhost",
+          ativo: true,
+          buscar: true,
+          enviar: true,
+          substituir: true,
+          modificar: true,
+          excluir: true,
+        },
+      ],
     },
     {
       nome: "Municipe",
@@ -73,10 +103,20 @@ async function seedGrupo() {
           enviar: true,
           substituir: true,
           modificar: true,
-          excluir: true
-        }
-      ]
-    }
+          excluir: true,
+        },
+        {
+          rota: "grupos",
+          dominio: "localhost",
+          ativo: false,
+          buscar: false,
+          enviar: false,
+          substituir: false,
+          modificar: false,
+          excluir: false,
+        },
+      ],
+    },
   ];
 
   const result = await Grupo.insertMany(gruposFixos);

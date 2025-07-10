@@ -30,11 +30,18 @@ async function seedUsuario() {
   const grupoMunicipe = await Grupo.findOne({ nome: "Municipe" });
 
   if (secretarias.length === 0) {
-    throw new Error("Nenhuma secretaria encontrada. Rode o seed de secretarias primeiro.");
+    throw new Error(
+      "Nenhuma secretaria encontrada. Rode o seed de secretarias primeiro."
+    );
   }
 
-  if (!grupoOperador || !grupoSecretario || !grupoAdministrador || !grupoMunicipe) {
-    throw new Error("Grupos não encontrados. Rode o seed de grupos primeiro.");
+  if (
+    !grupoOperador ||
+    !grupoSecretario ||
+    !grupoAdministrador ||
+    !grupoMunicipe
+  ) {
+    throw new Error("Grupos não encontrados. Rode o seed de grupo primeiro.");
   }
 
   function randomCollection(collection) {
@@ -80,7 +87,7 @@ async function seedUsuario() {
         estado: globalFakeMapping.endereco.estado(),
       },
       secretarias: randomCollection(secretarias),
-      grupo: grupoId
+      grupo: grupoId,
     });
   }
 
@@ -115,7 +122,7 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    grupo: determinarGrupoPorNivel(nivelAdmin)
+    grupo: determinarGrupoPorNivel(nivelAdmin),
   });
 
   // Usuário secretário fixo
@@ -150,7 +157,7 @@ async function seedUsuario() {
       estado: "SP",
     },
     secretarias: randomCollection(secretarias),
-    grupo: determinarGrupoPorNivel(nivelSecretario)
+    grupo: determinarGrupoPorNivel(nivelSecretario),
   });
 
   // Usuário operador fixo
@@ -185,7 +192,7 @@ async function seedUsuario() {
       estado: "SP",
     },
     secretarias: randomCollection(secretarias),
-    grupo: determinarGrupoPorNivel(nivelOperador)
+    grupo: determinarGrupoPorNivel(nivelOperador),
   });
 
   // Usuário munícipe fixo
@@ -219,11 +226,13 @@ async function seedUsuario() {
       cidade: "São Paulo",
       estado: "SP",
     },
-    grupo: determinarGrupoPorNivel(nivelMunicipe)
+    grupo: determinarGrupoPorNivel(nivelMunicipe),
   });
 
   const result = await Usuario.collection.insertMany(usuarios);
-  console.log(`${Object.keys(result.insertedIds).length} usuários inseridos com sucesso!`);
+  console.log(
+    `${Object.keys(result.insertedIds).length} usuários inseridos com sucesso!`
+  );
 
   return Usuario.find();
 }

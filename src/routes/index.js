@@ -10,6 +10,7 @@ import demandaRoutes from "./demandaRoutes.js"
 import secretariaRoutes from "./secretariaRoutes.js"
 import tipoDemandaRoutes from "./tipoDemandaRoutes.js"
 import authRoutes from "./authRoutes.js"
+import grupoRoutes from "./grupoRoutes.js"
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ const routes = (app) => {
     });
 
     app.use(express.json(), 
-    usuarioRoutes, secretariaRoutes, demandaRoutes, tipoDemandaRoutes, authRoutes)
+    usuarioRoutes, secretariaRoutes, demandaRoutes, tipoDemandaRoutes, authRoutes, grupoRoutes)
     
 };
 
