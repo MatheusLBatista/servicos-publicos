@@ -22,6 +22,7 @@ class Demanda {
                 feedback: { type: Number },
                 avaliacao_resolucao: { type: String },
                 link_imagem: { type: String },
+                descricao: { type: String },
                 motivo_devolucao: { type: String },
                 link_imagem_resolucao: { type: String },
                 endereco: {

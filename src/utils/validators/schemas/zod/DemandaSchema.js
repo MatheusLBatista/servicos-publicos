@@ -47,6 +47,9 @@ const DemandaSchema = z.object ({
     avaliacao_resolucao: z
       .string()
       .optional(),
+    descricao: z
+      .string()
+      .min(2, "A descrição não pode ser vazia."),
     link_imagem: z
       .string()
       .url("Deve ser uma URL válida")

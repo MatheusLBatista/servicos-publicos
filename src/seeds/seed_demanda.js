@@ -43,6 +43,7 @@ async function seedDemanda() {
       avaliacao_resolucao: globalFakeMapping.avaliacao_resolucao(),
       motivo_devolucao: globalFakeMapping.motivo_devolucao(),
       link_imagem: globalFakeMapping.link_imagem(),
+      descricao: globalFakeMapping.descricao(),
       link_imagem_resolucao: globalFakeMapping.link_imagem_resolucao(),
       endereco: {
         logradouro: globalFakeMapping.endereco.logradouro(),

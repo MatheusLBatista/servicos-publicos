@@ -16,6 +16,7 @@ const fakeMappings = {
       return values[Math.floor(Math.random() * values.length)]
     },
     secretarias: () => [{ _id: new mongoose.Types.ObjectId().toString() }],
+    descricao: () => fakebr.lorem.sentence()
   }, 
 
   Usuario: {
@@ -74,7 +75,6 @@ const fakeMappings = {
   TipoDemanda: {
     titulo: () => fakebr.lorem.word(),
     icone: () => fakebr.internet.url() + "/" + uuid() + ".jpg",
-    descricao: () => fakebr.lorem.sentence(),
     subdescricao: () => fakebr.lorem.sentence(),
     tipo: () => {
       const values =  [ "Coleta", "Iluminação", "Saneamento", "Árvores", "Animais", "Pavimentação"]
