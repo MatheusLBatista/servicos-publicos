@@ -15,7 +15,7 @@ const fakeMappings = {
       const values =  [ "Coleta", "Iluminação", "Animais", "Pavimentação", "Árvores", "Saneamento" ]
       return values[Math.floor(Math.random() * values.length)]
     },
-
+    secretarias: () => [{ _id: new mongoose.Types.ObjectId().toString() }],
   }, 
 
   Usuario: {
@@ -50,7 +50,15 @@ const fakeMappings = {
       estado: () => {
         return estadosBrasil[Math.floor(Math.random() * estadosBrasil.length)];
       }
-  }
+    },
+    tokenUnico: () => "",
+    accesstoken: () => "",
+    refreshtoken: () => "",
+    codigo_recupera_senha: () => "",
+    exp_codigo_recupera_senha: () => undefined,
+    grupo: () => {
+      return new mongoose.Types.ObjectId().toString();
+    },
   },
 
   Secretaria: {
@@ -59,14 +67,14 @@ const fakeMappings = {
       return values[Math.floor(Math.random() * values.length)]
     },
     sigla: () => fakebr.lorem.word(),
-    email_secretaria: () => fakebr.internet.email(),
-    telefone: () => fakebr.phone.number('(##) 9####-####')
+    email: () => fakebr.internet.email(),
+    telefone: () => faker.phone.number('(##) 9####-####')
   },
 
   TipoDemanda: {
     titulo: () => fakebr.lorem.word(),
     icone: () => fakebr.internet.url() + "/" + uuid() + ".jpg",
-    descricao: () => fakebr.lorem.sentece(),
+    descricao: () => fakebr.lorem.sentence(),
     subdescricao: () => fakebr.lorem.sentence(),
     tipo: () => {
       const values =  [ "Coleta", "Iluminação", "Saneamento", "Árvores", "Animais", "Pavimentação"]
@@ -92,7 +100,40 @@ const fakeMappings = {
         numero: (Math.floor(Math.random() * 9999) + 1000),
         complemento: fakebr.address.secondaryAddress()
       }
-  }
+  },
+
+  Grupo: {
+    ativo: () => Math.random() < 0.9, // true na maioria das vezes
+    permissoes: () => {
+      // Um array fake com 1 ou 2 permissões
+      return [
+        {
+          rota: 'demandas',
+          dominio: 'localhost',
+          ativo: true,
+          buscar: true,
+          enviar: true,
+          substituir: true,
+          modificar: true,
+          excluir: false,
+        },
+      ];
+    },
+  },
+
+  Rota: {
+    rota: () => {
+      const rotas = ['demandas', 'usuarios', 'secretarias', 'grupos'];
+      return rotas[Math.floor(Math.random() * rotas.length)];
+    },
+    dominio: () => 'localhost',
+    ativo: () => true,
+    buscar: () => true,
+    enviar: () => true,
+    substituir: () => false,
+    modificar: () => false,
+    excluir: () => false,
+  },
 
 }
 
