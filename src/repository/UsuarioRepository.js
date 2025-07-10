@@ -73,7 +73,9 @@ class UsuarioRepository {
     }
 
     async buscarPorIDs(ids) {
-        return await this.modelUsuario.find({ _id: { $in: ids } });
+        return await this.modelUsuario.find({ _id: { $in: ids } })
+            .populate('secretarias')
+            .populate('grupo')
     }
 
     async buscarPorNome(nome, idIgnorado = null) {
@@ -106,7 +108,9 @@ class UsuarioRepository {
         const { id } = req.params;
 
         if(id) {
-            const data = await this.modelUsuario.findById(id);
+            const data = await this.modelUsuario.findById(id)
+                .populate('secretarias')
+                .populate('grupo')
 
             if (!data) {
                 throw new CustomError({
@@ -149,7 +153,10 @@ class UsuarioRepository {
         const options = {
             page: parseInt(page, 10),
             limit: parseInt(limite, 10),
-            populate: { path: 'secretarias', path:'grupo' },
+            populate: [
+                { path: 'secretarias' },
+                { path: 'grupo' }
+            ],
             sort: { nome: 1 },
         };
 
@@ -169,7 +176,9 @@ class UsuarioRepository {
     }
 
     async atualizar(id, parsedData) {
-        const usuario = await this.modelUsuario.findByIdAndUpdate(id, parsedData, { new: true });
+        const usuario = await this.modelUsuario.findByIdAndUpdate(id, parsedData, { new: true })
+            .populate('secretarias')
+            .populate('grupo')
 
         if (!usuario) {
             throw new CustomError({
@@ -185,7 +194,9 @@ class UsuarioRepository {
     }
 
     async deletar(id){
-        const usuario = await this.modelUsuario.findByIdAndDelete(id);
+        const usuario = await this.modelUsuario.findByIdAndDelete(id)
+            .populate('secretarias')
+            .populate('grupo')
         return usuario;
     }
 }

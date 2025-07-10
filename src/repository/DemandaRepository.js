@@ -15,13 +15,19 @@ class DemandaRepository {
     }
 
     async buscarPorID(id, includeTokens = false) {
-        let query = this.modelDemanda.findById(id)
-        .populate('usuarios')
+    let query = this.modelDemanda.findById(id)
+        .populate({
+            path: 'usuarios',
+            populate: [
+                { path: 'secretarias' },
+                { path: 'grupo' }
+            ]
+        })
         .populate('secretarias');
 
-        // if (includeTokens) {
-        //     query = query.select('+refreshtoken +accesstoken');
-        // }
+        if (includeTokens) {
+            query = query.select('+refreshtoken +accesstoken');
+        }
 
         const demanda = await query;
 
@@ -58,7 +64,7 @@ class DemandaRepository {
             page: parseInt(page, 10),
             limit: limite,
             populate: [
-                { path: 'usuarios', populate: { path: 'secretarias' } },
+                { path: 'usuarios', populate: [ { path: 'secretarias' }, { path: 'grupo' }] },
                 { path: 'secretarias' }
             ],
             sort: { nome: 1 }
@@ -85,7 +91,15 @@ class DemandaRepository {
     }
 
     async atualizar(id, parsedData){
-        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true });
+        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true })
+            .populate({
+                path: 'usuarios',
+                populate: [
+                    { path: 'secretarias' },
+                    { path: 'grupo' }
+                ]
+            })
+            .populate('secretarias');
 
         if(!demanda) {
             throw new CustomError ({
@@ -101,7 +115,15 @@ class DemandaRepository {
     }
 
     async atribuir(id, parsedData){
-        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true });
+        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true })
+                .populate({
+                    path: 'usuarios',
+                    populate: [
+                        { path: 'secretarias' },
+                        { path: 'grupo' }
+                    ]
+                })
+                .populate('secretarias');
 
         if(!demanda) {
             throw new CustomError ({
@@ -117,7 +139,15 @@ class DemandaRepository {
     }
 
     async devolver(id, parsedData){
-        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true });
+        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true })
+                .populate({
+                    path: 'usuarios',
+                    populate: [
+                        { path: 'secretarias' },
+                        { path: 'grupo' }
+                    ]
+                })
+                .populate('secretarias');
 
         if(!demanda) {
             throw new CustomError ({
@@ -133,7 +163,15 @@ class DemandaRepository {
     }
 
     async resolver(id, parsedData){
-        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true });
+        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true })
+                .populate({
+                    path: 'usuarios',
+                    populate: [
+                        { path: 'secretarias' },
+                        { path: 'grupo' }
+                    ]
+                })
+                .populate('secretarias');
 
         if(!demanda) {
             throw new CustomError ({
@@ -149,7 +187,15 @@ class DemandaRepository {
     }
 
     async deletar(id) {
-        const demanda = await this.modelDemanda.findByIdAndDelete(id);
+        const demanda = await this.modelDemanda.findByIdAndDelete(id)
+                .populate({
+                    path: 'usuarios',
+                    populate: [
+                        { path: 'secretarias' },
+                        { path: 'grupo' }
+                    ]
+                })
+                .populate('secretarias');
 
         if(!demanda) {
             throw new CustomError ({
