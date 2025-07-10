@@ -32,6 +32,21 @@ class SecretariaRepository {
         return secretaria;
     }
 
+    async buscarPorTipo(tipo) {
+        const secretaria = await this.modelSecretaria.findOne({tipo})
+
+        if (!secretaria) {
+            throw new CustomError({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: 'Secretaria',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Secretaria')
+            });
+        }
+
+        return secretaria;
+    }
 
     async buscarPorNome(nome, idIgnorado = null) {
         const filtro = { nome };

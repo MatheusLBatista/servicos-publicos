@@ -2,6 +2,7 @@
 
 import { z } from 'zod';
 import objectIdSchema from './ObjectIdSchema.js';
+import { tiposDemanda } from './DemandaSchema.js';
 
 // Validação de array de ObjectId sem duplicações
 const distinctObjectIdArray = z
@@ -24,7 +25,10 @@ const SecretariaSchema = z.object({
   .nonempty('Campo telefone é obrigatório.')
   .regex(/^\(\d{2}\) \d{4,5}-\d{4}$/, {
     message: "Telefone inválido. Use o formato (XX) XXXX-XXXX ou (XX) XXXXX-XXXX"
-  })
+  }),
+  tipo: z.string().refine((val) => tiposDemanda.includes(val), {
+    message: "Tipo inválido",
+  }),
 });
 
 const SecretariaUpdateSchema = SecretariaSchema.partial();

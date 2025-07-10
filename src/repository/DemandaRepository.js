@@ -15,11 +15,19 @@ class DemandaRepository {
     }
 
     async buscarPorID(id, includeTokens = false) {
-        let query = this.modelDemanda.findById(id);
+    let query = this.modelDemanda.findById(id)
+        .populate({
+            path: 'usuarios',
+            populate: [
+                { path: 'secretarias' },
+                { path: 'grupo' }
+            ]
+        })
+        .populate('secretarias');
 
-        // if (includeTokens) {
-        //     query = query.select('+refreshtoken +accesstoken');
-        // }
+        if (includeTokens) {
+            query = query.select('+refreshtoken +accesstoken');
+        }
 
         const demanda = await query;
 
@@ -37,72 +45,44 @@ class DemandaRepository {
     }
 
     async listar(req) {
-        const { id } = req.params;
-
-        if(id) {
-            const data = await this.modelDemanda.findById(id)
-                .populate('usuarios');
-
-            if(!data) {
-                throw new CustomError({
-                    statusCode: 404,
-                    errorType: 'resourceNotFound',
-                    field: 'Demanda',
-                    details: [],
-                    customMessage: messages.error.resourceNotFound('Demanda')
-                });
-            }
-
-            return data;
-        }
-
-        const { tipo, status, data_inicio, data_fim, endereco, usuario, page = 1 } = req.query;
-        const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
+        const { tipo, status, data_inicio, data_fim, endereco, usuario, secretaria, page = 1 } = req.query;
+        //todo: revisar limite
+        const limite = Math.min(parseInt(req.query.limite, 10) || 1000, 1000);
 
         const filterBuilder = new DemandaFilterBuild()
             .comTipo(tipo || '')
             .comData(data_inicio, data_fim || '')
             .comEndereco(endereco || '')
-            .comStatus(status || '')
+            .comStatus(status || '');
 
         await filterBuilder.comUsuario(usuario || '');
-
-        if (typeof filterBuilder.build !== 'function') {
-            throw new CustomError({
-                statusCode: 500,
-                errorType: 'internalServerError',
-                field: 'Usuário',
-                details: [],
-                customMessage: messages.error.internalServerError('Usuário')
-            });
-        }
+        await filterBuilder.comSecretaria(secretaria || '');
 
         const filtros = filterBuilder.build();
 
         const options = {
             page: parseInt(page, 10),
-            limit: parseInt(limite, 10),
-            populate: { path: 'usuarios' },
-            sort: { nome: 1 } 
+            limit: limite,
+            populate: [
+                { path: 'usuarios', populate: [ { path: 'secretarias' }, { path: 'grupo' }] },
+                { path: 'secretarias' }
+            ],
+            sort: { nome: 1 }
         };
 
         const resultado = await this.modelDemanda.paginate(filtros, options);
 
         resultado.docs = resultado.docs.map(doc => {
-            const demandaObj= typeof doc.toObject === 'function' ? doc.toObject() : doc;
-
-            const totalUsuarios = demandaObj.usuarios ? demandaObj.usuarios.length : 0;
+            const demandaObj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
+            const totalUsuarios = demandaObj.usuarios?.length || 0;
 
             return {
                 ...demandaObj,
-                estatisticas: {
-                    totalUsuarios
-                }
+                estatisticas: { totalUsuarios }
             };
-        }) 
+        });
 
         return resultado;
-
     }
 
     async criar(dadosDemanda){
@@ -111,7 +91,15 @@ class DemandaRepository {
     }
 
     async atualizar(id, parsedData){
-        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true });
+        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true })
+            .populate({
+                path: 'usuarios',
+                populate: [
+                    { path: 'secretarias' },
+                    { path: 'grupo' }
+                ]
+            })
+            .populate('secretarias');
 
         if(!demanda) {
             throw new CustomError ({
@@ -126,8 +114,88 @@ class DemandaRepository {
         return demanda;
     }
 
+    async atribuir(id, parsedData){
+        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true })
+                .populate({
+                    path: 'usuarios',
+                    populate: [
+                        { path: 'secretarias' },
+                        { path: 'grupo' }
+                    ]
+                })
+                .populate('secretarias');
+
+        if(!demanda) {
+            throw new CustomError ({
+                statusCode: 404,
+                errorType: 'resouceNotFound',
+                field: 'Demanda',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Demanda')
+            })
+        };
+
+        return demanda;
+    }
+
+    async devolver(id, parsedData){
+        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true })
+                .populate({
+                    path: 'usuarios',
+                    populate: [
+                        { path: 'secretarias' },
+                        { path: 'grupo' }
+                    ]
+                })
+                .populate('secretarias');
+
+        if(!demanda) {
+            throw new CustomError ({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: 'Demanda',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Demanda')
+            })
+        };
+
+        return demanda;
+    }
+
+    async resolver(id, parsedData){
+        const demanda = await this.modelDemanda.findByIdAndUpdate(id, parsedData, { new: true })
+                .populate({
+                    path: 'usuarios',
+                    populate: [
+                        { path: 'secretarias' },
+                        { path: 'grupo' }
+                    ]
+                })
+                .populate('secretarias');
+
+        if(!demanda) {
+            throw new CustomError ({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: 'Demanda',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Demanda')
+            })
+        };
+
+        return demanda;
+    }
+
     async deletar(id) {
-        const demanda = await this.modelDemanda.findByIdAndDelete(id);
+        const demanda = await this.modelDemanda.findByIdAndDelete(id)
+                .populate({
+                    path: 'usuarios',
+                    populate: [
+                        { path: 'secretarias' },
+                        { path: 'grupo' }
+                    ]
+                })
+                .populate('secretarias');
 
         if(!demanda) {
             throw new CustomError ({

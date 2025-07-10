@@ -3,10 +3,34 @@ import mongoosePaginate from "mongoose-paginate-v2";
 import { boolean } from "zod";
 
 export const estadosBrasil = [
-    "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO",
-    "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI",
-    "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
-  ];
+  "AC",
+  "AL",
+  "AP",
+  "AM",
+  "BA",
+  "CE",
+  "DF",
+  "ES",
+  "GO",
+  "MA",
+  "MT",
+  "MS",
+  "MG",
+  "PA",
+  "PB",
+  "PR",
+  "PE",
+  "PI",
+  "RJ",
+  "RN",
+  "RS",
+  "RO",
+  "RR",
+  "SC",
+  "SP",
+  "SE",
+  "TO",
+];
 
 class Usuario {
     constructor() {
@@ -55,23 +79,29 @@ class Usuario {
             }
         );
 
-        // Validação personalizada para garantir que rota + dominio sejam únicos dentro do grupo
-        // usuarioSchema.pre('save', function (next) {
-        //     const permissoes = this.permissoes;
-        //     const combinacoes = permissoes.map(p => `${p.rota}_${p.dominio}`);
-        //     const setCombinacoes = new Set(combinacoes);
+        codigo_recupera_senha: { type: String, select: false, unique: false }, // Código de recuperação de senha, usado para validar a recuperação de senha do usuário
+        exp_codigo_recupera_senha: { type: Date, select: false }, // Data de expiração do código de recuperação de senha, usado para validar a recuperação de senha do usuário
+        grupo: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Grupo'
+        },
+        secretarias: [
+          {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "secretarias",
+          },
+        ]
+      },
+      {
+        timestamps: true,
+        versionKey: false,
+      }
+    );
 
-        //     if (combinacoes.length !== setCombinacoes.size) {
-        //         return next(new Error('Permissões duplicadas encontradas: rota + domínio devem ser únicos dentro de cada grupo.'));
-        //     }
-
-        //     next();
-        // });
-
-        
-        usuarioSchema.plugin(mongoosePaginate);
-        this.model = mongoose.models.usuarios || mongoose.model('usuarios', usuarioSchema);
-    }
+    usuarioSchema.plugin(mongoosePaginate);
+    this.model =
+      mongoose.models.usuarios || mongoose.model("usuarios", usuarioSchema);
+  }
 }
 
 export default new Usuario().model;
