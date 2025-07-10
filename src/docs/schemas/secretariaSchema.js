@@ -22,8 +22,8 @@ const secretariaSchemas = {
   SecretariaFiltro: {
     type: "object",
     properties: {
-      titulo: secretariaJsonSchema.properties.titulo,
-      tipo: secretariaJsonSchema.properties.tipo
+      nome: secretariaJsonSchema.properties.nome,
+      sigla: secretariaJsonSchema.properties.sigla
     }
   },
   SecretariaListagem: {
@@ -68,12 +68,12 @@ Object.entries(removalMapping).forEach(([schemaKey, fields]) => {
 });
 
 // Utiliza o schema do Mongoose para detectar referências automaticamente
-const secretariaMongooseSchema = secretaria.schema;
+const secretariaMongooseSchema = Secretaria.schema;
 
 // Gera os exemplos automaticamente para cada schema, passando o schema do Mongoose para detecção de referências
 secretariaSchemas.SecretariaListagem.example = await generateExample(secretariaSchemas.SecretariaListagem, null, secretariaMongooseSchema);
 secretariaSchemas.SecretariaDetalhes.example = await generateExample(secretariaSchemas.SecretariaDetalhes, null, secretariaMongooseSchema);
 secretariaSchemas.SecretariaPost.example = await generateExample(secretariaSchemas.SecretariaPost, null, secretariaMongooseSchema);
-secretariaSchemas.SecretariaPutPatch.example = await generateExample(secretariaSchemas.secretariaPutPatch, null, secretariaMongooseSchema);
+secretariaSchemas.SecretariaPutPatch.example = await generateExample(secretariaSchemas.SecretariaPutPatch, null, secretariaMongooseSchema);
 
 export default secretariaSchemas;
