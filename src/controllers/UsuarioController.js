@@ -56,7 +56,7 @@ class UsuarioController {
 
         // valida os dados - criar ajustes na biblioteca zod
         const parsedData = UsuarioSchema.parse(req.body);
-        let data = await this.service.criar(parsedData);
+        let data = await this.service.criar(parsedData, req);
 
         let usuarioLimpo = data.toObject();
 
@@ -73,7 +73,17 @@ class UsuarioController {
 
         // valida os dados
         const parsedData = UsuarioSchema.parse(req.body);
-        let data = await this.service.criar(parsedData);
+        
+        if (!req.user_id) {
+            parsedData.nivel_acesso = {
+                municipe: true,
+                operador: false,
+                secretario: false,
+                administrador: false
+            };
+        }
+
+        let data = await this.service.criar(parsedData, req);
 
         // Converte o documento Mongoose para um objeto simples
         let usuarioLimpo = data.toObject();

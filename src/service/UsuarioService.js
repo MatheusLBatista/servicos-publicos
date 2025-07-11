@@ -20,9 +20,19 @@ class UsuarioService {
         return data;
     }
 
-    async criar(parsedData) {
-        console.log("Estou em criar no UsuarioService")
+    async criar(parsedData, req) {
+        console.log("Estou em criar no UsuarioService");
         
+        if (req.user_id && !req.user_id.administrador) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.FORBIDDEN.code,
+                errorType: 'permissionError',
+                field: 'Usuário',
+                details: [],
+                customMessage: "Você não tem permissões para criar um usuário."
+            });
+        }
+
         //valida email único
         await this.validateEmail(parsedData.email);
 
