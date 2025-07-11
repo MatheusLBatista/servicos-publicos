@@ -1,6 +1,8 @@
 //import authPaths from "../paths/auth.js";
 import tipoDemandaPaths from "../paths/tipoDemanda.js";
 import tipoDemandaSchemas from "../schemas/tipoDemandaSchema.js";
+import secretariaPaths from "../paths/secretaria.js";
+import secretariaSchemas from "../schemas/secretariaSchema.js";
 
 // Função para definir as URLs do servidor dependendo do ambiente
 const getServersInCorrectOrder = () => {
@@ -31,9 +33,14 @@ const getSwaggerOptions = () => {
                     name: "TipoDemanda",
                     description: "Rotas para o gerenciamento de tipoDemanda"
                 },
+                {
+                    name: "Secretaria",
+                    description: "Rotas para o gerenciamento das secretarias"
+                },
             ],
             paths: {
                 ...tipoDemandaPaths,
+                ...secretariaPaths,
             },
             components: {
                 securitySchemes: {
@@ -45,6 +52,7 @@ const getSwaggerOptions = () => {
                 },
                 schemas: {
                     ...tipoDemandaSchemas,
+                    ...secretariaSchemas
                 }
             },
             security: [{

@@ -1,39 +1,14 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
-import { boolean } from "zod";
 
 export const estadosBrasil = [
-  "AC",
-  "AL",
-  "AP",
-  "AM",
-  "BA",
-  "CE",
-  "DF",
-  "ES",
-  "GO",
-  "MA",
-  "MT",
-  "MS",
-  "MG",
-  "PA",
-  "PB",
-  "PR",
-  "PE",
-  "PI",
-  "RJ",
-  "RN",
-  "RS",
-  "RO",
-  "RR",
-  "SC",
-  "SP",
-  "SE",
-  "TO",
+  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
+  "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN",
+  "RS", "RO", "RR", "SC", "SP", "SE", "TO",
 ];
 
 class Usuario {
-    constructor() {
+  constructor() {
     const usuarioSchema = new mongoose.Schema(
       {
         cpf: { type: String, unique: true },
@@ -89,6 +64,7 @@ class Usuario {
     )
 
     usuarioSchema.plugin(mongoosePaginate);
+
     this.model =
       mongoose.models.usuarios || mongoose.model("usuarios", usuarioSchema);
   }
