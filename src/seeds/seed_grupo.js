@@ -12,11 +12,11 @@ async function seedGrupo() {
     {
       nome: "Secretário",
       descricao: "Grupo com acesso de secretário",
-      ativo: true, // Não esqueça de ativar o grupos
+      ativo: true, 
       permissoes: [
         {
-          rota: "demandas", // sem barra para facilitar comparação no middleware
-          dominio: "localhost", // só host:porta (ou só host)
+          rota: "demandas", 
+          dominio: "localhost", 
           ativo: true,
           buscar: true,
           enviar: false,
@@ -29,6 +29,16 @@ async function seedGrupo() {
           dominio: "localhost",
           ativo: false,
           buscar: false,
+          enviar: false,
+          substituir: false,
+          modificar: false,
+          excluir: false,
+        },
+        {
+          rota: "usuarios",
+          dominio: "localhost",
+          ativo: true,
+          buscar: true,
           enviar: false,
           substituir: false,
           modificar: false,
@@ -61,6 +71,16 @@ async function seedGrupo() {
           modificar: false,
           excluir: false,
         },
+        {
+          rota: "usuarios",
+          dominio: "localhost",
+          ativo: true,
+          buscar: false,
+          enviar: false,
+          substituir: false,
+          modificar: false,
+          excluir: false,
+        },
       ],
     },
     {
@@ -80,6 +100,16 @@ async function seedGrupo() {
         },
         {
           rota: "grupos",
+          dominio: "localhost",
+          ativo: true,
+          buscar: true,
+          enviar: true,
+          substituir: true,
+          modificar: true,
+          excluir: true,
+        },
+        {
+          rota: "usuarios",
           dominio: "localhost",
           ativo: true,
           buscar: true,
@@ -114,6 +144,16 @@ async function seedGrupo() {
           substituir: false,
           modificar: false,
           excluir: false,
+        },
+        {
+          rota: "usuarios",
+          dominio: "localhost",
+          ativo: true,
+          buscar: true,
+          enviar: true,
+          substituir: true,
+          modificar: true,
+          excluir: true,
         },
       ],
     },

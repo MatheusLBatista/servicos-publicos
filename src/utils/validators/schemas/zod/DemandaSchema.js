@@ -34,7 +34,6 @@ const DemandaSchema = z.object ({
     message: "Status inválido",
     })
     .optional(),
-    //todo: melhorar verificacao da data
     data: z
       .string()
       .optional(),
