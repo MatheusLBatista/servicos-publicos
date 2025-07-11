@@ -125,7 +125,7 @@ class UsuarioController {
             });
         }
 
-        const data = await this.service.deletar(id);
+        const data = await this.service.deletar(id, req);
         return CommonResponse.success(res, data, 200, 'Usuário excluído com sucesso.');
     }
         /**

@@ -61,10 +61,26 @@ class UsuarioService {
         return data;
     }
 
-    async deletar(id) {
+    async deletar(id, req) {
         console.log('Estou no atualizar em UsuarioService');
 
+        const usuario = await this.repository.buscarPorID(req.user_id);
+        const nivel = usuario.nivel_acesso || {};
+        const usuarioID = usuario._id;
+
         await this.ensureUserExists(id);
+
+        if (nivel.municipe) {
+            if (usuarioID.toString() !== id.toString()) {
+                throw new CustomError({
+                    statusCode: HttpStatusCodes.FORBIDDEN.code,
+                    errorType: 'permissionError',
+                    field: 'Usuário',
+                    details: [],
+                    customMessage: "Munícipes só podem deletar seus próprios dados."
+                });
+            }
+        }
 
         const data = await this.repository.deletar(id)
         return data;
