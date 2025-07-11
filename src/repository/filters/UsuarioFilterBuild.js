@@ -61,16 +61,19 @@ class UsuarioFilterBuild {
 
   async comSecretaria(secretaria) {
     if (secretaria) {
-      const secretariaEncontrado =
-        await this.secretariaRepository.buscarPorNome(secretaria);
+      if (Array.isArray(secretaria)) {
+        this.filtros.secretarias = { $in: secretaria };
+      } else {
+        const secretariaEncontrado = await this.secretariaRepository.buscarPorNome(secretaria);
 
-      const secretariasIDs = secretariaEncontrado
-        ? Array.isArray(secretariaEncontrado)
-          ? secretariaEncontrado.map((g) => g._id)
-          : [secretariaEncontrado._id]
-        : [];
+        const secretariasIDs = secretariaEncontrado
+          ? Array.isArray(secretariaEncontrado)
+            ? secretariaEncontrado.map((g) => g._id)
+            : [secretariaEncontrado._id]
+          : [];
 
-      this.filtros.secretarias = { $in: secretariasIDs };
+        this.filtros.secretarias = { $in: secretariasIDs };
+      }
     }
 
     return this;

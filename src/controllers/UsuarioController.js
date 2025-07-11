@@ -73,10 +73,22 @@ class UsuarioController {
 
         // valida os dados
         const parsedData = UsuarioSchema.parse(req.body);
-        let data = await this.service.criar(parsedData);
+        
+        if (!req.user_id) {
+            parsedData.nivel_acesso = {
+                municipe: true,
+                operador: false,
+                secretario: false,
+                administrador: false
+            };
+        }
+
+        let data = await this.service.criarComSenha(parsedData);
 
         // Converte o documento Mongoose para um objeto simples
         let usuarioLimpo = data.toObject();
+
+        delete usuarioLimpo.senha;
 
         return CommonResponse.created(res, usuarioLimpo);
     }
@@ -89,7 +101,7 @@ class UsuarioController {
 
         const parsedData = UsuarioUpdateSchema.parse(req.body);
 
-        const data = await this.service.atualizar(id, parsedData);
+        const data = await this.service.atualizar(id, parsedData, req);
 
         let usuarioLimpo = data.toObject();
 
@@ -115,7 +127,7 @@ class UsuarioController {
             });
         }
 
-        const data = await this.service.deletar(id);
+        const data = await this.service.deletar(id, req);
         return CommonResponse.success(res, data, 200, 'Usuário excluído com sucesso.');
     }
         /**

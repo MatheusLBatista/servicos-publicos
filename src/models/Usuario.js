@@ -44,11 +44,11 @@ class Usuario {
         tokenUnico: { type: String, select: false },
         refreshtoken: { type: String, select: false },
         accesstoken: { type: String, select: false },
-        codigo_recupera_senha: { type: String, select: false, unique: true },
+        codigo_recupera_senha: { type: String, select: false, unique: false },
         exp_codigo_recupera_senha: { type: Date, select: false },
         grupo: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Grupo",
+          ref: 'Grupo',
         },
         secretarias: [
           {
@@ -61,7 +61,7 @@ class Usuario {
         timestamps: true,
         versionKey: false,
       }
-    );
+    )
 
     usuarioSchema.plugin(mongoosePaginate);
 
