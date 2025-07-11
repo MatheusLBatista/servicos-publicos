@@ -99,7 +99,7 @@ class UsuarioController {
 
         const parsedData = UsuarioUpdateSchema.parse(req.body);
 
-        const data = await this.service.atualizar(id, parsedData);
+        const data = await this.service.atualizar(id, parsedData, req);
 
         let usuarioLimpo = data.toObject();
 

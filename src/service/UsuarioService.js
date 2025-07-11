@@ -47,15 +47,35 @@ class UsuarioService {
         return data;
     }
 
-    async atualizar(id, parsedData) {
+    async atualizar(id, parsedData, req) {
         console.log('Estou no atualizar em UsuarioService');
 
-        // nunca trocar senha ou email
         delete parsedData.email;
         delete parsedData.senha;
 
-        // Garante que o usuário existe
         await this.ensureUserExists(id);
+
+        const usuario = req.user_id;
+        const nivel = usuario.nivel_acesso || {};
+        const isAdmin = nivel.administrador;
+
+        const atualizarOutroUser = String(usuario._id) !== String(id);
+
+        if (!isAdmin && atualizarOutroUser) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.FORBIDDEN.code,
+                errorType: 'permissionError',
+                field: 'Usuário',
+                details: [],
+                customMessage: "Você não tem permissões para atualizar outro usuário."
+            });
+        }
+
+        if (!isAdmin) {
+            delete parsedData.grupo;
+            delete parsedData.nivel_acesso;
+            delete parsedData.secretarias;
+        }
 
         const data = await this.repository.atualizar(id, parsedData);
         return data;
