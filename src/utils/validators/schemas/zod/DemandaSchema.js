@@ -32,9 +32,12 @@ const DemandaSchema = z.object ({
     }),
     status: z.string().refine((val) => statusDemanda.includes(val), {
     message: "Status inválido",
-  }),
+    })
+    .optional(),
+    //todo: melhorar verificacao da data
     data: z
-      .string(),
+      .string()
+      .optional(),
     resolucao: z
       .string()
       .optional(),
@@ -44,6 +47,9 @@ const DemandaSchema = z.object ({
     avaliacao_resolucao: z
       .string()
       .optional(),
+    descricao: z
+      .string()
+      .min(2, "A descrição não pode ser vazia."),
     link_imagem: z
       .string()
       .url("Deve ser uma URL válida")
@@ -62,11 +68,24 @@ const DemandaSchema = z.object ({
       })
       .optional(),
     endereco: enderecoSchema,
+    secretarias: z.array(
+      z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "ID inválido",
+      })
+    )
+    .optional(),
     usuarios: z.array(
-    z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: "ID inválido",
-    })
-  )
+      z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "ID inválido",
+      })
+    )
+    .optional(),
+    secretarias: z.array(
+      z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "ID inválido",
+      })
+    )
+    .optional()
 })
 
 const DemandaUpdateSchema = DemandaSchema.partial();

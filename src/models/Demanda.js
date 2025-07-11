@@ -14,23 +14,17 @@ class Demanda {
                     enum: [ "Em aberto", "Em andamento", "Concluída" ],
                     default: "Em aberto"
                  },
-                data: {type: Date },
+                data: {
+                    type: Date, 
+                    default: new Date() 
+                },
                 resolucao: { type: String },
                 feedback: { type: Number },
                 avaliacao_resolucao: { type: String },
                 link_imagem: { type: String },
+                descricao: { type: String },
                 motivo_devolucao: { type: String },
-                link_imagem_resolucao: {
-                    type: String,
-                    default: "",
-                    validate: {
-                      validator: function(v) {
-                        let validator = /^https?:\/\/.+\.(jpg|jpeg|png|webp|svg|gif)$/.test(v)
-                        return validator ;
-                      },
-                      message: props => `${props.value} não é um link de imagem válido!`
-                    }
-                },
+                link_imagem_resolucao: { type: String },
                 endereco: {
                     logradouro: { type: String },
                     cep: { type: String },
@@ -45,6 +39,13 @@ class Demanda {
                         type: mongoose.Schema.Types.ObjectId,
                         ref: 'usuarios'
                     }
+                ],
+
+                secretarias: [
+                    {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'secretarias',
+                    }
                 ]
             }, 
             {
@@ -52,20 +53,6 @@ class Demanda {
                 versionKey: false
             }
         );
-
-        // Validação personalizada para garantir que rota + dominio sejam únicos dentro do grupo
-        // demandaSchema.pre('save', function (next) {
-        //     const permissoes = this.permissoes;
-        //     const combinacoes = permissoes.map(p => `${p.rota}_${p.dominio}`);
-        //     const setCombinacoes = new Set(combinacoes);
-
-        //     if (combinacoes.length !== setCombinacoes.size) {
-        //         return next(new Error('Permissões duplicadas encontradas: rota + domínio devem ser únicos dentro de cada grupo.'));
-        //     }
-
-        //     next();
-        // });
-
 
         demandaSchema.plugin(mongoosePaginate);
         this.model = mongoose.model('demandas', demandaSchema);

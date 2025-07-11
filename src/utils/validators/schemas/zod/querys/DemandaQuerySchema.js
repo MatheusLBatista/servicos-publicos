@@ -38,6 +38,12 @@ export const DemandaQuerySchema = z.object({
         .refine((val) => !val || mongoose.Types.ObjectId.isValid(val), {
             message: "Usuário inválido. Tente novamente!",
         }),
+    secretarias: z
+        .string()
+        .optional()
+        .refine((val) => !val || mongoose.Types.ObjectId.isValid(val), {
+            message: "Secretaria inválida. Tente novamente!",
+        }),
     endereco: enderecoSchema
         .optional(),
     page: z

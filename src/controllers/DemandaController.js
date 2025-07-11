@@ -32,7 +32,7 @@ class DemandaController{
         console.log('Estou no criar em DemandaController');
 
         const parsedData = DemandaSchema.parse(req.body)
-        let data = await this.service.criar(parsedData);
+        let data = await this.service.criar(parsedData, req);
 
         let demandaLimpa = data.toObject();
 
@@ -47,7 +47,7 @@ class DemandaController{
 
         const parsedData = DemandaUpdateSchema.parse(req.body);
 
-        const data = await this.service.atualizar(id, parsedData)
+        const data = await this.service.atualizar(id, parsedData, req)
 
         let demandaLimpa = data.toObject();
 
@@ -55,6 +55,51 @@ class DemandaController{
         delete demandaLimpa.data;
         
         return CommonResponse.success(res, demandaLimpa, 200, "Demanda atualizada com sucesso!")
+    }
+
+    async atribuir(req, res) {
+        console.log('Estou no atribuir em DemandaController');
+
+        const { id } = req.params;
+        DemandaIdSchema.parse(id)
+
+        const parsedData = DemandaUpdateSchema.parse(req.body);
+
+        const data = await this.service.atribuir(id, parsedData, req)
+
+        let demandaLimpa = data.toObject();
+        
+        return CommonResponse.success(res, demandaLimpa, 200, "Demanda atribuída com sucesso!")
+    }
+
+    async devolver(req, res) {
+        console.log('Estou no devolver em DemandaController');
+
+        const { id } = req.params;
+        DemandaIdSchema.parse(id)
+
+        const parsedData = DemandaUpdateSchema.parse(req.body);
+
+        const data = await this.service.devolver(id, parsedData, req)
+
+        let demandaLimpa = data.toObject();
+        
+        return CommonResponse.success(res, demandaLimpa, 200, "Demanda devolvida com sucesso!")
+    }
+
+    async resolver(req, res) {
+        console.log('Estou no resolver em DemandaController');
+
+        const { id } = req.params;
+        DemandaIdSchema.parse(id)
+
+        const parsedData = DemandaUpdateSchema.parse(req.body);
+
+        const data = await this.service.resolver(id, parsedData, req)
+
+        let demandaLimpa = data.toObject();
+        
+        return CommonResponse.success(res, demandaLimpa, 200, "Demanda resolvida com sucesso!")
     }
 
     async deletar(req, res) {
@@ -73,7 +118,7 @@ class DemandaController{
             });
         }
 
-        const data = await this.service.deletar(id);
+        const data = await this.service.deletar(id, req);
         return CommonResponse.success(res, data, 200, "Demanda excluída com sucesso!")
     }
 }

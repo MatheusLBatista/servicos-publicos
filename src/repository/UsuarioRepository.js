@@ -49,7 +49,9 @@ class UsuarioRepository {
     }
 
     async buscarPorID(id, includeTokens = false) {
-        let query = this.modelUsuario.findById(id);
+        let query = this.modelUsuario.findById(id)
+            .populate('secretarias')
+            .populate('grupo');
 
         if (includeTokens) {
             query = query.select('+refreshtoken +accesstoken');
@@ -68,6 +70,12 @@ class UsuarioRepository {
         }
 
         return user;
+    }
+
+    async buscarPorIDs(ids) {
+        return await this.modelUsuario.find({ _id: { $in: ids } })
+            .populate('secretarias')
+            .populate('grupo')
     }
 
     async buscarPorNome(nome, idIgnorado = null) {
@@ -100,7 +108,9 @@ class UsuarioRepository {
         const { id } = req.params;
 
         if(id) {
-            const data = await this.modelUsuario.findById(id);
+            const data = await this.modelUsuario.findById(id)
+                .populate('secretarias')
+                .populate('grupo')
 
             if (!data) {
                 throw new CustomError({
@@ -115,7 +125,7 @@ class UsuarioRepository {
             return data;
         }
 
-        const { nome, email, nivel_acesso, cargo, formacao, ativo, page = 1 } = req.query;
+        const { nome, email, nivel_acesso, cargo, formacao, secretaria, ativo, page = 1 } = req.query;
         const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
         
         const filterBuilder = new UsuarioFilterBuild()
@@ -125,6 +135,8 @@ class UsuarioRepository {
             .comCargo(cargo || '')
             .comFormacao(formacao || '')
             .comAtivo(ativo)
+
+            await filterBuilder.comSecretaria(secretaria || '');
 
         if(typeof filterBuilder.build !== 'function') {
             throw new CustomError({
@@ -141,6 +153,10 @@ class UsuarioRepository {
         const options = {
             page: parseInt(page, 10),
             limit: parseInt(limite, 10),
+            populate: [
+                { path: 'secretarias' },
+                { path: 'grupo' }
+            ],
             sort: { nome: 1 },
         };
 
@@ -160,7 +176,9 @@ class UsuarioRepository {
     }
 
     async atualizar(id, parsedData) {
-        const usuario = await this.modelUsuario.findByIdAndUpdate(id, parsedData, { new: true });
+        const usuario = await this.modelUsuario.findByIdAndUpdate(id, parsedData, { new: true })
+            .populate('secretarias')
+            .populate('grupo')
 
         if (!usuario) {
             throw new CustomError({
@@ -176,7 +194,9 @@ class UsuarioRepository {
     }
 
     async deletar(id){
-        const usuario = await this.modelUsuario.findByIdAndDelete(id);
+        const usuario = await this.modelUsuario.findByIdAndDelete(id)
+            .populate('secretarias')
+            .populate('grupo')
         return usuario;
     }
 
