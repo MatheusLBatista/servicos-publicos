@@ -46,8 +46,7 @@ class DemandaRepository {
 
     async listar(req) {
         const { tipo, status, data_inicio, data_fim, endereco, usuario, secretaria, page = 1 } = req.query;
-        //todo: revisar limite
-        const limite = Math.min(parseInt(req.query.limite, 10) || 1000, 1000);
+        const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100);
 
         const filterBuilder = new DemandaFilterBuild()
             .comTipo(tipo || '')
