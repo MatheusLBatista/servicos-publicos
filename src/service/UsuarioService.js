@@ -7,10 +7,12 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import UsuarioRepository from '../repository/UsuarioRepository.js';
 import { parse } from 'dotenv';
+import GrupoRepository from '../repository/GrupoRepository.js'
 
 class UsuarioService {
     constructor() {
         this.repository = new UsuarioRepository();
+        this.grupoRepository = new GrupoRepository
     }
 
     async listar(req) {
@@ -20,18 +22,8 @@ class UsuarioService {
         return data;
     }
 
-    async criar(parsedData, req) {
+    async criar(parsedData) {
         console.log("Estou em criar no UsuarioService");
-        
-        if (req.user_id && !req.user_id.administrador) {
-            throw new CustomError({
-                statusCode: HttpStatusCodes.FORBIDDEN.code,
-                errorType: 'permissionError',
-                field: 'Usuário',
-                details: [],
-                customMessage: "Você não tem permissões para criar um usuário."
-            });
-        }
 
         //valida email único
         await this.validateEmail(parsedData.email);
@@ -44,6 +36,38 @@ class UsuarioService {
 
         //chama o repositório
         const data = await this.repository.criar(parsedData);
+        return data;
+    }
+
+    async criarComSenha(parsedData) {
+        console.log("Estou em signUp no UsuarioService");
+
+        delete parsedData.grupo;
+        delete parsedData.nivel_acesso;
+
+        await this.validateEmail(parsedData.email);
+
+        if (parsedData.senha) {
+            const { senha: senhaValidada } = await AuthHelper.hashPassword(parsedData.senha);
+            parsedData.senha = senhaValidada;
+        }
+
+        parsedData.nivel_acesso = {
+            municipe: true,
+            operador: false,
+            secretario: false,
+            administrador: false
+        };
+
+        const grupo = await this.grupoRepository.buscarPorNome("municipe");
+        if (grupo) {
+            parsedData.grupo = grupo._id;
+        }
+
+        const data = await this.repository.criar(parsedData);
+
+        delete data.senha
+
         return data;
     }
 
