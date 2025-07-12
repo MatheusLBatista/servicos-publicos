@@ -51,7 +51,6 @@ const DemandaSchema = z.object ({
       .min(2, "A descrição não pode ser vazia."),
     link_imagem: z
       .string()
-      .url("Deve ser uma URL válida")
       .regex(/\.(jpg|jpeg|png|webp|svg|gif)$/i, {
       message: "Deve ser um link de imagem com extensão válida (jpg, png, etc)."
       })

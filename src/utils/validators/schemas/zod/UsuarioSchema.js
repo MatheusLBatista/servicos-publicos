@@ -37,7 +37,11 @@ const UsuarioSchema = z.object({
           "A senha deve conter pelo menos 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial.",
       }
     ),
-  link_foto: z.string().optional(),
+  link_imagem: z
+      .string()
+      .regex(/\.(jpg|jpeg|png|webp|svg|gif)$/i, {
+      message: "Deve ser um link de imagem com extensão válida (jpg, png, etc)."
+  }),
   ativo: z.boolean().optional(),
   nome_social: z
     .string()

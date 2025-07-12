@@ -4,7 +4,18 @@ import { parse } from 'dotenv';
 import CustomError from "../utils/helpers/CustomError.js";
 import UsuarioRepository from "../repository/UsuarioRepository.js";
 import SecretariaRepository from "../repository/SecretariaRepository.js";
+import { DemandaSchema, DemandaUpdateSchema } from '../utils/validators/schemas/zod/DemandaSchema.js';
 import HttpStatusCodes from "../utils/helpers/HttpStatusCodes.js";
+
+// Importações necessárias para o upload de arquivos
+import fileUpload from 'express-fileupload';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import sharp from 'sharp';
+// Helper para __dirname em módulo ES
+const getDirname = () => path.dirname(fileURLToPath(import.meta.url));
 
 class DemandaService {
     constructor(){
@@ -267,6 +278,35 @@ class DemandaService {
         return data;
     }
 
+    async atualizarFoto(id, parsedData, req) {
+        console.log("Estou em atualizarFoto de DemandaService");
+
+        const usuario = await this.userRepository.buscarPorID(req.user_id);
+        const nivel = usuario.nivel_acesso || {};
+        const userId = usuario._id.toString();
+
+        const demanda = await this.repository.buscarPorID(id);
+        const usuariosDemanda = (demanda.usuarios || []).map(u => u._id.toString());
+
+        const isAdmin = nivel.administrador;
+        const isMunicipe = nivel.municipe;
+
+        if (!(isAdmin || (isMunicipe && usuariosDemanda.includes(userId)))) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.FORBIDDEN.code,
+                errorType: 'permissionError',
+                field: 'Usuário',
+                details: [],
+                customMessage: "Você não tem permissão para atualizar a imagem dessa demanda."
+            });
+        }
+
+        await this.ensureDemandaExists(id);
+
+        const data = await this.repository.atualizar(id, parsedData);
+        return data;
+    }
+
     async deletar(id, req) {
         console.log("Estou em deletar de Demanda Service");
 
@@ -342,6 +382,69 @@ class DemandaService {
                 delete obj[key];
             }
         });
+    }
+
+          /**
+   * Valida extensão, tamanho, redimensiona e salva a imagem,
+   * atualiza o usuário e retorna nome do arquivo + metadados.
+   */
+    async processarFoto(userId, file, req) {
+        // 1) valida extensão
+        const ext = path.extname(file.name).slice(1).toLowerCase();
+        const validExts = ['jpg', 'jpeg', 'png', 'svg'];
+        if (!validExts.includes(ext)) {
+        throw new CustomError({
+            statusCode: HttpStatusCodes.BAD_REQUEST.code,
+            errorType: 'validationError',
+            field: 'file',
+            details: [],
+            customMessage: 'Extensão de arquivo inválida. Permitido: jpg, jpeg, png, svg.',
+        });
+        }
+
+        // 2) valida tamanho (max 50MB)
+        const MAX_BYTES = 50 * 1024 * 1024;
+        if (file.size > MAX_BYTES) {
+        throw new CustomError({
+            statusCode: HttpStatusCodes.BAD_REQUEST.code,
+            errorType: 'validationError',
+            field: 'file',
+            details: [],
+            customMessage: `Arquivo não pode exceder ${MAX_BYTES / (1024 * 1024)} MB.`,
+        });
+        }
+
+        // 3) prepara paths
+        const fileName = `${uuidv4()}.${ext}`;
+        const uploadsDir = path.join(getDirname(), '..', '..', 'uploads');
+        if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+        const uploadPath = path.join(uploadsDir, fileName);
+
+        // 4) redimensiona/comprime
+        const transformer = sharp(file.data)
+        .resize(400, 400, { fit: sharp.fit.cover, position: sharp.strategy.entropy });
+        if (['jpg', 'jpeg'].includes(ext)) {
+        transformer.jpeg({ quality: 80 });
+        }
+        const buffer = await transformer.toBuffer();
+        await fs.promises.writeFile(uploadPath, buffer);
+
+        // 5) atualiza usuário no banco
+        const dados = { link_imagem: fileName };
+        DemandaUpdateSchema.parse(dados);
+        await this.atualizarFoto(userId, dados, req);
+
+        // 6) retorna metadados adicionais
+        return {
+        fileName,
+        metadata: {
+            fileExtension: ext,
+            fileSize: file.size,
+            md5: file.md5, // vem do express-fileupload
+        },
+        };
     }
 } 
 

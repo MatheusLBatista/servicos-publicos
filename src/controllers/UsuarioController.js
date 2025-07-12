@@ -178,19 +178,19 @@ class UsuarioController {
             UsuarioIdSchema.parse(id);
 
             const usuario = await this.service.listar(req);
-            const { link_foto } = usuario;
+            const { link_imagem } = usuario;
 
-            if (!link_foto) {
+            if (!link_imagem) {
                 throw new CustomError({
                     statusCode: HttpStatusCodes.NOT_FOUND.code,
                     errorType: 'notFound',
-                    field: 'link_foto',
+                    field: 'link_imagem',
                     details: [],
                     customMessage: 'Foto do usuário não encontrada.'
                 });
             }
 
-            const filename = link_foto;
+            const filename = link_imagem;
             const uploadsDir = path.join(getDirname(), '..', '../uploads');
             const filePath = path.join(uploadsDir, filename);
 

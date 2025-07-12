@@ -94,6 +94,11 @@
             "date": 1752244426198,
             "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-07-11.log",
             "hash": "318607da0935a5b4bb05bcf62e8e4cda2c49964feda95142212d37ec6d840eab"
+        },
+        {
+            "date": 1752292804301,
+            "name": "/Users/matheuslucasbatista/Documents/ads-2025/fabrica-de-software/fabrica-software/servicos-publicos/logs/combined-2025-07-12.log",
+            "hash": "07fd5bd0b6db5689b7a5c34b1dc04a274e27b8f7683d941d27f3c36b1fdfb8c7"
         }
     ],
     "hashType": "sha256"
