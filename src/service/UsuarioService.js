@@ -78,8 +78,21 @@ class UsuarioService {
         return data;
     }
 
-    async criar(parsedData) {
+    async criar(parsedData, req) {
         console.log("Estou em criar no UsuarioService");
+
+        const usuarioLogado = await this.repository.buscarPorID(req.user_id);
+        const nivel = usuarioLogado.nivel_acesso;
+
+        if (nivel.municipe) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.FORBIDDEN.code,
+                errorType: 'permissionError',
+                field: 'Usuário',
+                details: [],
+                customMessage: "Munícipes não podem criar usuários."
+            });
+        }
 
         //valida email único
         await this.validateEmail(parsedData.email);
@@ -192,8 +205,9 @@ class UsuarioService {
         await this.ensureUserExists(id);
 
         const usuarioLogado = await this.repository.buscarPorID(req.user_id);
+        const nivel = usuarioLogado.nivel_acesso;
 
-        if (String(usuarioLogado._id) !== String(id)) {
+        if (nivel.admin && String(usuarioLogado._id) !== String(id)) {
             throw new CustomError({
                 statusCode: HttpStatusCodes.FORBIDDEN.code,
                 errorType: 'permissionError',

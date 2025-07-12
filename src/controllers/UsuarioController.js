@@ -56,7 +56,7 @@ class UsuarioController {
 
         // valida os dados - criar ajustes na biblioteca zod
         const parsedData = UsuarioSchema.parse(req.body);
-        let data = await this.service.criar(parsedData);
+        let data = await this.service.criar(parsedData, req);
 
         let usuarioLimpo = data.toObject();
 
