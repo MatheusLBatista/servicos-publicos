@@ -29,15 +29,6 @@ class DemandaService {
 
         if (id) {
             const data = await this.repository.buscarPorID(id);
-            if (!data) {
-                throw new CustomError({
-                    statusCode: 404,
-                    errorType: 'resourceNotFound',
-                    field: 'Demanda',
-                    details: [],
-                    customMessage: messages.error.resourceNotFound('Demanda')
-                });
-            }
             return data;
         }
 
