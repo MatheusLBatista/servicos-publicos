@@ -142,6 +142,7 @@ class UsuarioController {
             UsuarioIdSchema.parse(id);
 
             const file = req.files?.file;
+            console.log('req.files:', req.files);
             if (!file) {
                 throw new CustomError({
                     statusCode: HttpStatusCodes.BAD_REQUEST.code,
@@ -153,11 +154,11 @@ class UsuarioController {
             }
 
             // delega toda a lógica de validação e processamento ao service
-            const { fileName, metadata } = await this.service.processarFoto(id, file);
+            const { fileName, metadata } = await this.service.processarFoto(id, file, req);
 
             return CommonResponse.success(res, {
                 message: 'Arquivo recebido e usuário atualizado com sucesso.',
-                dados: { link_foto: fileName },
+                dados: { link_imagem: fileName },
                 metadados: metadata
             });
         } catch (error) {

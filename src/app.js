@@ -9,12 +9,15 @@ import DbConnect from './config/dbConnect.js';
 import routes from './routes/index.js';
 import CommonResponse from './utils/helpers/CommonResponse.js';
 import express from "express";
+import expressFileUpload from 'express-fileupload';
 
 const app = express();
 
 await DbConnect.conectar();
 
 app.use(express.json()); // importante para ler JSON
+app.use(expressFileUpload());
+
 routes(app);
 
 // Middleware para lidar com rotas não encontradas (404)
