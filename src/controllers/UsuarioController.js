@@ -56,7 +56,7 @@ class UsuarioController {
 
         // valida os dados - criar ajustes na biblioteca zod
         const parsedData = UsuarioSchema.parse(req.body);
-        let data = await this.service.criar(parsedData);
+        let data = await this.service.criar(parsedData, req);
 
         let usuarioLimpo = data.toObject();
 
@@ -142,6 +142,7 @@ class UsuarioController {
             UsuarioIdSchema.parse(id);
 
             const file = req.files?.file;
+            console.log('req.files:', req.files);
             if (!file) {
                 throw new CustomError({
                     statusCode: HttpStatusCodes.BAD_REQUEST.code,
@@ -153,11 +154,11 @@ class UsuarioController {
             }
 
             // delega toda a lógica de validação e processamento ao service
-            const { fileName, metadata } = await this.service.processarFoto(id, file);
+            const { fileName, metadata } = await this.service.processarFoto(id, file, req);
 
             return CommonResponse.success(res, {
                 message: 'Arquivo recebido e usuário atualizado com sucesso.',
-                dados: { link_foto: fileName },
+                dados: { link_imagem: fileName },
                 metadados: metadata
             });
         } catch (error) {
@@ -177,19 +178,19 @@ class UsuarioController {
             UsuarioIdSchema.parse(id);
 
             const usuario = await this.service.listar(req);
-            const { link_foto } = usuario;
+            const { link_imagem } = usuario;
 
-            if (!link_foto) {
+            if (!link_imagem) {
                 throw new CustomError({
                     statusCode: HttpStatusCodes.NOT_FOUND.code,
                     errorType: 'notFound',
-                    field: 'link_foto',
+                    field: 'link_imagem',
                     details: [],
                     customMessage: 'Foto do usuário não encontrada.'
                 });
             }
 
-            const filename = link_foto;
+            const filename = link_imagem;
             const uploadsDir = path.join(getDirname(), '..', '../uploads');
             const filePath = path.join(uploadsDir, filename);
 

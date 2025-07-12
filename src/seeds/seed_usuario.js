@@ -229,6 +229,112 @@ async function seedUsuario() {
     grupo: determinarGrupoPorNivel(nivelMunicipe),
   });
 
+  //mesma secretaria
+  const secretariaFixa = [secretarias[0]._id]; 
+
+  // Secretário fixo - mesma secretaria
+  usuarios.push({
+    link_imagem: "https://example.com/secretario-fixo.jpg",
+    ativo: true,
+    cpf: "00000000900",
+    email: "secretariofixo@exemplo.com",
+    celular: "(11) 91111-1111",
+    cnh: "11111111111",
+    data_nomeacao: new Date("2021-01-01"),
+    cargo: "Secretário",
+    formacao: "Gestão Pública",
+    nivel_acesso: {
+      administrador: false,
+      secretario: true,
+      operador: false,
+      municipe: false
+    },
+    nome: "Secretário Fixo",
+    nome_social: "",
+    portaria_nomeacao: "SEC-FIX-2021",
+    senha: senhaHash,
+    endereco: {
+      logradouro: "Rua Secretaria Fixa",
+      cep: "11111-111",
+      bairro: "Centro",
+      numero: "10",
+      complemento: "Sala A",
+      cidade: "São Paulo",
+      estado: "SP"
+    },
+    secretarias: secretariaFixa,
+    grupo: grupoSecretario._id
+  });
+
+  // Operador fixo - mesma secretaria
+  usuarios.push({
+    link_imagem: "https://example.com/operador-fixo.jpg",
+    ativo: true,
+    cpf: "00000000911",
+    email: "operadorfixo@exemplo.com",
+    celular: "(11) 92222-2222",
+    cnh: "22222222222",
+    data_nomeacao: new Date("2022-01-01"),
+    cargo: "Operador",
+    formacao: "Tecnologia da Informação",
+    nivel_acesso: {
+      administrador: false,
+      secretario: false,
+      operador: true,
+      municipe: false
+    },
+    nome: "Operador Fixo",
+    nome_social: "",
+    portaria_nomeacao: "OP-FIX-2022",
+    senha: senhaHash,
+    endereco: {
+      logradouro: "Rua Operador Fixo",
+      cep: "22222-222",
+      bairro: "Vila Nova",
+      numero: "20",
+      complemento: "Bloco B",
+      cidade: "São Paulo",
+      estado: "SP"
+    },
+    secretarias: secretariaFixa,
+    grupo: grupoOperador._id
+  });
+
+  // Munícipe fixo - mesma secretaria
+  usuarios.push({
+    link_imagem: "https://example.com/municipe-fixo.jpg",
+    ativo: true,
+    cpf: "00000000922",
+    email: "municipefixo@exemplo.com",
+    celular: "(11) 93333-3333",
+    cnh: "33333333333",
+    data_nomeacao: new Date("2023-01-01"),
+    cargo: "Munícipe",
+    formacao: "Ensino Médio",
+    nivel_acesso: {
+      administrador: false,
+      secretario: false,
+      operador: false,
+      municipe: true
+    },
+    nome: "Munícipe Fixo",
+    nome_social: "",
+    portaria_nomeacao: "",
+    senha: senhaHash,
+    endereco: {
+      logradouro: "Praça Munícipe Fixo",
+      cep: "33333-333",
+      bairro: "Centro",
+      numero: "30",
+      complemento: "Apto 303",
+      cidade: "São Paulo",
+      estado: "SP"
+    },
+    secretarias: secretariaFixa,
+    grupo: grupoMunicipe._id
+  });
+
+
   const result = await Usuario.collection.insertMany(usuarios);
   console.log(
     `${Object.keys(result.insertedIds).length} usuários inseridos com sucesso!`

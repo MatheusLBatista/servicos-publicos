@@ -3,6 +3,16 @@ import DemandaService from '../service/DemandaService.js';
 import { DemandaIdSchema, DemandaQuerySchema } from '../utils/validators/schemas/zod/querys/DemandaQuerySchema.js';
 import { DemandaSchema, DemandaUpdateSchema } from '../utils/validators/schemas/zod/DemandaSchema.js';
 
+// Importações necessárias para o upload de arquivos
+import fileUpload from 'express-fileupload';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import sharp from 'sharp';
+// Helper para __dirname em módulo ES
+const getDirname = () => path.dirname(fileURLToPath(import.meta.url));
+
 class DemandaController{
     constructor(){
         this.service = new DemandaService();
@@ -121,6 +131,77 @@ class DemandaController{
         const data = await this.service.deletar(id, req);
         return CommonResponse.success(res, data, 200, "Demanda excluída com sucesso!")
     }
+
+    /**
+     * Faz upload de uma foto para um usuário.
+     */
+    ///*
+    async fotoUpload(req, res, next) {
+        try {
+            const { id, tipo } = req.params;
+            DemandaIdSchema.parse(id);
+
+            const file = req.files?.file;
+            if (!file) {
+                throw new CustomError({
+                    statusCode: HttpStatusCodes.BAD_REQUEST.code,
+                    errorType: 'validationError',
+                    field: 'file',
+                    customMessage: 'Nenhum arquivo foi enviado.'
+                });
+            }
+
+            const { fileName, metadata } = await this.service.processarFoto(id, file, tipo, req);
+
+            return CommonResponse.success(res, {
+                message: 'Arquivo enviado e salvo com sucesso.',
+                dados: { [`link_imagem${tipo === "resolucao" ? "_resolucao" : ""}`]: fileName },
+                metadados: metadata
+            });
+        } catch (error) {
+            console.error('Erro no fotoUpload:', error);
+            return next(error);
+        }
+    }
+
+    /**
+     * Faz download da foto de um usuário.
+     */
+    async getFoto(req, res, next) {
+        try {
+            const { id, tipo } = req.params;
+            DemandaIdSchema.parse(id);
+
+            const demanda = await this.service.listar({ params: { id }, user_id: req.user_id });
+            const campo = tipo === "resolucao" ? "link_imagem_resolucao" : "link_imagem";
+            const fileName = demanda[campo];
+
+            if (!fileName) {
+                throw new CustomError({
+                    statusCode: HttpStatusCodes.NOT_FOUND.code,
+                    errorType: 'notFound',
+                    field: campo,
+                    customMessage: `Imagem de ${tipo} não encontrada.`
+                });
+            }
+
+            const filePath = path.join(getDirname(), '..', '..', 'uploads', fileName);
+            const extensao = path.extname(fileName).slice(1).toLowerCase();
+            const mimeTypes = {
+                jpg: 'image/jpeg',
+                jpeg: 'image/jpeg',
+                png: 'image/png',
+                svg: 'image/svg+xml'
+            };
+
+            res.setHeader('Content-Type', mimeTypes[extensao] || 'application/octet-stream');
+            return res.sendFile(filePath);
+        } catch (error) {
+            console.error('Erro no getFoto:', error);
+            return next(error);
+        }
+    }
+
 }
 
 export default DemandaController;
