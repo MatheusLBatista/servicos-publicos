@@ -279,7 +279,7 @@ describe('controller', () => {
 
     it('deve chamar next com erro se a foto não for encontrada', async () => {
       req.params = { id: '123' };
-      const fakeUsuario = {}; // no link_foto
+      const fakeUsuario = {}; 
       serviceStub.listar.mockResolvedValue(fakeUsuario);
       const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
 
