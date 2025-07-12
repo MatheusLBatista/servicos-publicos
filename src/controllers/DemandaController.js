@@ -138,29 +138,24 @@ class DemandaController{
     ///*
     async fotoUpload(req, res, next) {
         try {
-            console.log('Estou no fotoUpload em DemandaController');
-
-            const { id } = req.params;
+            const { id, tipo } = req.params;
             DemandaIdSchema.parse(id);
 
             const file = req.files?.file;
-            console.log('req.files:', req.files);
             if (!file) {
                 throw new CustomError({
                     statusCode: HttpStatusCodes.BAD_REQUEST.code,
                     errorType: 'validationError',
                     field: 'file',
-                    details: [],
                     customMessage: 'Nenhum arquivo foi enviado.'
                 });
             }
 
-            // delega toda a lógica de validação e processamento ao service
-            const { fileName, metadata } = await this.service.processarFoto(id, file, req);
+            const { fileName, metadata } = await this.service.processarFoto(id, file, tipo, req);
 
             return CommonResponse.success(res, {
-                message: 'Arquivo recebido e demanda atualizada com sucesso.',
-                dados: { link_imagem: fileName },
+                message: 'Arquivo enviado e salvo com sucesso.',
+                dados: { [`link_imagem${tipo === "resolucao" ? "_resolucao" : ""}`]: fileName },
                 metadados: metadata
             });
         } catch (error) {
@@ -174,44 +169,39 @@ class DemandaController{
      */
     async getFoto(req, res, next) {
         try {
-            console.log('Estou no getFoto em DemandaController');
-
-            const { id } = req.params || {};
+            const { id, tipo } = req.params;
             DemandaIdSchema.parse(id);
 
-            const demanda = await this.service.listar(req);
-            const { link_imagem } = demanda;
+            const demanda = await this.service.listar({ params: { id }, user_id: req.user_id });
+            const campo = tipo === "resolucao" ? "link_imagem_resolucao" : "link_imagem";
+            const fileName = demanda[campo];
 
-            if (!link_imagem) {
+            if (!fileName) {
                 throw new CustomError({
                     statusCode: HttpStatusCodes.NOT_FOUND.code,
                     errorType: 'notFound',
-                    field: 'link_imagem',
-                    details: [],
-                    customMessage: 'Foto do usuário não encontrada.'
+                    field: campo,
+                    customMessage: `Imagem de ${tipo} não encontrada.`
                 });
             }
 
-            const filename = link_imagem;
-            const uploadsDir = path.join(getDirname(), '..', '../uploads');
-            const filePath = path.join(uploadsDir, filename);
-
-            const extensao = path.extname(filename).slice(1).toLowerCase();
+            const filePath = path.join(getDirname(), '..', '..', 'uploads', fileName);
+            const extensao = path.extname(fileName).slice(1).toLowerCase();
             const mimeTypes = {
                 jpg: 'image/jpeg',
                 jpeg: 'image/jpeg',
                 png: 'image/png',
                 svg: 'image/svg+xml'
             };
-            const contentType = mimeTypes[extensao] || 'application/octet-stream';
 
-            res.setHeader('Content-Type', contentType);
+            res.setHeader('Content-Type', mimeTypes[extensao] || 'application/octet-stream');
             return res.sendFile(filePath);
         } catch (error) {
             console.error('Erro no getFoto:', error);
             return next(error);
         }
     }
+
 }
 
 export default DemandaController;

@@ -56,7 +56,7 @@ async function seedGrupo() {
           dominio: "localhost",
           ativo: true,
           buscar: true,
-          enviar: false,
+          enviar: true,
           substituir: true,
           modificar: true,
           excluir: false,

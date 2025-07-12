@@ -148,7 +148,7 @@ class UsuarioService {
 
         await this.ensureUserExists(id);
 
-        const usuario = req.user_id;
+        const usuario = await this.repository.buscarPorID(req.user_id);
         const nivel = usuario.nivel_acesso || {};
         const isAdmin = nivel.administrador;
 

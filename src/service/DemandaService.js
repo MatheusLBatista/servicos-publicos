@@ -90,6 +90,16 @@ class DemandaService {
         const usuario = await this.userRepository.buscarPorID(req.user_id)
         const nivel = usuario.nivel_acesso || {};
 
+        if (nivel.operador) {
+            throw new CustomError({
+                statusCode: HttpStatusCodes.FORBIDDEN.code,
+                errorType: 'permissionError',
+                field: 'Usuário',
+                details: [],
+                customMessage: "Somente os munícipes podem criar uma demanda através dessa rota."
+            });
+        }
+
         if(nivel.municipe) {
             const secretaria = await this.secretariaRepository.buscarPorTipo(parsedData.tipo);
 
@@ -388,64 +398,63 @@ class DemandaService {
    * Valida extensão, tamanho, redimensiona e salva a imagem,
    * atualiza o usuário e retorna nome do arquivo + metadados.
    */
-    async processarFoto(userId, file, req) {
-        // 1) valida extensão
+    async processarFoto(demandaId, file, tipo, req) {
         const ext = path.extname(file.name).slice(1).toLowerCase();
         const validExts = ['jpg', 'jpeg', 'png', 'svg'];
         if (!validExts.includes(ext)) {
-        throw new CustomError({
-            statusCode: HttpStatusCodes.BAD_REQUEST.code,
-            errorType: 'validationError',
-            field: 'file',
-            details: [],
-            customMessage: 'Extensão de arquivo inválida. Permitido: jpg, jpeg, png, svg.',
-        });
+            throw new CustomError({
+                statusCode: HttpStatusCodes.BAD_REQUEST.code,
+                errorType: 'validationError',
+                field: 'file',
+                customMessage: 'Extensão inválida. Permitido: jpg, jpeg, png, svg.'
+            });
         }
 
-        // 2) valida tamanho (max 50MB)
         const MAX_BYTES = 50 * 1024 * 1024;
         if (file.size > MAX_BYTES) {
-        throw new CustomError({
-            statusCode: HttpStatusCodes.BAD_REQUEST.code,
-            errorType: 'validationError',
-            field: 'file',
-            details: [],
-            customMessage: `Arquivo não pode exceder ${MAX_BYTES / (1024 * 1024)} MB.`,
-        });
+            throw new CustomError({
+                statusCode: HttpStatusCodes.BAD_REQUEST.code,
+                errorType: 'validationError',
+                field: 'file',
+                customMessage: 'Arquivo excede 50MB.'
+            });
         }
 
-        // 3) prepara paths
         const fileName = `${uuidv4()}.${ext}`;
         const uploadsDir = path.join(getDirname(), '..', '..', 'uploads');
         if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true });
+            fs.mkdirSync(uploadsDir, { recursive: true });
         }
         const uploadPath = path.join(uploadsDir, fileName);
 
-        // 4) redimensiona/comprime
-        const transformer = sharp(file.data)
-        .resize(400, 400, { fit: sharp.fit.cover, position: sharp.strategy.entropy });
+        const transformer = sharp(file.data).resize(400, 400, {
+            fit: sharp.fit.cover,
+            position: sharp.strategy.entropy
+        });
         if (['jpg', 'jpeg'].includes(ext)) {
-        transformer.jpeg({ quality: 80 });
+            transformer.jpeg({ quality: 80 });
         }
+
         const buffer = await transformer.toBuffer();
         await fs.promises.writeFile(uploadPath, buffer);
 
-        // 5) atualiza usuário no banco
-        const dados = { link_imagem: fileName };
-        DemandaUpdateSchema.parse(dados);
-        await this.atualizarFoto(userId, dados, req);
+        // Define dinamicamente o campo a ser atualizado
+        const campo = tipo === "resolucao" ? "link_imagem_resolucao" : "link_imagem";
+        const dados = { [campo]: fileName };
 
-        // 6) retorna metadados adicionais
+        DemandaUpdateSchema.parse(dados);
+        await this.atualizarFoto(demandaId, dados, req);
+
         return {
-        fileName,
-        metadata: {
-            fileExtension: ext,
-            fileSize: file.size,
-            md5: file.md5, // vem do express-fileupload
-        },
+            fileName,
+            metadata: {
+                fileExtension: ext,
+                fileSize: file.size,
+                md5: file.md5,
+            },
         };
     }
+
 } 
 
 export default DemandaService;
