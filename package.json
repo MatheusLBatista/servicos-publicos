@@ -46,7 +46,6 @@
     "cross-env": "^7.0.3",
     "faker-br": "^0.4.1",
     "jest": "^29.7.0",
-    "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.1"
   },
