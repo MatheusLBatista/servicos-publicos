@@ -35,13 +35,13 @@ class UsuarioController {
     async listar(req, res){
         console.log('Estou no listar em UsuarioController');
 
-        const { id } = req.params || {}
+        const id = req?.params?.id;
         if(id) {
             UsuarioIdSchema.parse(id);
         }
 
         //Validação das queries (se existirem)
-        const query = req.query || {};
+        const query = req?.query;
         if (Object.keys(query).length !== 0) {
             // deve apenas validar o objeto query, tendo erro o zod será responsável por lançar o erro
             await UsuarioQuerySchema.parseAsync(query);
@@ -96,7 +96,7 @@ class UsuarioController {
     async atualizar(req, res) {
         console.log('Estou no atualizar em UsuarioController');
 
-        const { id } = req.params;
+        const id = req?.params?.id;
         UsuarioIdSchema.parse(id);
 
         const parsedData = UsuarioUpdateSchema.parse(req.body);
@@ -114,7 +114,7 @@ class UsuarioController {
     async deletar(req, res) {
         console.log('Estou no atualizar em UsuarioController');
 
-        const { id } = req.params || {};
+        const id = req?.params?.id;
         UsuarioIdSchema.parse(id);
 
         if (!id) {
@@ -174,7 +174,7 @@ class UsuarioController {
         try {
             console.log('Estou no getFoto em UsuarioController');
 
-            const { id } = req.params || {};
+            const id = req?.params?.id;
             UsuarioIdSchema.parse(id);
 
             const usuario = await this.service.listar(req);

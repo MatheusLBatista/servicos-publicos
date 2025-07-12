@@ -16,12 +16,14 @@ describe('controller', () => {
   beforeEach(() => {
     // Create a new controller instance and override its service with a stub.
     controller = new UsuarioController();
+    jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => true);
     serviceStub = {
       listar: jest.fn(),
       criar: jest.fn(),
       atualizar: jest.fn(),
       deletar: jest.fn(),
-      processarFoto: jest.fn()
+      processarFoto: jest.fn(),
+      criarComSenha: jest.fn()
     };
     controller.service = serviceStub;
 
@@ -33,6 +35,10 @@ describe('controller', () => {
       sendFile: jest.fn()
     };
     next = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
     // Testes para o método listar
@@ -107,17 +113,6 @@ describe('controller', () => {
             req.query = { nome: 123 }; // Tipo inválido
             await expect(controller.listar(req, res)).rejects.toThrow();
         });
-
-        // it('deve retornar erro 404 quando usuário não encontrado', async () => {
-        //     req.params.id = '686f06716464c4eb70a2e9f6';
-        //     controller.service.listar.mockResolvedValue(undefined);
-            
-        //     await expect(controller.listar(req, res)).rejects.toThrow(
-        //         expect.objectContaining({
-        //         statusCode: 404
-        //         })
-        //     );
-        // })
     });
 
     describe('criar', () => {
@@ -202,6 +197,124 @@ describe('controller', () => {
         });
     });
 
+    describe('criarComSenha', () => {
+        const validUserData = {
+            nome: 'Novo Usuário',
+            email: 'novo@email.com',
+            senha: 'Senha@123',
+            cpf: '12345678909',
+            celular: '11999999999',
+            link_imagem: 'imagem_teste.png',
+            endereco: {
+            logradouro: 'Rua Teste',
+            cep: '12345678',
+            bairro: 'Centro',
+            numero: 123,
+            cidade: 'São Paulo',
+            estado: 'SP'
+            },
+            cnh: "12345678910"
+        };
+
+        it('deve criar usuário com nivel_acesso padrão quando req.user_id não existe', async () => {
+            req.body = { ...validUserData };
+            delete req.user_id;  // garante que não existe
+
+            const mockData = {
+            _id: '507f1f77bcf86cd799439011',
+            ...validUserData,
+            nivel_acesso: {
+                municipe: true,
+                operador: false,
+                secretario: false,
+                administrador: false
+            },
+            toObject: jest.fn().mockReturnValue({
+                id: '507f1f77bcf86cd799439011',
+                nome: 'Novo Usuário',
+                nivel_acesso: {
+                municipe: true,
+                operador: false,
+                secretario: false,
+                administrador: false
+                }
+            })
+            };
+
+            controller.service.criarComSenha.mockResolvedValue(mockData);
+
+            await controller.criarComSenha(req, res);
+
+            expect(controller.service.criarComSenha).toHaveBeenCalledWith(
+            expect.objectContaining({
+                nivel_acesso: {
+                municipe: true,
+                operador: false,
+                secretario: false,
+                administrador: false
+                }
+            })
+            );
+
+            expect(res.status).toHaveBeenCalledWith(201);
+            expect(res.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                data: expect.objectContaining({
+                id: '507f1f77bcf86cd799439011',
+                nome: 'Novo Usuário',
+                nivel_acesso: {
+                    municipe: true,
+                    operador: false,
+                    secretario: false,
+                    administrador: false
+                }
+                }),
+                message: expect.any(String),
+                errors: []
+            })
+            );
+        });
+
+        it('deve criar usuário sem alterar nivel_acesso quando req.user_id existe', async () => {
+            req.body = { ...validUserData, nivel_acesso: { administrador: true } };
+            req.user_id = 'someuserid';
+
+            const mockData = {
+            _id: '507f1f77bcf86cd799439011',
+            ...validUserData,
+            nivel_acesso: { administrador: true },
+            toObject: jest.fn().mockReturnValue({
+                id: '507f1f77bcf86cd799439011',
+                nome: 'Novo Usuário',
+                nivel_acesso: { administrador: true }
+            })
+            };
+
+            controller.service.criarComSenha.mockResolvedValue(mockData);
+
+            await controller.criarComSenha(req, res);
+
+            expect(controller.service.criarComSenha).toHaveBeenCalledWith(
+            expect.objectContaining({
+                nivel_acesso: { administrador: true }
+            })
+            );
+
+            expect(res.status).toHaveBeenCalledWith(201);
+            expect(res.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                data: expect.objectContaining({
+                id: '507f1f77bcf86cd799439011',
+                nome: 'Novo Usuário',
+                nivel_acesso: { administrador: true }
+                }),
+                message: expect.any(String),
+                errors: []
+            })
+            );
+        });
+    });
+
     describe('atualizar', () => {
         const updateData = {
             nome: 'Usuário Atualizado'
@@ -254,6 +367,7 @@ describe('controller', () => {
                 errors: []
             });
         });
+        
         it('deve lançar CustomError quando ID não for fornecido no deletar', async () => {
             jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => true);
             
@@ -272,7 +386,6 @@ describe('controller', () => {
         });
     });
 
-    ///*
     describe('fotoUpload', () => {
         it('deve processar o upload da foto e retornar resposta de sucesso', async () => {
         req.params = { id: '123' };
