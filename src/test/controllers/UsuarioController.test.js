@@ -102,6 +102,22 @@ describe('controller', () => {
                 expect(error.errors[0].message).toBe('Formação não pode ser vazio.');
             }
         });
+
+        it('deve retornar erro 400 quando query inválida', async () => {
+            req.query = { nome: 123 }; // Tipo inválido
+            await expect(controller.listar(req, res)).rejects.toThrow();
+        });
+
+        // it('deve retornar erro 404 quando usuário não encontrado', async () => {
+        //     req.params.id = '686f06716464c4eb70a2e9f6';
+        //     controller.service.listar.mockResolvedValue(undefined);
+            
+        //     await expect(controller.listar(req, res)).rejects.toThrow(
+        //         expect.objectContaining({
+        //         statusCode: 404
+        //         })
+        //     );
+        // })
     });
 
     describe('criar', () => {
@@ -111,6 +127,7 @@ describe('controller', () => {
             senha: 'Senha@123',
             cpf: '12345678909',
             celular: '11999999999',
+            link_imagem: 'imagem_teste.png', 
             endereco: {
                 logradouro: 'Rua Teste',
                 cep: '12345678',
@@ -131,19 +148,57 @@ describe('controller', () => {
                     nome: 'Novo Usuário'
                 })
             };
-            
+
             req.body = validUserData;
             controller.service.criar.mockResolvedValue(mockData);
 
             await controller.criar(req, res);
 
-            expect(controller.service.criar).toHaveBeenCalledWith(validUserData);
+            expect(controller.service.criar).toHaveBeenCalledWith(validUserData, req);
             expect(res.status).toHaveBeenCalledWith(201);
             expect(res.json).toHaveBeenCalledWith({
                 message: 'Recurso criado com sucesso',
                 data: { id: '507f1f77bcf86cd799439011', nome: 'Novo Usuário' },
                 errors: []
             });
+        });
+
+        it('deve remover a senha da resposta', async () => {
+            req.body = validUserData;
+            const mockData = {
+                _id: '507f1f77bcf86cd799439011',
+                ...validUserData,
+                toObject: jest.fn().mockReturnValue({
+                ...validUserData,
+                senha: 'hashedpassword'
+                })
+            };
+            
+            controller.service.criar.mockResolvedValue(mockData);
+            await controller.criar(req, res);
+            
+            expect(res.json.mock.calls[0][0].data.senha).toBeUndefined();
+        });
+
+        it('deve lançar erro quando dados do corpo forem inválidos', async () => {
+            req.body = {
+            nome: 'Teste',
+            email: '',  // inválido
+            senha: 'Senha@123',
+            cpf: '12345678909',
+            celular: '11999999999',
+            endereco: {
+                logradouro: 'Rua Teste',
+                cep: '12345678',
+                bairro: 'Centro',
+                numero: 123,
+                cidade: 'São Paulo',
+                estado: 'SP'
+            },
+            cnh: '12345678910'
+            };
+
+            await expect(controller.criar(req, res)).rejects.toThrow();
         });
     });
 
@@ -169,8 +224,9 @@ describe('controller', () => {
             await controller.atualizar(req, res);
 
             expect(controller.service.atualizar).toHaveBeenCalledWith(
-                req.params.id, 
-                updateData
+                req.params.id,
+                updateData,
+                req
             );
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({
@@ -190,7 +246,7 @@ describe('controller', () => {
 
             await controller.deletar(req, res);
 
-            expect(controller.service.deletar).toHaveBeenCalledWith(req.params.id);
+            expect(controller.service.deletar).toHaveBeenCalledWith(req.params.id, req);
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({
                 message: 'Usuário excluído com sucesso.',
@@ -218,80 +274,113 @@ describe('controller', () => {
 
     ///*
     describe('fotoUpload', () => {
-    it('deve processar o upload da foto e retornar resposta de sucesso', async () => {
-      req.params = { id: '123' };
-      req.files = { file: { name: 'photo.jpg' } };
+        it('deve processar o upload da foto e retornar resposta de sucesso', async () => {
+        req.params = { id: '123' };
+        req.files = { file: { name: 'photo.jpg' } };
 
-      const fakeProcessResult = {
-        fileName: 'unique_photo.jpg',
-        metadata: { width: 100, height: 100 }
-      };
-      serviceStub.processarFoto.mockResolvedValue(fakeProcessResult);
+        const fakeProcessResult = {
+            fileName: 'unique_photo.jpg',
+            metadata: { width: 100, height: 100 }
+        };
+        serviceStub.processarFoto.mockResolvedValue(fakeProcessResult);
 
-      const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
-      const successSpy = jest.spyOn(CommonResponse, 'success').mockImplementation((res, data) => {
-        res.status(200).json(data);
-      });
+        const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
+        const successSpy = jest.spyOn(CommonResponse, 'success').mockImplementation((res, data) => {
+            res.status(200).json(data);
+        });
 
-      await controller.fotoUpload(req, res, next);
-      expect(idParseSpy).toHaveBeenCalledWith('123');
-      expect(serviceStub.processarFoto).toHaveBeenCalledWith('123', req.files.file);
-      expect(successSpy).toHaveBeenCalledWith(res, {
-        message: 'Arquivo recebido e usuário atualizado com sucesso.',
-        dados: { link_foto: fakeProcessResult.fileName },
-        metadados: fakeProcessResult.metadata
-      });
+        await controller.fotoUpload(req, res, next);
+        expect(idParseSpy).toHaveBeenCalledWith('123');
+        expect(serviceStub.processarFoto).toHaveBeenCalledWith('123', req.files.file, req);
+        expect(successSpy).toHaveBeenCalledWith(res, {
+            message: 'Arquivo recebido e usuário atualizado com sucesso.',
+            dados: { link_imagem: fakeProcessResult.fileName },
+            metadados: fakeProcessResult.metadata
+        });
 
-      idParseSpy.mockRestore();
-      successSpy.mockRestore();
-    });
+        idParseSpy.mockRestore();
+        successSpy.mockRestore();
+        });
 
-    it('deve chamar next com erro se nenhum arquivo for enviado', async () => {
-      req.params = { id: '123' };
-      req.files = {};
+        it('deve chamar next com erro se nenhum arquivo for enviado', async () => {
+        req.params = { id: '123' };
+        req.files = {};
 
-      const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
-      await controller.fotoUpload(req, res, next);
-      expect(next).toHaveBeenCalled();
-      const error = next.mock.calls[0][0];
-      expect(error).toBeInstanceOf(CustomError);
-      expect(error.customMessage).toBe('Nenhum arquivo foi enviado.');
+        const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
+        await controller.fotoUpload(req, res, next);
+        expect(next).toHaveBeenCalled();
+        const error = next.mock.calls[0][0];
+        expect(error).toBeInstanceOf(CustomError);
+        expect(error.customMessage).toBe('Nenhum arquivo foi enviado.');
 
-      idParseSpy.mockRestore();
-    });
+        idParseSpy.mockRestore();
+        });
+
+        it('deve retornar erro 400 quando arquivo inválido', async () => {
+            req.params.id = '507f1f77bcf86cd799439011';
+            req.files = { file: { name: 'photo.exe', size: 1234, data: Buffer.from([]) } }; // Simula estrutura básica
+
+            controller.service.processarFoto = jest.fn().mockImplementation(() => {
+                throw new CustomError({
+                    statusCode: 400,
+                    customMessage: 'Extensão de arquivo inválida.'
+                });
+            });
+
+            await controller.fotoUpload(req, res, next);
+
+            expect(next).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    statusCode: 400
+                })
+            );
+        });
+
   });
 
-  describe('getFoto', () => {
-    it('deve enviar o arquivo se a foto existir', async () => {
-      req.params = { id: '123' };
-      const fakeUsuario = { link_foto: 'photo.jpg' };
-      serviceStub.listar.mockResolvedValue(fakeUsuario);
-      const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
+    describe('getFoto', () => {
+        it('deve enviar o arquivo se a foto existir', async () => {
+        req.params = { id: '123' };
+        const fakeUsuario = { link_imagem: 'photo.jpg' };
+        serviceStub.listar.mockResolvedValue(fakeUsuario);
+        const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
 
-      await controller.getFoto(req, res, next);
-      expect(idParseSpy).toHaveBeenCalledWith('123');
-      expect(serviceStub.listar).toHaveBeenCalledWith(req);
-      expect(res.setHeader).toHaveBeenCalled();
-      expect(res.sendFile).toHaveBeenCalled();
+        await controller.getFoto(req, res, next);
+        expect(idParseSpy).toHaveBeenCalledWith('123');
+        expect(serviceStub.listar).toHaveBeenCalledWith(req);
+        expect(res.setHeader).toHaveBeenCalled();
+        expect(res.sendFile).toHaveBeenCalled();
 
-      idParseSpy.mockRestore();
+        idParseSpy.mockRestore();
+        });
+
+        it('deve chamar next com erro se a foto não for encontrada', async () => {
+        req.params = { id: '123' };
+        const fakeUsuario = {}; // no link_imagem
+        serviceStub.listar.mockResolvedValue(fakeUsuario);
+        const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
+
+        await controller.getFoto(req, res, next);
+        expect(idParseSpy).toHaveBeenCalledWith('123');
+        expect(serviceStub.listar).toHaveBeenCalledWith(req);
+        expect(next).toHaveBeenCalled();
+        const error = next.mock.calls[0][0];
+        expect(error).toBeInstanceOf(CustomError);
+        expect(error.customMessage).toBe('Foto do usuário não encontrada.');
+
+        idParseSpy.mockRestore();
+        });
+
+        it('deve retornar erro 500 quando ocorrer erro ao ler arquivo', async () => {
+            req.params = { id: '123' };
+            const fakeUsuario = { link_imagem: 'photo.jpg' };
+            serviceStub.listar.mockResolvedValue(fakeUsuario);
+            res.sendFile.mockImplementation(() => {
+                throw new Error('Erro ao ler arquivo');
+            });
+            
+            await controller.getFoto(req, res, next);
+            expect(next).toHaveBeenCalledWith(expect.any(Error));
+        });
     });
-
-    it('deve chamar next com erro se a foto não for encontrada', async () => {
-      req.params = { id: '123' };
-      const fakeUsuario = {}; // no link_foto
-      serviceStub.listar.mockResolvedValue(fakeUsuario);
-      const idParseSpy = jest.spyOn(UsuarioIdSchema, 'parse').mockImplementation(() => {});
-
-      await controller.getFoto(req, res, next);
-      expect(idParseSpy).toHaveBeenCalledWith('123');
-      expect(serviceStub.listar).toHaveBeenCalledWith(req);
-      expect(next).toHaveBeenCalled();
-      const error = next.mock.calls[0][0];
-      expect(error).toBeInstanceOf(CustomError);
-      expect(error.customMessage).toBe('Foto do usuário não encontrada.');
-
-      idParseSpy.mockRestore();
-    });
-  });
 });
