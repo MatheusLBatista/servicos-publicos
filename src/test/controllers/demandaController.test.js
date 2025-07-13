@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, jest } from '@jest/globals'
 import { DemandaIdSchema, DemandaQuerySchema } from "../../utils/validators/schemas/zod/querys/DemandaQuerySchema.js";
 import { DemandaSchema, DemandaUpdateSchema } from "../../utils/validators/schemas/zod/DemandaSchema.js";
 import { CommonResponse, CustomError, HttpStatusCodes } from "../../utils/helpers";
+import path from 'path';
 
 describe("DemandaController", ()=> {
   let controller;
@@ -13,6 +14,11 @@ describe("DemandaController", ()=> {
 
   beforeEach(() => {
     controller = new DemandaController();
+    controller.service = {
+      criar: jest.fn(),
+      atualizar: jest.fn(),
+      deletar: jest.fn()
+    };
     serviceStub = {
       listar: jest.fn(),
       criar: jest.fn(),
@@ -139,30 +145,51 @@ describe("DemandaController", ()=> {
   })
 
   describe('criar', () => {
-    it('deve analisar o corpo da requisição, criar o usuário e retornar o resultado de "created"', async() => {
-      const fakeDemandaData = { tipo: 'Iluminação', status: 'Em andamento', toObject() { return { tipo: 'Iluminação', status: 'Em andamento' } } };
-      serviceStub.criar.mockResolvedValue(fakeDemandaData); // CORRETO
-      req.body = { tipo: 'Iluminação', status: 'Em andamento' };
+    it('deve analisar o corpo da requisição, criar a demanda e retornar o resultado de "created"', async () => {
+      const fakeDemandaData = { tipo: 'Iluminação', status: 'Em andamento' };
+
+      const mockData = {
+        _id: '507f1f77bcf86cd799439011',
+        ...fakeDemandaData,
+        toObject: jest.fn().mockReturnValue({
+          id: '507f1f77bcf86cd799439011',
+          tipo: 'Iluminação'
+        })
+      };
+
+      req.body = fakeDemandaData;
+
+      controller.service = {
+        criar: jest.fn().mockResolvedValue(mockData)
+      };
 
       const schemaParseSpy = jest.spyOn(DemandaSchema, 'parse').mockReturnValue(req.body);
       const createdSpy = jest.spyOn(CommonResponse, 'created').mockImplementation((res, data) => {
-        res.status(201).json(data)
+        res.status(201).json({
+          message: 'Recurso criado com sucesso',
+          data,
+          errors: []
+        });
       });
-      
-      await controller.criar(req, res);
-      expect(schemaParseSpy).toHaveBeenCalledWith(req.body);
-      expect(serviceStub.criar).toHaveBeenCalledWith(req.body);
 
-      const returnedData = fakeDemandaData.toObject();
-      expect(createdSpy).toHaveBeenCalledWith(res, returnedData);
+      await controller.criar(req, res);
+
+      expect(schemaParseSpy).toHaveBeenCalledWith(fakeDemandaData);
+      expect(controller.service.criar).toHaveBeenCalledWith(fakeDemandaData, req);  
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Recurso criado com sucesso',
+        data: { id: '507f1f77bcf86cd799439011', tipo: 'Iluminação' },
+        errors: []
+      });
 
       schemaParseSpy.mockRestore();
       createdSpy.mockRestore();
-    })
-  })
+    });
+  });
 
   describe('atualizar', () => {
-    it('deve atualizar um usuário e retornar resposta de sucesso', async() => {
+    it('deve atualizar uma demanda e retornar resposta de sucesso', async() => {
       const fakeUpdatedData = { tipo: 'Iluminação', status: 'Concluída', toObject() { return { tipo: 'Iluminação', status: 'Concluída' } } };
       serviceStub.atualizar.mockResolvedValue(fakeUpdatedData);
       req.params = { id: '123' };
@@ -177,7 +204,7 @@ describe("DemandaController", ()=> {
       await controller.atualizar(req, res);
       expect(idParseSpy).toHaveBeenCalledWith('123');
       expect(updateSchemaSpy).toHaveBeenCalledWith(req.body);
-      expect(serviceStub.atualizar).toHaveBeenCalledWith('123', req.body);
+      expect(serviceStub.atualizar).toHaveBeenCalledWith('123', req.body, req);
 
       const returnedData = fakeUpdatedData.toObject();
       delete returnedData.tipo;
@@ -196,29 +223,215 @@ describe("DemandaController", ()=> {
   })
 
   describe('deletar', () => {
-    it('deve excluir uma demanda e retornar resposta de sucesso.', async() => {
+    it('deve excluir uma demanda e retornar resposta de sucesso.', async () => {
       const fakeDeleteData = { success: true };
-      serviceStub.deletar.mockResolvedValue(fakeDeleteData);
-      req.params = { id: '123' }
-      const idParseSpy = jest.spyOn(DemandaIdSchema, 'parse').mockImplementation(() => {})
+
+      req.params = { id: '123' };
+
+      controller.service = {
+        deletar: jest.fn().mockResolvedValue(fakeDeleteData)
+      };
+
+      const idParseSpy = jest.spyOn(DemandaIdSchema, 'parse').mockReturnValue('123');
       const successSpy = jest.spyOn(CommonResponse, 'success').mockImplementation((res, data, code, msg) => {
-        res.status(code).json( { data, message: msg } )
+        res.status(code).json({ data, message: msg, errors: [] });
       });
 
       await controller.deletar(req, res);
-      
+
       expect(idParseSpy).toHaveBeenCalledWith('123');
-      expect(serviceStub.deletar).toHaveBeenCalledWith('123');
+      expect(controller.service.deletar).toHaveBeenCalledWith('123', req);
       expect(successSpy).toHaveBeenCalledWith(
         res,
         fakeDeleteData,
         200,
-        expect.stringContaining('Demanda excluída com sucesso!')
-      )
+        expect.stringContaining('Demanda excluída com sucesso')
+      );
 
       idParseSpy.mockRestore();
       successSpy.mockRestore();
-    })
-  })
+    });
+  });
 
+  describe('atribuir', () => {
+    it('deve atribuir uma demanda com sucesso', async () => {
+      const fakeDemanda = { toObject: () => ({ id: '123', status: 'Atribuída' }) };
+      req.params = { id: '123' };
+      req.body = { status: 'Atribuída' };
+
+      const idParseSpy = jest.spyOn(DemandaIdSchema, 'parse').mockImplementation(() => {});
+      const updateSchemaSpy = jest.spyOn(DemandaUpdateSchema, 'parse').mockReturnValue(req.body);
+      const successSpy = jest.spyOn(CommonResponse, 'success').mockImplementation((res, data, code, msg) => {
+        res.status(code).json({ data, message: msg });
+      });
+
+      serviceStub.atribuir = jest.fn().mockResolvedValue(fakeDemanda);
+      controller.service = serviceStub;
+
+      await controller.atribuir(req, res);
+
+      expect(idParseSpy).toHaveBeenCalledWith('123');
+      expect(updateSchemaSpy).toHaveBeenCalledWith(req.body);
+      expect(serviceStub.atribuir).toHaveBeenCalledWith('123', req.body, req);
+      expect(successSpy).toHaveBeenCalledWith(res, { id: '123', status: 'Atribuída' }, 200, "Demanda atribuída com sucesso!");
+
+      idParseSpy.mockRestore();
+      updateSchemaSpy.mockRestore();
+      successSpy.mockRestore();
+    });
+  });
+
+  describe('devolver', () => {
+    it('deve devolver uma demanda com sucesso', async () => {
+      const fakeDemanda = { toObject: () => ({ id: '123', status: 'Devolvida' }) };
+      req.params = { id: '123' };
+      req.body = { status: 'Devolvida' };
+
+      const idParseSpy = jest.spyOn(DemandaIdSchema, 'parse').mockImplementation(() => {});
+      const updateSchemaSpy = jest.spyOn(DemandaUpdateSchema, 'parse').mockReturnValue(req.body);
+      const successSpy = jest.spyOn(CommonResponse, 'success').mockImplementation((res, data, code, msg) => {
+        res.status(code).json({ data, message: msg });
+      });
+
+      serviceStub.devolver = jest.fn().mockResolvedValue(fakeDemanda);
+      controller.service = serviceStub;
+
+      await controller.devolver(req, res);
+
+      expect(idParseSpy).toHaveBeenCalledWith('123');
+      expect(updateSchemaSpy).toHaveBeenCalledWith(req.body);
+      expect(serviceStub.devolver).toHaveBeenCalledWith('123', req.body, req);
+      expect(successSpy).toHaveBeenCalledWith(res, { id: '123', status: 'Devolvida' }, 200, "Demanda devolvida com sucesso!");
+
+      idParseSpy.mockRestore();
+      updateSchemaSpy.mockRestore();
+      successSpy.mockRestore();
+    });
+  });
+
+  describe('resolver', () => {
+    it('deve resolver uma demanda com sucesso', async () => {
+      const fakeDemanda = { toObject: () => ({ id: '123', status: 'Resolvida' }) };
+      req.params = { id: '123' };
+      req.body = { status: 'Resolvida' };
+
+      const idParseSpy = jest.spyOn(DemandaIdSchema, 'parse').mockImplementation(() => {});
+      const updateSchemaSpy = jest.spyOn(DemandaUpdateSchema, 'parse').mockReturnValue(req.body);
+      const successSpy = jest.spyOn(CommonResponse, 'success').mockImplementation((res, data, code, msg) => {
+        res.status(code).json({ data, message: msg });
+      });
+
+      serviceStub.resolver = jest.fn().mockResolvedValue(fakeDemanda);
+      controller.service = serviceStub;
+
+      await controller.resolver(req, res);
+
+      expect(idParseSpy).toHaveBeenCalledWith('123');
+      expect(updateSchemaSpy).toHaveBeenCalledWith(req.body);
+      expect(serviceStub.resolver).toHaveBeenCalledWith('123', req.body, req);
+      expect(successSpy).toHaveBeenCalledWith(res, { id: '123', status: 'Resolvida' }, 200, "Demanda resolvida com sucesso!");
+
+      idParseSpy.mockRestore();
+      updateSchemaSpy.mockRestore();
+      successSpy.mockRestore();
+    });
+  });
+
+  describe('fotoUpload', () => {
+    it('deve fazer upload de uma foto com sucesso', async () => {
+      const req = {
+        params: { id: '123', tipo: 'denuncia' },
+        files: { file: { name: 'imagem.png', buffer: Buffer.from('file') } },
+      };
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+      const next = jest.fn();
+
+      const mockFileName = 'imagem_123.png';
+      const mockMetadata = { tamanho: 1024 };
+
+      jest.spyOn(DemandaIdSchema, 'parse').mockReturnValue('123');
+      controller.service.processarFoto = jest.fn().mockResolvedValue({
+        fileName: mockFileName,
+        metadata: mockMetadata
+      });
+      jest.spyOn(CommonResponse, 'success').mockImplementation((res, payload) => {
+        res.status(200).json(payload);
+      });
+
+      await controller.fotoUpload(req, res, next);
+
+      expect(DemandaIdSchema.parse).toHaveBeenCalledWith('123');
+      expect(controller.service.processarFoto).toHaveBeenCalledWith('123', req.files.file, 'denuncia', req);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Arquivo enviado e salvo com sucesso.',
+        dados: { link_imagem: mockFileName },
+        metadados: mockMetadata
+      });
+    });
+
+    it('deve retornar erro se nenhum arquivo for enviado', async () => {
+      const req = { params: { id: '123', tipo: 'denuncia' }, files: {} };
+      const res = {};
+      const next = jest.fn();
+
+      jest.spyOn(DemandaIdSchema, 'parse').mockReturnValue('123');
+
+      await controller.fotoUpload(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({
+        statusCode: 400,
+        field: 'file',
+        customMessage: 'Nenhum arquivo foi enviado.'
+      }));
+    });
+  });
+
+  describe('getFoto', () => {
+    it('deve fazer download da imagem da denúncia', async () => {
+      const req = {
+        params: { id: '123', tipo: 'denuncia' },
+        user_id: 'user_1'
+      };
+      const res = { setHeader: jest.fn(), sendFile: jest.fn() };
+      const next = jest.fn();
+
+      const fileName = 'imagem_123.png';
+      const fullPath = path.join(__dirname, '..', '..', 'uploads', fileName);
+
+      jest.spyOn(DemandaIdSchema, 'parse').mockReturnValue('123');
+      controller.service.listar = jest.fn().mockResolvedValue({
+        link_imagem: fileName
+      });
+
+      await controller.getFoto(req, res, next);
+
+      expect(DemandaIdSchema.parse).toHaveBeenCalledWith('123');
+      expect(controller.service.listar).toHaveBeenCalledWith({
+        params: { id: '123' },
+        user_id: 'user_1'
+      });
+      expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'image/png');
+      expect(res.sendFile).toHaveBeenCalledWith(expect.stringContaining('uploads/imagem_123.png'));
+    });
+
+    it('deve retornar erro se imagem não for encontrada', async () => {
+      const req = { params: { id: '123', tipo: 'resolucao' }, user_id: 'user_1' };
+      const res = {};
+      const next = jest.fn();
+
+      jest.spyOn(DemandaIdSchema, 'parse').mockReturnValue('123');
+      controller.service.listar = jest.fn().mockResolvedValue({
+        link_imagem_resolucao: null
+      });
+
+      await controller.getFoto(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({
+        statusCode: 404,
+        field: 'link_imagem_resolucao',
+        customMessage: expect.stringContaining('Imagem de resolucao não encontrada.')
+      }));
+    });
+  });
 })

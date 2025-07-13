@@ -29,20 +29,11 @@ class DemandaService {
 
         if (id) {
             const data = await this.repository.buscarPorID(id);
-            if (!data) {
-                throw new CustomError({
-                    statusCode: 404,
-                    errorType: 'resourceNotFound',
-                    field: 'Demanda',
-                    details: [],
-                    customMessage: messages.error.resourceNotFound('Demanda')
-                });
-            }
             return data;
         }
 
         const usuario = await this.userRepository.buscarPorID(req.user_id);
-        const nivel = usuario.nivel_acesso || {};
+        const nivel = usuario?.nivel_acesso;
 
         const data = await this.repository.listar(req);
 
@@ -50,7 +41,7 @@ class DemandaService {
             const secretariasUsuario = usuario.secretarias?.map(s => s._id.toString());
 
             data.docs = data.docs.filter(demanda => {
-                const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
+                const secretariasDemanda = (demanda?.secretarias).map(s => s._id.toString());
                 return secretariasDemanda.some(id => secretariasUsuario.includes(id));
             });
         }
@@ -60,8 +51,8 @@ class DemandaService {
             const userId = usuario._id.toString();
 
             data.docs = data.docs.filter(demanda => {
-                const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
-                const demandaUsuarios = (demanda.usuarios || []).map(user => user._id.toString());
+                const secretariasDemanda = (demanda?.secretarias).map(s => s._id.toString());
+                const demandaUsuarios = (demanda?.usuarios).map(user => user._id.toString());
                 return secretariasDemanda.some(id => secretariasUsuario.includes(id)) && demandaUsuarios.includes(userId);
             });
         }
@@ -70,7 +61,7 @@ class DemandaService {
             const userId = usuario._id.toString()
 
             data.docs = data.docs.filter(demanda => {
-                const demandaUsuarios = (demanda.usuarios || []).map(user => user._id.toString());
+                const demandaUsuarios = (demanda?.usuarios).map(user => user._id.toString());
                 return demandaUsuarios.includes(userId);
             })
         }
@@ -88,7 +79,7 @@ class DemandaService {
         console.log("Estou em Demanda Service");
 
         const usuario = await this.userRepository.buscarPorID(req.user_id)
-        const nivel = usuario.nivel_acesso || {};
+        const nivel = usuario?.nivel_acesso;
 
         if (nivel.operador) {
             throw new CustomError({
@@ -124,7 +115,7 @@ class DemandaService {
         this.removerCampos(parsedData, ["tipo", "data"]);
 
         const usuario = await this.userRepository.buscarPorID(req.user_id);
-        const nivel = usuario.nivel_acesso || {};
+        const nivel = usuario?.nivel_acesso;
 
         const demanda = await this.repository.buscarPorID(id);
 
@@ -152,7 +143,7 @@ class DemandaService {
         console.log("Estou em atribuir de Demanda Service");
 
         const usuario = await this.userRepository.buscarPorID(req.user_id);
-        const nivel = usuario.nivel_acesso || {};
+        const nivel = usuario?.nivel_acesso;
 
         if (!nivel.secretario) {
             throw new CustomError({
@@ -165,8 +156,8 @@ class DemandaService {
         }
 
         const demanda = await this.repository.buscarPorID(id);
-        const secretariasUsuario = (usuario.secretarias || []).map(s => s._id.toString());
-        const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
+        const secretariasUsuario = (usuario?.secretarias).map(s => s._id.toString());
+        const secretariasDemanda = (demanda?.secretarias).map(s => s._id.toString());
 
         const permited = secretariasDemanda.some(id => secretariasUsuario.includes(id));
         if (!permited) {
@@ -203,7 +194,7 @@ class DemandaService {
         }
 
         const usuariosExistentes = await this.userRepository.buscarPorIDs(
-            (demanda.usuarios || []).map(u => u._id)
+            (demanda?.usuarios).map(u => u._id)
         );
 
         const usuariosMunicipes = usuariosExistentes
@@ -231,7 +222,7 @@ class DemandaService {
         console.log("Estou em devolver de Demanda Service");
 
         const usuario = await this.userRepository.buscarPorID(req.user_id);
-        const nivel = usuario.nivel_acesso || {};
+        const nivel = usuario?.nivel_acesso;
         const userId = usuario._id.toString();
 
         if (!nivel.operador) {
@@ -244,7 +235,7 @@ class DemandaService {
         }
 
         const demanda = await this.repository.buscarPorID(id);
-        const usuariosDemanda = demanda.usuarios || [];
+        const usuariosDemanda = demanda?.usuarios;
 
         const novaListaUsuarios = usuariosDemanda.filter(u => u._id.toString() !== userId);
 
@@ -263,7 +254,7 @@ class DemandaService {
         console.log("Estou em resolver de Demanda Service");
 
         const usuario = await this.userRepository.buscarPorID(req.user_id);
-        const nivel = usuario.nivel_acesso || {};
+        const nivel = usuario?.nivel_acesso;
 
         if (!nivel.operador) {
             throw new CustomError({
@@ -292,11 +283,11 @@ class DemandaService {
         console.log("Estou em atualizarFoto de DemandaService");
 
         const usuario = await this.userRepository.buscarPorID(req.user_id);
-        const nivel = usuario.nivel_acesso || {};
+        const nivel = usuario?.nivel_acesso;
         const userId = usuario._id.toString();
 
         const demanda = await this.repository.buscarPorID(id);
-        const usuariosDemanda = (demanda.usuarios || []).map(u => u._id.toString());
+        const usuariosDemanda = (demanda?.usuarios).map(u => u._id.toString());
 
         const isAdmin = nivel.administrador;
         const isMunicipe = nivel.municipe;
@@ -321,13 +312,13 @@ class DemandaService {
         console.log("Estou em deletar de Demanda Service");
 
         const usuario = await this.userRepository.buscarPorID(req.user_id);
-        const nivel = usuario.nivel_acesso || {};
+        const nivel = usuario?.nivel_acesso;
 
         const demanda = await this.repository.buscarPorID(id);
 
         const userId = usuario._id.toString();
         
-        const usuariosDemanda = (demanda.usuarios || []).map(u=>u._id.toString())
+        const usuariosDemanda = (demanda?.usuarios).map(u=>u._id.toString())
 
         if (nivel.municipe) {
             if(!usuariosDemanda.includes(userId)) {
