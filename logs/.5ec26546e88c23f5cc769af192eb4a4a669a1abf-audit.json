@@ -29,6 +29,11 @@
             "date": 1752259793162,
             "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\combined-2025-07-11.log",
             "hash": "47b4bf71b4415895608e7720f78750dfb440995a54c581e3f67139b0780df05d"
+        },
+        {
+            "date": 1752415255715,
+            "name": "C:\\Users\\usuario\\Documents\\FabricaII\\servicos-publicos\\logs\\combined-2025-07-13.log",
+            "hash": "cbac0ca29a617fa2750a6896a0f2f901fd80a2e04a613d65972d7cc22534a009"
         }
     ],
     "hashType": "sha256"
