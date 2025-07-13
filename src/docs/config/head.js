@@ -7,6 +7,8 @@ import secretariaPaths from "../paths/secretaria.js";
 import secretariaSchemas from "../schemas/secretariaSchema.js";
 import gruposPaths from "../paths/grupos.js";
 import grupoSchemas from "../schemas/gruposSchema.js";
+import authPaths from "../paths/auth.js";
+import authSchemas from "../schemas/authSchema.js";
 
 // Função para definir as URLs do servidor dependendo do ambiente
 const getServersInCorrectOrder = () => {
@@ -34,6 +36,10 @@ const getSwaggerOptions = () => {
             servers: getServersInCorrectOrder(),
             tags: [
                 {
+                    name: "Auth",
+                    description: "Rotas para autenticação e autorização"
+                },
+                {
                     name: "Usuários",
                     description: "Rotas para o gerenciamento de usuarios"
                 },
@@ -51,6 +57,7 @@ const getSwaggerOptions = () => {
                 },
             ],
             paths: {
+                ...authPaths,
                 ...usuarioPaths,
                 ...gruposPaths,
                 ...tipoDemandaPaths,
@@ -65,6 +72,7 @@ const getSwaggerOptions = () => {
                     }
                 },
                 schemas: {
+                    ...authSchemas,
                     ...usuarioSchemas,
                     ...grupoSchemas,
                     ...tipoDemandaSchemas,

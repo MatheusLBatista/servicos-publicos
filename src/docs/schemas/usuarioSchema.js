@@ -53,6 +53,25 @@ const usuarioSchemas = {
     ...deepCopy(usuarioJsonSchema),
     required: [],
     description: "Schema para atualização de um usuário"
+  },
+  UsuarioLogin: {
+    ...deepCopy(usuarioJsonSchema),
+    required: ["email", "senha"],
+    description: "Schema para login de usuário"
+  },
+  UsuarioRespostaLogin: {
+    ...deepCopy(usuarioJsonSchema),
+    description: "Schema para resposta de login de usuário"
+  },
+  signupPost: {
+    ...deepCopy(usuarioJsonSchema),
+    required: ["nome", "cpf", "email", "senha", "cnh", "endereco"],
+    description: "Schema para cadastro de usuário"
+  },
+  signupPostDestalhes: {
+    ...deepCopy(usuarioJsonSchema),
+    required: ["nome", "email", "senha"],
+    description: "Schema para detalhes do cadastro de usuário"
   }
 };
 
@@ -63,6 +82,10 @@ const removalMapping = {
   UsuarioPost: ['createdAt', 'updatedAt', '__v', '_id'],
   UsuarioPutPatch: ['createdAt', 'updatedAt', '__v', '_id'],
   UsuarioDelete: ['createdAt', 'updatedAt', '__v', '_id'],
+  UsuarioLogin: ['tokenUnico', 'senha', '__v', '_id', 'codigo_recupera_senha', 'exp_codigo_recupera_senha'],
+  UsuarioRespostaLogin: ['tokenUnico', 'senha', 'createdAt', 'updatedAt', '__v', 'codigo_recupera_senha', 'exp_codigo_recupera_senha'],
+  signupPost: ['accesstoken', 'refreshtoken', 'tokenUnico', 'createdAt', 'updatedAt', '__v', '_id', 'ativo', 'nivel_acesso', 'codigo_recupera_senha', 'secretarias', 'exp_codigo_recupera_senha', 'grupo'],
+  signupPostDestalhes: ['accesstoken', 'refreshtoken', 'tokenUnico', 'createdAt', 'updatedAt', '__v', '_id', 'ativo', 'nivel_acesso', 'grupo', 'codigo_recupera_senha', 'exp_codigo_recupera_senha', 'senha', 'secretarias']
 };
 
 // Aplica a remoção de campos de forma individual a cada schema
@@ -80,5 +103,8 @@ usuarioSchemas.UsuarioListagem.example = await generateExample(usuarioSchemas.Us
 usuarioSchemas.UsuarioDetalhes.example = await generateExample(usuarioSchemas.UsuarioDetalhes, null, usuarioMongooseSchema);
 usuarioSchemas.UsuarioPost.example = await generateExample(usuarioSchemas.UsuarioPost, null, usuarioMongooseSchema);
 usuarioSchemas.UsuarioPutPatch.example = await generateExample(usuarioSchemas.UsuarioPutPatch, null, usuarioMongooseSchema);
+usuarioSchemas.UsuarioLogin.example = await generateExample(usuarioSchemas.UsuarioLogin, null, usuarioMongooseSchema);
+usuarioSchemas.UsuarioRespostaLogin.example = await generateExample(usuarioSchemas.UsuarioRespostaLogin, null, usuarioMongooseSchema);
+usuarioSchemas.signupPost.example = await generateExample(usuarioSchemas.signupPost, null, usuarioMongooseSchema);
 
 export default usuarioSchemas;
