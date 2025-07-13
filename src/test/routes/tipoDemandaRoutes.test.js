@@ -6,11 +6,6 @@ import errorHandler from '../../utils/helpers/errorHandler.js';
 import authRoutes from '../../routes/authRoutes.js'
 
 let app;
-let token;
-
-const generateUniqueTitle = (base = 'Iluminação teste') => {
-  return `${base} ${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-};
 
 describe('Rotas de tipoDemanda', () => {
 
