@@ -35,6 +35,7 @@ class SecretariaService {
         delete parsedData.email;
 
         await this.ensureSecretariaExists(id);
+        await this.validarNome(parsedData.nome);
 
         const data = await this.repository.atualizar(id, parsedData);
         return data;

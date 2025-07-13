@@ -1,8 +1,8 @@
 import DemandaController from "../../controllers/DemandaController";
 import DemandaService from "../../service/DemandaService";
 import { beforeEach, describe, expect, jest } from '@jest/globals'
-import { DemandaIdSchema, DemandaQuerySchema } from "../../utils/validators/schemas/zod/querys/DemandaQuerySchema";
-import { DemandaSchema, DemandaUpdateSchema } from "../../utils/validators/schemas/zod/DemandaSchema";
+import { DemandaIdSchema, DemandaQuerySchema } from "../../utils/validators/schemas/zod/querys/DemandaQuerySchema.js";
+import { DemandaSchema, DemandaUpdateSchema } from "../../utils/validators/schemas/zod/DemandaSchema.js";
 import { CommonResponse, CustomError, HttpStatusCodes } from "../../utils/helpers";
 import path from 'path';
 
