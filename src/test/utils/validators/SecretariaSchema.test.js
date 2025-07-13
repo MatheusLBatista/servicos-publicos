@@ -7,7 +7,8 @@ describe('SecretariaSchema', () => {
       nome: "Secretaria da Educação",
       sigla: "SED",
       email: "educacao@exemplo.com",
-      telefone: "(61) 99999-9999"
+      telefone: "(61) 99999-9999",
+      tipo: "Iluminação"
     };
 
     it('deve passar com dados válidos', () => {
