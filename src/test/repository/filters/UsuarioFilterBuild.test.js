@@ -113,6 +113,62 @@ describe('UsuarioFilterBuild', () => {
         });
     });
 
+    describe('comSecretaria()', () => {
+    it('deve adicionar filtro com $in se secretaria for um array', async () => {
+        const builder = new UsuarioFilterBuild();
+        await builder.comSecretaria(['123', '456']);
+        const filtros = builder.build();
+        expect(filtros).toEqual({
+        secretarias: { $in: ['123', '456'] }
+        });
+    });
+
+    it('deve adicionar filtro com _id único se secretariaRepository retornar 1 secretaria', async () => {
+        const mockSecretaria = { _id: 'abc123' };
+
+        const builder = new UsuarioFilterBuild();
+        builder.secretariaRepository.buscarPorNome = jest.fn().mockResolvedValue(mockSecretaria);
+
+        await builder.comSecretaria('Secretaria de Saúde');
+        const filtros = builder.build();
+        expect(builder.secretariaRepository.buscarPorNome).toHaveBeenCalledWith('Secretaria de Saúde');
+        expect(filtros).toEqual({
+        secretarias: { $in: ['abc123'] }
+        });
+    });
+
+    it('deve adicionar múltiplos _id se secretariaRepository retornar array de secretarias', async () => {
+        const mockSecretarias = [{ _id: 'id1' }, { _id: 'id2' }];
+
+        const builder = new UsuarioFilterBuild();
+        builder.secretariaRepository.buscarPorNome = jest.fn().mockResolvedValue(mockSecretarias);
+
+        await builder.comSecretaria('Educação');
+        const filtros = builder.build();
+        expect(filtros).toEqual({
+        secretarias: { $in: ['id1', 'id2'] }
+        });
+    });
+
+    it('deve adicionar array vazio se nenhuma secretaria for encontrada', async () => {
+        const builder = new UsuarioFilterBuild();
+        builder.secretariaRepository.buscarPorNome = jest.fn().mockResolvedValue(null);
+
+        await builder.comSecretaria('Inexistente');
+        const filtros = builder.build();
+        expect(filtros).toEqual({
+        secretarias: { $in: [] }
+        });
+    });
+
+    it('não deve adicionar nada se secretaria for falsy', async () => {
+        const builder = new UsuarioFilterBuild();
+        await builder.comSecretaria('');
+        const filtros = builder.build();
+        expect(filtros).toEqual({});
+    });
+    });
+
     describe('escapeRegex()', () => {
         it('deve escapar caracteres especiais corretamente', () => {
             const textoOriginal = 'a+b*c^d$e.f';

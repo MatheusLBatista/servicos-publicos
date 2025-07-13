@@ -5,7 +5,7 @@ describe('UsuarioSchema', () => {
     nome: "Maria da Silva",
     email: "maria@exemplo.com",
     senha: "Senha@123",
-    link_foto: "http://foto.com/maria.png",
+    link_imagem: "http://foto.com/maria.png",
     ativo: true,
     nome_social: "Maria",
     cpf: "12345678901",
@@ -35,6 +35,31 @@ describe('UsuarioSchema', () => {
     const result = UsuarioSchema.safeParse(dadosBase);
     expect(result.success).toBe(true);
   });
+
+  it('deve falhar se secretarias contiver ID inválido', () => {
+    const invalido = { ...dadosBase, secretarias: ['1234'] };
+    const result = UsuarioSchema.safeParse(invalido);
+    expect(result.success).toBe(false);
+    expect(result.error.issues[0].message).toBe("ID inválido");
+  });
+
+  it('deve validar secretarias com IDs válidos', () => {
+    const valido = { ...dadosBase, secretarias: ['507f1f77bcf86cd799439011'] };
+    expect(UsuarioSchema.safeParse(valido).success).toBe(true);
+  });
+
+  it('deve falhar se grupo contiver ID inválido', () => {
+    const invalido = { ...dadosBase, grupo: ['1234'] };
+    const result = UsuarioSchema.safeParse(invalido);
+    expect(result.success).toBe(false);
+    expect(result.error.issues[0].message).toBe("ID inválido");
+  });
+
+  it('deve validar grupo com IDs válidos', () => {
+    const valido = { ...dadosBase, grupo: ['507f1f77bcf86cd799439011'] };
+    expect(UsuarioSchema.safeParse(valido).success).toBe(true);
+  });
+
 
   describe('Validação da senha', () => {
     it('deve falhar se senha não tiver caractere especial', () => {

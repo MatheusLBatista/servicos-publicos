@@ -30,10 +30,10 @@ class UsuarioService {
     async listar(req) {
         console.log("Estou no UsuarioService");
 
-        const { id } = req.params || {};
+        const id = req?.params?.id;
 
         const usuarioLogado = await this.repository.buscarPorID(req.user_id);
-        const nivel = usuarioLogado.nivel_acesso || {};
+        const nivel = usuarioLogado?.nivel_acesso;
         const usuarioID = usuarioLogado._id;
 
         if (nivel.municipe || nivel.operador) {
@@ -53,8 +53,8 @@ class UsuarioService {
             if (id) {
                 const usuarioPesquisado = await this.repository.buscarPorID(id);
 
-                const secretariasUsuarioLogado = (usuarioLogado.secretarias || []).map(s => s.toString());
-                const secretariasUsuarioPesquisado = (usuarioPesquisado.secretarias || []).map(s => s.toString());
+                const secretariasUsuarioLogado = (usuarioLogado?.secretarias).map(s => s.toString());
+                const secretariasUsuarioPesquisado = (usuarioPesquisado?.secretarias ).map(s => s.toString());
 
                 const temAcesso = secretariasUsuarioPesquisado.some(sec => secretariasUsuarioLogado.includes(sec));
 
@@ -68,7 +68,7 @@ class UsuarioService {
                 return usuarioPesquisado;
 
             } else {
-                const secretariasDoLogado = (usuarioLogado.secretarias || []).map(s => s._id?.toString?.() || s.toString());
+                const secretariasDoLogado = (usuarioLogado?.secretarias).map(s => s._id?.toString?.() || s.toString());
                 req.query.secretaria = secretariasDoLogado;
             }
         }
@@ -149,7 +149,7 @@ class UsuarioService {
         await this.ensureUserExists(id);
 
         const usuario = await this.repository.buscarPorID(req.user_id);
-        const nivel = usuario.nivel_acesso || {};
+        const nivel = usuario?.nivel_acesso ;
         const isAdmin = nivel.administrador;
 
         const atualizarOutroUser = String(usuario._id) !== String(id);
@@ -178,7 +178,7 @@ class UsuarioService {
         console.log('Estou no atualizar em UsuarioService');
 
         const usuario = await this.repository.buscarPorID(req.user_id);
-        const nivel = usuario.nivel_acesso || {};
+        const nivel = usuario?.nivel_acesso ;
         const usuarioID = usuario._id;
 
         await this.ensureUserExists(id);
