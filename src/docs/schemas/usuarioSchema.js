@@ -21,7 +21,12 @@ const usuarioSchemas = {
     type: "object",
     properties: {
       nome: usuarioJsonSchema.properties.nome,
-      email: usuarioJsonSchema.properties.email
+      email: usuarioJsonSchema.properties.email,
+      ativo: usuarioJsonSchema.properties.ativo,
+      secretaria: usuarioJsonSchema.properties.secretaria,
+      // nivel_acesso: usuarioJsonSchema.properties.nivel_acesso,
+      cargo: usuarioJsonSchema.properties.cargo,
+      formacao: usuarioJsonSchema.properties.formacao
     }
   },
   UsuarioListagem: {
