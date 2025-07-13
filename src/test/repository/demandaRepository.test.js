@@ -1,6 +1,5 @@
 import { CommonResponse, CustomError, HttpStatusCodes } from "../../utils/helpers/index.js";
 import DemandaRepository from '../../repository/DemandaRepository.js';
-// import DemandaFilterBuild from "../../repository/filters/DemandaFilterBuild.js";
 
 const mockFindOne = jest.fn();
 const mockFindById = jest.fn();
@@ -8,220 +7,321 @@ const mockPaginate = jest.fn();
 const mockSave = jest.fn();
 const mockFindByIdAndUpdate = jest.fn();
 const mockFindByIdAndDelete = jest.fn();
-const mockPopulate = jest.fn();
 
 class DemandaFilterBuild {
-    comTipo = jest.fn().mockReturnThis();
-    comData = jest.fn().mockReturnThis();
-    comEndereco = jest.fn().mockReturnThis();
-    comStatus = jest.fn().mockReturnThis();
-    comUsuario = jest.fn().mockReturnThis();
+  comTipo = jest.fn().mockReturnThis();
+  comData = jest.fn().mockReturnThis();
+  comEndereco = jest.fn().mockReturnThis();
+  comStatus = jest.fn().mockReturnThis();
+  comUsuario = jest.fn().mockReturnThis();
+  comSecretaria = jest.fn().mockReturnThis();
+  build = jest.fn().mockReturnValue({});
 }
 
 class DemandaModelMock {
-    constructor(dados) {
-        this.dados = dados;
-        this.save = mockSave;
-    }
+  constructor(dados) {
+    this.dados = dados;
+    this.save = mockSave;
+  }
 
-    save = mockSave;
+  save = mockSave;
 
-    static findOne = mockFindOne;
-    static findById = mockFindById;
-    static paginate = mockPaginate;
-    static findByIdAndUpdate = mockFindByIdAndUpdate;
-    static findByIdAndDelete = mockFindByIdAndDelete;
+  static findOne = mockFindOne;
+  static findById = mockFindById;
+  static paginate = mockPaginate;
+  static findByIdAndUpdate = mockFindByIdAndUpdate;
+  static findByIdAndDelete = mockFindByIdAndDelete;
 }
 
 const UsuarioModelMock = {};
 
 describe('DemandaRepository', () => {
-    let demandaRepository;
-    global.DemandaFilterBuild = DemandaFilterBuild;
+  let demandaRepository;
+  global.DemandaFilterBuild = DemandaFilterBuild;
 
-    beforeEach(() => {
-        jest.clearAllMocks();
+  beforeEach(() => {
+    jest.clearAllMocks();
 
-        demandaRepository = new DemandaRepository({
-        demandaModel: DemandaModelMock,
-        usuarioModel: UsuarioModelMock
+    demandaRepository = new DemandaRepository({
+      demandaModel: DemandaModelMock,
+      usuarioModel: UsuarioModelMock
+    });
+  });
+
+  describe('buscarPorID', () => {
+    it('deve retornar a demanda com populate', async () => {
+        const fakeId = '123abc';
+        const fakeResult = { _id: fakeId, tipo: 'Coleta' };
+
+        const finalQueryMock = Promise.resolve(fakeResult);
+
+        const secondPopulateMock = jest.fn().mockReturnValue(finalQueryMock);
+
+        const firstPopulateMock = jest.fn().mockReturnValue({
+            populate: secondPopulateMock
         });
+
+        const findByIdMock = jest.fn().mockReturnValue({
+            populate: firstPopulateMock
+        });
+
+        DemandaModelMock.findById = findByIdMock;
+
+        const resultado = await demandaRepository.buscarPorID(fakeId);
+
+        expect(findByIdMock).toHaveBeenCalledWith(fakeId);
+        expect(firstPopulateMock).toHaveBeenCalledWith({
+            path: 'usuarios',
+            populate: [
+            { path: 'secretarias' },
+            { path: 'grupo' }
+            ]
+        });
+        expect(secondPopulateMock).toHaveBeenCalledWith('secretarias');
+        expect(resultado).toEqual(fakeResult);
     });
 
-    describe('buscarPorId', () => {
-        it('deve retornar a demanda quando encontrada', async() => {
-            const fakeId = '123'
-            const fakeDemanda = { _id: fakeId, tipo: 'Coleta' };
+    it('deve lançar erro se demanda não for encontrada', async () => {
+        const fakeId = 'naoexiste';
 
-             mockFindById.mockReturnValue({
-                select: jest.fn().mockResolvedValue(fakeDemanda),
-                then: jest.fn(), // para caso use promise
-            });
+        const selectMock = jest.fn().mockResolvedValue(null);
+        const populateMock = jest.fn().mockReturnValue({ select: selectMock });
+        const populateUsuariosMock = jest.fn().mockReturnValue({ populate: populateMock });
 
-            // Aqui, quando incluir includeTokens=false, chama apenas findById
-            mockFindById.mockResolvedValue(fakeDemanda);
-
-            const resultado = await demandaRepository.buscarPorID(fakeId);
-
-            expect(mockFindById).toHaveBeenCalledWith(fakeId);
-            expect(resultado).toEqual(fakeDemanda);
-        })
-
-        it('deve lançar erro se demanda não for encontrada', async () => {
-            const fakeId = 'naoexiste';
-
-            mockFindById.mockResolvedValue(null);
-
-            await expect(demandaRepository.buscarPorID(fakeId)).rejects.toThrow(CustomError);
+        DemandaModelMock.findById = jest.fn().mockReturnValue({
+            populate: populateUsuariosMock
         });
-    })
 
-    describe('criar', () => {
-        it('deve criar e salvar a demanda', async () => {
-            const demandaDados = { tipo: 'Coleta' };
-            const demandaSalva = { _id: '123', tipo: 'Coleta' };
+        await expect(demandaRepository.buscarPorID(fakeId, true)).rejects.toThrow(CustomError);
 
-            mockSave.mockResolvedValue(demandaSalva);
-
-            const resultado = await demandaRepository.criar(demandaDados);
-
-            expect(mockSave).toHaveBeenCalled();
-            expect(resultado).toEqual(demandaSalva);
+        expect(DemandaModelMock.findById).toHaveBeenCalledWith(fakeId);
+        expect(populateUsuariosMock).toHaveBeenCalledWith({
+            path: 'usuarios',
+            populate: [
+                { path: 'secretarias' },
+                { path: 'grupo' }
+            ]
         });
+        expect(populateMock).toHaveBeenCalledWith('secretarias');
+        expect(selectMock).toHaveBeenCalledWith('+refreshtoken +accesstoken');
     });
 
-    describe('listar', () => {
+  });
+
+  describe('criar', () => {
+    it('deve criar e salvar a demanda', async () => {
+      const demandaDados = { tipo: 'Coleta' };
+      const demandaSalva = { _id: '123', tipo: 'Coleta' };
+
+      mockSave.mockResolvedValue(demandaSalva);
+
+      const resultado = await demandaRepository.criar(demandaDados);
+
+      expect(mockSave).toHaveBeenCalled();
+      expect(resultado).toEqual(demandaSalva);
+    });
+  });
+ 
+  //todo: revisar listar
+  describe('listar', () => {
+        function mockPopulateChain(finalResult) {
+        const finalQueryMock = Promise.resolve(finalResult);
+        const secondPopulateMock = jest.fn().mockReturnValue(finalQueryMock);
+        const firstPopulateMock = jest.fn().mockReturnValue({ populate: secondPopulateMock });
+
+        return {
+            firstPopulateMock,
+            secondPopulateMock,
+            findByIdReturn: { populate: firstPopulateMock }
+        };
+        }
+
         it('deve retornar uma demanda específica quando ID é fornecido', async () => {
             const fakeId = '123';
-            const fakeDemanda = { 
-                _id: fakeId, 
+            const fakeDemanda = {
+            _id: fakeId,
+            tipo: 'Coleta',
+            usuarios: ['user1', 'user2'],
+            toObject: () => ({
+                _id: fakeId,
                 tipo: 'Coleta',
-                usuarios: ['user1', 'user2'] 
+                usuarios: ['user1', 'user2']
+            })
             };
 
-            mockFindById.mockReturnValue({
-                populate: jest.fn().mockResolvedValue(fakeDemanda)
-            });
+            const { firstPopulateMock, secondPopulateMock, findByIdReturn } = mockPopulateChain(fakeDemanda);
+            const mockFindById = jest.fn().mockReturnValue(findByIdReturn);
+            demandaRepository.modelDemanda.findById = mockFindById;
 
-            const req = { params: { id: fakeId } };
+            const req = { params: { id: fakeId }, query: {} };
             const resultado = await demandaRepository.listar(req);
 
             expect(mockFindById).toHaveBeenCalledWith(fakeId);
+            expect(firstPopulateMock).toHaveBeenCalledWith({
+            path: 'usuarios',
+            populate: [{ path: 'secretarias' }, { path: 'grupo' }]
+            });
+            expect(secondPopulateMock).toHaveBeenCalledWith('secretarias');
             expect(resultado).toEqual(fakeDemanda);
         });
 
         it('deve lançar erro se demanda não for encontrada quando buscar por ID', async () => {
-            const fakeId = 'naoexiste';
-            mockFindById.mockReturnValue({
-                populate: jest.fn().mockResolvedValue(null)
-            });
+            const { findByIdReturn } = mockPopulateChain(null);
+            const mockFindById = jest.fn().mockReturnValue(findByIdReturn);
+            demandaRepository.modelDemanda.findById = mockFindById;
 
-            const req = { params: { id: fakeId } };
+            const req = { params: { id: 'naoexiste' }, query: {} };
             await expect(demandaRepository.listar(req)).rejects.toThrow(CustomError);
         });
 
         it('deve listar demandas com paginação quando não há ID', async () => {
             const fakePaginatedResult = {
-                docs: [
-                    { _id: '1', tipo: 'Coleta', usuarios: [] },
-                    { _id: '2', tipo: 'Entrega', usuarios: ['user1'] }
-                ],
-                totalDocs: 2,
-                page: 1,
-                limit: 10
+            docs: [
+                { toObject: () => ({ _id: '1', tipo: 'Coleta', usuarios: [] }) },
+                { toObject: () => ({ _id: '2', tipo: 'Entrega', usuarios: ['user1'] }) }
+            ],
+            totalDocs: 2,
+            page: 1,
+            limit: 10
             };
 
-            mockPaginate.mockResolvedValue(fakePaginatedResult);
+            const mockPaginate = jest.fn().mockResolvedValue(fakePaginatedResult);
+            demandaRepository.modelDemanda.paginate = mockPaginate;
 
-            const req = { 
-                params: {},
-                query: { 
-                    page: '1', 
-                    limite: '10' 
-                }
+            const req = {
+            params: {},
+            query: { page: '1', limite: '10' }
             };
             const resultado = await demandaRepository.listar(req);
 
-            expect(mockPaginate).toHaveBeenCalled();
+            expect(mockPaginate).toHaveBeenCalledWith(expect.any(Object), expect.objectContaining({
+            page: 1,
+            limit: 10,
+            populate: [
+                { path: 'usuarios', populate: [{ path: 'secretarias' }, { path: 'grupo' }] },
+                { path: 'secretarias' }
+            ]
+            }));
             expect(resultado.docs).toHaveLength(2);
             expect(resultado.docs[0].estatisticas).toEqual({ totalUsuarios: 0 });
             expect(resultado.docs[1].estatisticas).toEqual({ totalUsuarios: 1 });
         });
+  });
 
-        // it('deve aplicar filtros corretamente na listagem', async () => {
-        //     const fakeFilterBuilder = {
-        //         comTipo: jest.fn().mockReturnThis(),
-        //         comData: jest.fn().mockReturnThis(),
-        //         comEndereco: jest.fn().mockReturnThis(),
-        //         comStatus: jest.fn().mockReturnThis(),
-        //         comUsuario: jest.fn().mockImplementation(() => Promise.resolve(fakeFilterBuilder)),
-        //         build: jest.fn().mockReturnValue({ tipo: 'Coleta' })
-        //     };
+  describe('atualizar', () => {
+    it('deve atualizar a demanda e retornar', async () => {
+      const id = '123abc';
+      const parsedData = { status: 'Em andamento' };
+      const demandaAtualizada = { _id: id, ...parsedData };
 
-        //     // jest.spyOn(DemandaFilterBuild.prototype, 'comTipo').mockImplementation(fakeFilterBuilder.comTipo);
-        //     // jest.spyOn(DemandaFilterBuild.prototype, 'comData').mockImplementation(fakeFilterBuilder.comData);
+      const secondPopulate = jest.fn().mockResolvedValue(demandaAtualizada);
+      const firstPopulate = jest.fn().mockReturnValue({ populate: secondPopulate });
+      mockFindByIdAndUpdate.mockReturnValue({ populate: firstPopulate });
 
-        //     const req = { 
-        //         params: {},
-        //         query: { 
-        //             tipo: 'Coleta',
-        //             page: '1'
-        //         } 
-        //     };
+      const resultado = await demandaRepository.atualizar(id, parsedData);
 
-        //     await demandaRepository.listar(req);
-
-        //     // expect(fakeFilterBuilder.comTipo).toHaveBeenCalledWith('Coleta');
-        //     expect(fakeFilterBuilder.build).toHaveBeenCalled();
-        // });
+      expect(mockFindByIdAndUpdate).toHaveBeenCalledWith(id, parsedData, { new: true });
+      expect(resultado).toEqual(demandaAtualizada);
     });
 
-    describe('atualizar', () => {
-        it('deve atualizar a demanda e retornar', async () => {
-        const id = '123abc';
-        const parsedData = { status: 'Em andamento' };
-        const demandaAtualizada = { _id: id, ...parsedData };
+    it('deve lançar erro se demanda não existir para atualizar', async () => {
+      const id = 'inexistente';
+      const parsedData = { status: 'Cancelada' };
 
-        mockFindByIdAndUpdate.mockResolvedValue(demandaAtualizada);
+      const secondPopulate = jest.fn().mockResolvedValue(null);
+      const firstPopulate = jest.fn().mockReturnValue({ populate: secondPopulate });
+      mockFindByIdAndUpdate.mockReturnValue({ populate: firstPopulate });
 
-        const resultado = await demandaRepository.atualizar(id, parsedData);
+      await expect(demandaRepository.atualizar(id, parsedData)).rejects.toThrow(CustomError);
+    });
+  });
 
-        expect(mockFindByIdAndUpdate).toHaveBeenCalledWith(id, parsedData, { new: true });
-        expect(resultado).toEqual(demandaAtualizada);
-        });
+  describe('deletar', () => {
+    it('deve deletar a demanda e retornar', async () => {
+      const id = '123abc';
+      const demandaDeletada = { _id: id, tipo: 'Coleta' };
 
-        it('deve lançar erro se demanda não existir para atualizar', async () => {
-        const id = 'inexistente';
-        const parsedData = { status: 'Cancelada' };
+      const secondPopulate = jest.fn().mockResolvedValue(demandaDeletada);
+      const firstPopulate = jest.fn().mockReturnValue({ populate: secondPopulate });
+      mockFindByIdAndDelete.mockReturnValue({ populate: firstPopulate });
 
-        mockFindByIdAndUpdate.mockResolvedValue(null);
+      const resultado = await demandaRepository.deletar(id);
 
-        await expect(demandaRepository.atualizar(id, parsedData)).rejects.toThrow(CustomError);
-        });
+      expect(mockFindByIdAndDelete).toHaveBeenCalledWith(id);
+      expect(resultado).toEqual(demandaDeletada);
     });
 
-    describe('deletar', () => {
-        it('deve deletar a demanda e retornar', async () => {
-        const id = '123abc';
-        const demandaDeletada = { _id: id, tipo: 'Coleta' };
+    it('deve lançar erro se demanda não existir para deletar', async () => {
+      const id = 'inexistente';
 
-        mockFindByIdAndDelete.mockResolvedValue(demandaDeletada);
+      const secondPopulate = jest.fn().mockResolvedValue(null);
+      const firstPopulate = jest.fn().mockReturnValue({ populate: secondPopulate });
+      mockFindByIdAndDelete.mockReturnValue({ populate: firstPopulate });
 
-        const resultado = await demandaRepository.deletar(id);
+      await expect(demandaRepository.deletar(id)).rejects.toThrow(CustomError);
+    });
+  });
 
-        expect(mockFindByIdAndDelete).toHaveBeenCalledWith(id);
-        expect(resultado).toEqual(demandaDeletada);
-        });
+  const fakeId = '123';
+  const parsedData = { status: 'atribuir' };
 
-        it('deve lançar erro se demanda não existir para deletar', async () => {
-        const id = 'inexistente';
+  const fakeDemanda = {
+    _id: fakeId,
+    status: 'atribuir',
+    usuarios: ['user1'],
+    toObject: () => ({
+      _id: fakeId,
+      status: 'atribuir',
+      usuarios: ['user1']
+    })
+  };
+  describe('atribuir, devolver, resolver', () => {
+    const populateSecond = jest.fn().mockResolvedValue(fakeDemanda);
+    const populateFirst = jest.fn().mockReturnValue({ populate: populateSecond });
 
-        mockFindByIdAndDelete.mockResolvedValue(null);
-
-        await expect(demandaRepository.deletar(id)).rejects.toThrow(CustomError);
-        });
+    beforeEach(() => {
+      jest.clearAllMocks();
     });
 
-})
+    it('atribuir - deve atualizar e retornar a demanda', async () => {
+      const mockFindByIdAndUpdate = jest.fn().mockReturnValue({ populate: populateFirst });
+      demandaRepository.modelDemanda.findByIdAndUpdate = mockFindByIdAndUpdate;
 
+      const result = await demandaRepository.atribuir(fakeId, parsedData);
 
+      expect(mockFindByIdAndUpdate).toHaveBeenCalledWith(fakeId, parsedData, { new: true });
+      expect(result).toEqual(fakeDemanda);
+    });
+
+    it('atribuir - deve lançar erro se demanda não for encontrada', async () => {
+      const populateSecond = jest.fn().mockResolvedValue(null);
+      const populateFirst = jest.fn().mockReturnValue({ populate: populateSecond });
+      const mockFindByIdAndUpdate = jest.fn().mockReturnValue({ populate: populateFirst });
+
+      demandaRepository.modelDemanda.findByIdAndUpdate = mockFindByIdAndUpdate;
+
+      await expect(demandaRepository.atribuir(fakeId, parsedData)).rejects.toThrow(CustomError);
+    });
+
+    it('devolver - deve atualizar e retornar a demanda', async () => {
+      const mockFindByIdAndUpdate = jest.fn().mockReturnValue({ populate: populateFirst });
+      demandaRepository.modelDemanda.findByIdAndUpdate = mockFindByIdAndUpdate;
+
+      const result = await demandaRepository.devolver(fakeId, parsedData);
+
+      expect(mockFindByIdAndUpdate).toHaveBeenCalledWith(fakeId, parsedData, { new: true });
+      expect(result).toEqual(fakeDemanda);
+    });
+
+    it('resolver - deve atualizar e retornar a demanda', async () => {
+      const mockFindByIdAndUpdate = jest.fn().mockReturnValue({ populate: populateFirst });
+      demandaRepository.modelDemanda.findByIdAndUpdate = mockFindByIdAndUpdate;
+
+      const result = await demandaRepository.resolver(fakeId, parsedData);
+
+      expect(mockFindByIdAndUpdate).toHaveBeenCalledWith(fakeId, parsedData, { new: true });
+      expect(result).toEqual(fakeDemanda);
+    });
+  });
+
+});

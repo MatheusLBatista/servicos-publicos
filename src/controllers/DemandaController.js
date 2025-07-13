@@ -115,7 +115,7 @@ class DemandaController{
     async deletar(req, res) {
         console.log('Estou no deletar em DemandaController');
 
-        const { id } = req.params || {};
+        const id = req?.params?.id;
         DemandaIdSchema.parse(id)
 
         if(!id) {
