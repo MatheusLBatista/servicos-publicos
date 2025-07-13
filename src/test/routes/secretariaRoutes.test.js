@@ -5,10 +5,14 @@ import request from 'supertest';
 import errorHandler from '../../utils/helpers/errorHandler.js';
 import authRoutes from '../../routes/authRoutes.js'
 
-let app; 
-let token;
 
-beforeAll(async () => {
+describe('Rotas de secretaria', () => {
+
+  let app; 
+  let token;
+  let SecretariaId;
+
+  beforeAll(async () => {
   app = express(); 
   await DbConnect.conectar(); 
   app.use(express.json());
@@ -21,34 +25,29 @@ beforeAll(async () => {
       .send({ email: "admin@exemplo.com", senha: "Senha@123" });
   
     token = loginRes.body.data.user.accessToken;
+
+    const Secretariares = await request(app).get('/secretaria').set('Authorization', `Bearer ${token}`)
+      SecretariaId = Secretariares.body?.data?.docs[0]?._id;
+      expect(SecretariaId).toBeTruthy();
 });
 
 const generateUniqueTitle = (base = 'Secretaria da educação') => {
   return `${base} ${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 };
 
-describe('Rotas de secretaria', () => {
   it('GET - Deve retornar uma lista das secretarias cadastradas', async () => {
     const res = await request(app).get("/secretaria").set('Authorization', `Bearer ${token}`);
     //console.log(res.body);
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Requisição bem-sucedida");
   });
-  /*
-  it('GET - Deve retornar erro ao não encontrar rota', async () => {
-    const res = await request(app).get("/secretari");
-    //console.log(res.body);
-    expect(res.status).toBe(404);
-    expect(res.body.message).toBe("Recurso não encontrado em null.");
-    expect(res.body.errors[1].message).toBe("Rota não encontrada.");
-  });*/
 
   it('GET - Deve retornar uma secretaria pelo ID', async () => {
-    const res = await request(app).get("/secretaria/68673315cc04b34531e4fd27").set('Authorization', `Bearer ${token}`);
+    const res = await request(app).get(`/secretaria/${SecretariaId}`).set('Authorization', `Bearer ${token}`);
     //console.log(res.body);
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Requisição bem-sucedida");
-    expect(res.body.data._id).toBe("68673315cc04b34531e4fd27");
+    expect(res.body.data._id).toBe(SecretariaId);
   });
 
   it('GET - Deve retornar erro de recurso não encontrado em secretaria pelo ID não existente', async () => {
@@ -65,6 +64,7 @@ describe('Rotas de secretaria', () => {
       sigla: "sespsp",
       email: "meioambiente@prefeitura.com",
       telefone: "(69) 99999-9999",
+      tipo: "Iluminação"
     };
     const res = await request(app).post("/secretaria").send(novaSecretaria).set('Authorization', `Bearer ${token}`);
     //console.log(res.body);
@@ -75,23 +75,32 @@ describe('Rotas de secretaria', () => {
   });
 
   it('POST - Deve retornar erro ao cadastrar uma nova secretaria com nome repetido', async () => {
+    const secretaria = {
+      nome: "secretaria teste 5",
+      sigla: "sespsp",
+      email: "meioambiente@prefeitura.com",
+      telefone: "(69) 99999-9999",
+      tipo:"Iluminação"
+    };
     const novaSecretaria = {
       nome: "secretaria teste 5",
       sigla: "sespsp",
       email: "meioambiente@prefeitura.com",
       telefone: "(69) 99999-9999",
+      tipo:"Iluminação"
     };
-    const res = await request(app).post("/secretaria").send(novaSecretaria).set('Authorization', `Bearer ${token}`);
+    const res = await request(app).post("/secretaria").send(secretaria).set('Authorization', `Bearer ${token}`);
+    const res2 = await request(app).post("/secretaria").send(novaSecretaria).set('Authorization', `Bearer ${token}`);
     //console.log(res.body);
-    expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("message", "Nome já cadastrado.");
+    expect(res2.status).toBe(400);
+    expect(res2.body).toHaveProperty("message", "Nome já cadastrado.");
   });
 
   it('PATCH - Deve atualizar parcialmente uma secretaria', async () => {
     const atualizacao = {
       sigla: "sigla atualizada",
     };
-    const res = await request(app).patch(`/secretaria/68673315cc04b34531e4fd27`).send(atualizacao).set('Authorization', `Bearer ${token}`);
+    const res = await request(app).patch(`/secretaria/${SecretariaId}`).send(atualizacao).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveProperty("sigla", atualizacao.sigla);
   });
@@ -110,6 +119,7 @@ describe('Rotas de secretaria', () => {
     sigla: "sespsp",
     email: "meioambiente@prefeitura.com",
     telefone: "(69) 99999-9999",
+    tipo: "Iluminação"
   };
 
   const createRes = await request(app)

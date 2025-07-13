@@ -6,9 +6,17 @@ import errorHandler from '../../utils/helpers/errorHandler.js';
 import authRoutes from '../../routes/authRoutes.js'
 
 let app;
-let token;
 
-beforeAll(async () => {
+describe('Rotas de tipoDemanda', () => {
+
+  let token;
+  let tipoDemandaId;
+
+  const generateUniqueTitle = (base = 'Iluminação') => {
+    return `${base} ${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  };
+
+  beforeAll(async () => {
   app = express();
   await DbConnect.conectar();
   app.use(express.json());
@@ -21,13 +29,13 @@ beforeAll(async () => {
     .send({ email: "admin@exemplo.com", senha: "Senha@123" });
 
   token = loginRes.body.data.user.accessToken;
+
+  const tipoDemandares = await request(app).get('/tipoDemanda').set('Authorization', `Bearer ${token}`)
+    tipoDemandaId = tipoDemandares.body?.data?.docs[0]?._id;
+    expect(tipoDemandaId).toBeTruthy();
+
 });
 
-const generateUniqueTitle = (base = 'Iluminação teste') => {
-  return `${base} ${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-};
-
-describe('Rotas de tipoDemanda', () => {
   it('GET - Deve retornar uma lista dos tiposDemandas cadastradas', async () => {
     const res = await request(app).get("/tipoDemanda").set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
@@ -35,10 +43,10 @@ describe('Rotas de tipoDemanda', () => {
   });
 
   it('GET - Deve retornar um tipoDemanda pelo ID', async () => {
-    const res = await request(app).get("/tipoDemanda/6832ad0c109564baed4cda14").set('Authorization', `Bearer ${token}`);
+    const res = await request(app).get(`/tipoDemanda/${tipoDemandaId}`).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Requisição bem-sucedida");
-    expect(res.body.data._id).toBe("6832ad0c109564baed4cda14");
+    expect(res.body.data._id).toBe(tipoDemandaId);
   });
 
   it('GET - Deve retornar erro de recurso não encontrado em tipoDemanda pelo ID não existente', async () => {
@@ -79,9 +87,9 @@ describe('Rotas de tipoDemanda', () => {
 
   it('PATCH - Deve atualizar parcialmente um tipoDemanda', async () => {
     const atualizacao = {
-      titulo: "titulo atualizado",
+      titulo: generateUniqueTitle(),
     };
-    const res = await request(app).patch(`/tipoDemanda/6832ad0c109564baed4cda14`).send(atualizacao).set('Authorization', `Bearer ${token}`);
+    const res = await request(app).patch(`/tipoDemanda/${tipoDemandaId}`).send(atualizacao).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveProperty("titulo", atualizacao.titulo);
   });
