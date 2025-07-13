@@ -58,6 +58,16 @@ async function seedRotas() {
       modificar: true,
       excluir: true,
     },
+    {
+      rota: "rotas",
+      dominio: "localhost",
+      ativo: true,
+      buscar: true,
+      enviar: true,
+      substituir: true,
+      modificar: true,
+      excluir: true,
+    },
     // Adicione outras rotas do sistema aqui
   ];
 
