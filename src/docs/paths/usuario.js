@@ -28,9 +28,66 @@ const usuarioRoutes = {
                 • **items**: array de usuários. 
       `,
             security: [{ bearerAuth: [] }],
-            parameters: generateParameters(usuarioSchema.UsuarioFiltro),
+            parameters: [
+                {
+                    name: "nome",
+                    in: "query",
+                    schema: { type: "string" },
+                    required: false,
+                    description: "Filtra por nome"
+                },
+                {
+                    name: "email",
+                    in: "query",
+                    schema: { type: "string", format: "email" },
+                    required: false,
+                    description: "Filtra por email"
+                },
+                {
+                    name: "ativo",
+                    in: "query",
+                    schema: { type: "boolean" },
+                    required: false,
+                    description: "Filtra por status ativo"
+                },
+                {
+                    name: "secretaria",
+                    in: "query",
+                    schema: { type: "string" },
+                    required: false,
+                    description: "Filtra por secretaria"
+                },
+                {
+                    name: "cargo",
+                    in: "query",
+                    schema: { type: "string" },
+                    required: false,
+                    description: "Filtra por cargo"
+                },
+                {
+                    name: "formação",
+                    in: "query",
+                    schema: { type: "string" },
+                    required: false,
+                    description: "Filtra por formação"
+                },
+                {
+                    name: "limite",
+                    in: "query",
+                    schema: { type: "number" },
+                    required: false,
+                    description: "Filtra por limite"
+                },
+                {
+                    name: "page",
+                    in: "query",
+                    schema: { type: "number" },
+                    required: false,
+                    description: "Filtra por página"
+                },
+            ],
             responses: {
-                200: commonResponses[200](usuarioSchema.UsuarioListagem),
+                200: commonResponses[200]("#/components/schemas/UsuarioListagem"),
                 400: commonResponses[400](),
                 401: commonResponses[401](),
                 404: commonResponses[404](),
@@ -258,6 +315,7 @@ const usuarioRoutes = {
         },
     },
     // Rotas para upload de foto do usuário
+    //todo: revisar
     "/usuarios/{id}/foto": {
         post: {
             tags: ["Usuários"],
