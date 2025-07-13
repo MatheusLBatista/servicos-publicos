@@ -1,8 +1,14 @@
 //import authPaths from "../paths/auth.js";
+import usuarioPaths from "../paths/usuario.js";
+import usuarioSchemas from "../schemas/usuarioSchema.js";
 import tipoDemandaPaths from "../paths/tipoDemanda.js";
 import tipoDemandaSchemas from "../schemas/tipoDemandaSchema.js";
 import secretariaPaths from "../paths/secretaria.js";
 import secretariaSchemas from "../schemas/secretariaSchema.js";
+import gruposPaths from "../paths/grupos.js";
+import grupoSchemas from "../schemas/gruposSchema.js";
+import authPaths from "../paths/auth.js";
+import authSchemas from "../schemas/authSchema.js";
 
 // Função para definir as URLs do servidor dependendo do ambiente
 const getServersInCorrectOrder = () => {
@@ -21,7 +27,7 @@ const getSwaggerOptions = () => {
             info: {
                 title: "API de Serviços Públicos",
                 version: "1.0.0",
-                description: "",
+                description: "Documentação da API para gerenciamento de serviços públicos",
                 contact: {
                     name: "Serviços Públicos",
                     email: "servicosPublicos@ifro.edu.br",
@@ -29,6 +35,18 @@ const getSwaggerOptions = () => {
             },
             servers: getServersInCorrectOrder(),
             tags: [
+                {
+                    name: "Auth",
+                    description: "Rotas para autenticação e autorização"
+                },
+                {
+                    name: "Usuários",
+                    description: "Rotas para o gerenciamento de usuarios"
+                },
+                {
+                    name: "Grupos",
+                    description: "Rotas para gestão de grupos"
+                },
                 {
                     name: "TipoDemanda",
                     description: "Rotas para o gerenciamento de tipoDemanda"
@@ -39,6 +57,9 @@ const getSwaggerOptions = () => {
                 },
             ],
             paths: {
+                ...authPaths,
+                ...usuarioPaths,
+                ...gruposPaths,
                 ...tipoDemandaPaths,
                 ...secretariaPaths,
             },
@@ -51,6 +72,9 @@ const getSwaggerOptions = () => {
                     }
                 },
                 schemas: {
+                    ...authSchemas,
+                    ...usuarioSchemas,
+                    ...grupoSchemas,
                     ...tipoDemandaSchemas,
                     ...secretariaSchemas
                 }
