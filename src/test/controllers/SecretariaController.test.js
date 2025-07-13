@@ -68,7 +68,7 @@ describe('SecretariaController', () => {
 
     it('deve criar uma nova secretaria', async () => {
         const mockData = { id: '6832ad0c109564baed4cda0e', nome: 'Secretaria 1' };
-        req.body = { nome: 'Secretaria 1', email: 'secretaria@gmail.com', telefone: '(99) 99999-9999', sigla: "SEC" };
+        req.body = { nome: 'Secretaria 1', email: 'secretaria@gmail.com', telefone: '(99) 99999-9999', sigla: "SEC" , tipo: "Iluminação"};
         //secretariaController.service.criar = jest.fn().mockResolvedValue(mockData);
 
         secretariaController.service.criar = jest.fn().mockResolvedValue({
@@ -157,7 +157,7 @@ describe('SecretariaController', () => {
         });
 
         it('deve lidar com erro ao transformar objeto no criar', async () => {
-            req.body = { nome: 'Secretaria', email: 'test@test.com', telefone: '(11) 99999-9999', sigla: 'SEC' };
+            req.body = { nome: 'Secretaria', email: 'test@test.com', telefone: '(11) 99999-9999', sigla: 'SEC', tipo: "Iluminação" };
             secretariaController.service.criar.mockResolvedValue({
                 _doc: { id: '1', nome: 'Secretaria' },
                 toObject: jest.fn().mockImplementation(() => {
@@ -175,7 +175,7 @@ describe('SecretariaController', () => {
         });
 
         it('deve lidar com erro inesperado no service.criar', async () => {
-            req.body = { nome: 'Secretaria', email: 'test@test.com', telefone: '(11) 99999-9999', sigla: 'SEC' };
+            req.body = { nome: 'Secretaria', email: 'test@test.com', telefone: '(11) 99999-9999', sigla: 'SEC', tipo: "Iluminação" };
             secretariaController.service.criar.mockRejectedValue(new Error('Erro inesperado'));
             
             await expect(secretariaController.criar(req, res)).rejects.toThrow('Erro inesperado');
