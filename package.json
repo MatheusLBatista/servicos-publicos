@@ -28,6 +28,7 @@
     "mongoose-schema-jsonschema": "^3.0.2",
     "node-fetch": "^2.7.0",
     "path": "^0.12.7",
+    "sharp": "^0.34.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "url": "^0.11.4",
@@ -78,7 +79,7 @@
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.js"
     ],
-     "coveragePathIgnorePatterns": [
+    "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/src/utils/helpers/index.js",
       "/src/config/dbConnect.js",
@@ -92,6 +93,5 @@
       "utils/helpers/CustomError.js",
       "utils/helpers/HttpStatusCodes.js"
     ]
-
   }
 }

@@ -17,10 +17,16 @@ import { DemandaUpdateSchema } from "../../utils/validators/schemas/zod/DemandaS
 jest.mock("../../repository/DemandaRepository.js");
 jest.mock("../../repository/UsuarioRepository.js");
 jest.mock("../../repository/SecretariaRepository.js");
-jest.mock("uuid", () => ({
+jest.unstable_mockModule('uuid', () => ({
   v4: jest.fn(),
 }));
-jest.mock("sharp");
+
+jest.unstable_mockModule('sharp', () => ({
+  default: {
+    resize: jest.fn().mockReturnThis(),
+    toBuffer: jest.fn(),
+  },
+}));
 
 describe("DemandaService", () => {
   let service;

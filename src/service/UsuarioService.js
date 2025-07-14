@@ -11,7 +11,6 @@ import GrupoRepository from '../repository/GrupoRepository.js'
 import SecretariaRepository from '../repository/SecretariaRepository.js'
 
 // Importações necessárias para o upload de arquivos
-import fileUpload from 'express-fileupload';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';

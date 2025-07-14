@@ -4,12 +4,8 @@ import { DemandaIdSchema, DemandaQuerySchema } from '../utils/validators/schemas
 import { DemandaSchema, DemandaUpdateSchema } from '../utils/validators/schemas/zod/DemandaSchema.js';
 
 // Importações necessárias para o upload de arquivos
-import fileUpload from 'express-fileupload';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
-import sharp from 'sharp';
 // Helper para __dirname em módulo ES
 const getDirname = () => path.dirname(fileURLToPath(import.meta.url));
 
