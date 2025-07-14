@@ -30,14 +30,14 @@ class UsuarioService {
     async listar(req) {
         console.log("Estou no UsuarioService");
 
-        const id = req?.params?.id;
-
         const usuarioLogado = await this.repository.buscarPorID(req.user_id);
         const nivel = usuarioLogado?.nivel_acesso;
         const usuarioID = usuarioLogado._id;
 
+        const id = req?.params?.id ?? String(usuarioID);
+
         if (nivel.municipe || nivel.operador) {
-                if (!id || String(usuarioID) !== String(id)) {
+                if (String(usuarioID) !== String(id)) {
                     throw new CustomError({
                         statusCode: HttpStatusCodes.FORBIDDEN.code,
                         errorType: 'permissionError',
