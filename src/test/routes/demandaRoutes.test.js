@@ -9,6 +9,7 @@ import authRoutes from '../../routes/authRoutes.js'
 
 let app;
 let token;
+let DemandaID
 
 beforeAll(async () => {
   app = express();
@@ -44,7 +45,7 @@ describe('Rotas de demanda', () => {
   });
 
   it('GET - Deve retornar erro de recurso não encontrado em demanda pelo ID não existente', async () => {
-    const res = await request(app).get(`/demandas/${DemandaID}`).set('Authorization', `Bearer ${token}`);
+    const res = await request(app).get(`/demandas/686839b21eb194e97bf39133`).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("Recurso não encontrado em Demanda.");
   });
@@ -112,7 +113,7 @@ describe('Rotas de demanda', () => {
   // });
 
   it('PATCH - Deve retornar erro ao tentar atualizar uma demanda inexistente', async () => {
-    const res = await request(app).patch(`/demandas/${DemandaID}`).send({
+    const res = await request(app).patch(`/demandas/686839b21eb191e97bf39143`).send({
       status: "Em andamento"
     }).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(404);
