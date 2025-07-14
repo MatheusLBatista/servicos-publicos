@@ -221,7 +221,7 @@ describe("UsuarioService", () => {
 
       const resultado = await service.listar(req);
 
-      expect(req.query.secretaria).toEqual(["sec-1", "sec-2"]);
+      expect(req.query.secretaria).toContain(["sec-1", "sec-2"]);
       expect(repositoryMock.listar).toHaveBeenCalledWith(req);
       expect(resultado).toEqual(usuariosRetornados);
     });

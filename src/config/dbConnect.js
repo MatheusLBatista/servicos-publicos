@@ -58,7 +58,7 @@ class DbConnect {
             await mongoose.connect(mongoUri, {
                 serverSelectionTimeoutMS: process.env.MONGO_SERVER_SELECTION_TIMEOUT_MS
                     ? parseInt(process.env.MONGO_SERVER_SELECTION_TIMEOUT_MS)
-                    : 5000,
+                    : 7000,
                 socketTimeoutMS: process.env.MONGO_SOCKET_TIMEOUT_MS
                     ? parseInt(process.env.MONGO_SOCKET_TIMEOUT_MS)
                     : 45000,

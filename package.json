@@ -7,14 +7,15 @@
   "main": "src/app.js",
   "type": "module",
   "scripts": {
-    "dev": "clear && nodemon server.js",
-    "seed": "clear && node src/seeds/seeds.js",
-    "start": "clear && node server.js",
-    "test": "clear && jest --coverage --detectOpenHandles"
+    "dev": "nodemon server.js",
+    "seed": "node src/seeds/seeds.js",
+    "start": "node server.js",
+    "test": "jest --coverage --detectOpenHandles"
   },
   "dependencies": {
     "@faker-js/faker": "^9.9.0",
     "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -87,7 +88,7 @@
       "/src/utils/helpers/index.js",
       "/src/config/dbConnect.js",
       "/src/controllers/AuthController.js",
-      "/src/services/AuthService.js",
+      "/src/service/AuthService.js",
       "/utils/logger.js",
       "/utils/errors",
       "/middlewares/",
