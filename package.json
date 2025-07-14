@@ -13,6 +13,7 @@
     "test": "clear && jest --coverage --detectOpenHandles"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.9.0",
     "bcrypt": "^6.0.0",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
@@ -85,6 +86,8 @@
       "/node_modules/",
       "/src/utils/helpers/index.js",
       "/src/config/dbConnect.js",
+      "/src/controllers/AuthController.js",
+      "/src/services/AuthService.js",
       "/utils/logger.js",
       "/utils/errors",
       "/middlewares/",
