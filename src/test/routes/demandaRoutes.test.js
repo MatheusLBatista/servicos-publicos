@@ -93,7 +93,7 @@ describe('Rotas de demanda', () => {
     };
     const res = await request(app).post("/demandas").send(novaDemanda).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(400);
-    expect(res.body.message).toBe("Erro de validação. 4 campo(s) inválido(s).");
+    expect(res.body.message).toBe("Erro de validação. 5 campo(s) inválido(s).");
   });
   
   it('PATCH - Deve atualizar parcialmente uma demanda', async () => {

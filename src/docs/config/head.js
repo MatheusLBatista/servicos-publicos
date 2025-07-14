@@ -50,10 +50,6 @@ const getSwaggerOptions = () => {
                     description: "Rotas para o gerenciamento de demandas"
                 },
                 {
-                    name: "Grupos",
-                    description: "Rotas para gestão de grupos"
-                },
-                {
                     name: "TipoDemanda",
                     description: "Rotas para o gerenciamento de tipoDemanda"
                 },
@@ -61,6 +57,10 @@ const getSwaggerOptions = () => {
                     name: "Secretaria",
                     description: "Rotas para o gerenciamento das secretarias"
                 },
+                {
+                    name: "Grupos",
+                    description: "Rotas para gestão de grupos"
+                }
             ],
             paths: {
                 ...authPaths,

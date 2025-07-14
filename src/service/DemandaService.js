@@ -8,7 +8,6 @@ import { DemandaSchema, DemandaUpdateSchema } from '../utils/validators/schemas/
 import HttpStatusCodes from "../utils/helpers/HttpStatusCodes.js";
 
 // Importações necessárias para o upload de arquivos
-import fileUpload from 'express-fileupload';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
