@@ -18,7 +18,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "express-fileupload": "^1.5.2",
     "faker-br": "^0.4.1",
     "fs": "^0.0.1-security",
     "helmet": "^8.1.0",
@@ -29,7 +28,6 @@
     "mongoose-schema-jsonschema": "^3.0.2",
     "node-fetch": "^2.7.0",
     "path": "^0.12.7",
-    "sharp": "^0.34.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "url": "^0.11.4",
@@ -80,7 +78,7 @@
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.js"
     ],
-    "coveragePathIgnorePatterns": [
+     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/src/utils/helpers/index.js",
       "/src/config/dbConnect.js",
@@ -94,5 +92,6 @@
       "utils/helpers/CustomError.js",
       "utils/helpers/HttpStatusCodes.js"
     ]
+
   }
 }
