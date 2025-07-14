@@ -10,7 +10,6 @@
 |   Remoção de secretaria inexistente       | A tentativa de deletar uma secretaria inexistente deve retornar `null`   | Deletar com ID inexistente usando `findByIdAndDelete`            | Resultado da operação é `null`                                            |
 |   Remoção com ID malformado               | Deve lançar erro ao tentar remover com ID inválido (mal formatado)       | Usar `findByIdAndDelete` com string inválida (ex: 11 caracteres) | Operação lança erro (exceção de cast ou validação do Mongoose)            |
 
----
 
 # Plano de Teste para Controller de Secretaria (Sprint 5)
 
@@ -34,7 +33,6 @@
 |   Listagem sem validação de ID           | Quando não houver `params.id`, a listagem não realiza validação de ID        | `listar(req, res)` com `params` vazio                  | Lista todas as secretarias com status 200                                 |
 |   Listagem sem validação de query        | Quando não houver `req.query`, a listagem não realiza validação de nome/tipo | `listar(req, res)` com `query` vazio                   | Lista todas as secretarias com status 200                                 |
 
----
 
 # Plano de Teste para SecretariaService (Sprint 5)
 
@@ -48,7 +46,6 @@
 | Deletar secretaria existente       | Deve deletar secretaria se ID existir no banco                 | `buscarPorID` retorna secretaria existente, chama `deletar` com ID           | Retorna resultado da exclusão, chama métodos do repositório                    |
 | Deletar secretaria inexistente     | Deve lançar erro ao tentar deletar secretaria que não existe   | `buscarPorID` retorna null                                                   | Lançamento de `CustomError` informando que secretaria não existe               |
 
----
 
 # Plano de Teste para SecretariaRepository (Sprint 5)
 
@@ -67,7 +64,6 @@
 | atualizar (não existente)          | Deve lançar erro ao tentar atualizar secretaria inexistente    | `findByIdAndUpdate` retorna `null`<br>Lançamento de `CustomError`                       | Erro `CustomError` lançado                                                           |
 | deletar                            | Deve deletar secretaria pelo ID                                | Chamada ao método `findByIdAndDelete` com ID<br>Retorna secretaria deletada             | Retorna secretaria deletada<br>`findByIdAndDelete` chamado com o ID correto          |
 
----
 
 # Plano de teste de Secretaria Endpoint (Sprint 7)
 
@@ -82,5 +78,3 @@
 | PATCH  | `/secretaria/:id` | Atualizar secretaria inexistente                | Deve retornar erro de recurso não encontrado                                     | Requisição com ID válido mas não existente                       | Retorna status `404` e mensagem `"Recurso não encontrado em Secretaria."`                        |
 | DELETE | `/secretaria/:id` | Deletar uma secretaria existente                | Deve deletar a secretaria e retornar confirmação                                 | Requisição com ID válido de uma secretaria recém criada          | Retorna status `200`, mensagem `"Secretaria excluída com sucesso."`, e `_id` correspondente      |
 | DELETE | `/secretaria/:id` | Deletar secretaria inexistente                  | Deve retornar erro de recurso não encontrado                                     | Requisição com ID válido que não existe                          | Retorna status `404` e mensagem `"Recurso não encontrado em Secretaria."`                        |
-
----

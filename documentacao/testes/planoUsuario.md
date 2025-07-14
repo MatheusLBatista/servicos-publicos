@@ -7,8 +7,6 @@
 | Validação de CPF único   | Não deve permitir criar um usuário com CPF já cadastrado                       | Tentar salvar um usuário com CPF duplicado   | A operação falha com erro de duplicidade (`unique`)                |
 | Validação de CNH única   | Não deve permitir criar um usuário com CNH já cadastrada                       | Tentar salvar um usuário com CNH duplicada   | A operação falha com erro de duplicidade (`unique`)                |
 
----
-
 # Plano de Teste para Controller de Usuário (Sprint 5)
 
 | Funcionalidade               | Comportamento Esperado                                                                  | Verificações                                                                | Critérios de Aceite                                                                        |
@@ -28,8 +26,6 @@
 | Obter foto - sem imagem      | Deve lançar erro se o usuário não tiver foto                                            | Chamar `getFoto` para usuário sem `link_imagem`                             | Lançar `CustomError` com mensagem "Foto do usuário não encontrada."                      |
 | Obter foto - erro de leitura | Deve lançar erro se falhar ao ler o arquivo                                             | Simular erro ao executar `sendFile`                                         | Lançar erro genérico com status 500                                                      |
 
----
-
 # Plano de Teste para UsuarioService (Sprint 5)
 
 | Funcionalidade                      | Comportamento Esperado                                                  | Verificações                                                                     | Critérios de Aceite                                                      |
@@ -42,8 +38,6 @@
 | Upload com extensão inválida        | Deve lançar erro se extensão não for `.jpg`, `.jpeg` ou `.png`          | Verifica nome do arquivo e lança `CustomError`                                   | Lança erro: "Extensão de arquivo inválida"                               |
 | ensureUserExists                    | Deve retornar o usuário quando existir e lançar erro quando não existir | Simula retorno do repository e valida se `CustomError` é lançado                 | Se usuário não existir, lança erro: "Usuário não encontrado"             |
 | Exclusão de usuário inexistente     | Deve lançar erro ao tentar deletar usuário não existente                | `ensureUserExists` lança `CustomError` quando `buscarPorID` retorna null         | Retorno é um erro informando que o usuário não foi encontrado            |
-
----
 
 # Plano de Teste para UsuarioRepository (Sprint 5)
 
@@ -61,7 +55,7 @@
 |  removerTokens                  | Remove tokens do usuário (seta como `null`)                                          | Chama `findByIdAndUpdate` com `{ refreshtoken: null, accesstoken: null }`                            | Tokens removidos corretamente ou lança erro se usuário não for encontrado   |
 | buscarPorIDs                    | Retorna lista de usuários a partir de array de IDs                                   | Usa `find({ _id: { $in: [...] } })` e encadeia populates                                             | Lista de usuários retornada com dados populados                             |
 | buscarPorPorCodigoRecuperacao   | Busca usuário com base no código de recuperação de senha                             | Usa `findOne` com campos sensíveis: `+senha`, `+codigo_recupera_senha`, `+exp_codigo_recupera_senha` | Retorna usuário válido para recuperação de senha                            |
----
+
 
 # Plano de Teste para Endpoint de Usuário (/usuarios) - Sprint 7
 
@@ -76,4 +70,3 @@
 | Deletar usuário                   | Deve excluir usuário existente e retornar confirmação de exclusão  | Criar usuário via POST, deletar com DELETE em `/usuarios/:id`   | Resposta com `status 200`, `message` e `_id` do usuário deletado           |
 | Deletar usuário inexistente       | Deve retornar erro ao tentar excluir usuário que não existe        | Chamada DELETE em `/usuarios/:id` com ID inexistente            | Retorna `status 404` com mensagem de recurso não encontrado                |
 | Token de autenticação             | Todas as rotas devem exigir token válido no header Authorization   | Enviar requisições sem token ou com token inválido              | Retorna `status 401` ou `403` conforme a proteção de rota                  |
----

@@ -17,7 +17,6 @@
 | Remoção inexistente                 | Retorna `null` ao tentar remover uma demanda inexistente            | `findByIdAndDelete()` com `_id` inexistente                             | Retorno `null`                                           |
 | Erro: ID malformado                 | Lança erro ao tentar deletar com um ID inválido (malformado)        | Passa string inválida como `_id`                                        | Lança exceção                                            |
 
----
 
 # Plano de Teste para `DemandaController` (Sprint 5)
 | Funcionalidade          | Comportamento Esperado                                              | Cenários/Testes Implementados                                                                       | Critérios de Aceite                                                |
@@ -37,7 +36,6 @@
 |                         | Lança erro caso imagem não seja encontrada                          | - Verifica ausência de `link_imagem_resolucao` ou `link_imagem`<br>- `next` chamado com erro `404`  | Erro 404 com mensagem "Imagem de \[tipo] não encontrada."          |
 | Tratamento de Erros     | Lança erros esperados para casos de falha (validação, service, etc) | - Testes com validações Zod<br>- Lançamento de `CustomError` para casos como ID ausente             | Cada erro retorna com status e mensagem adequados (400, 404, etc.) |
 
----
 
 # Plano de Teste para `DemandaService` (Sprint 5)
 | Funcionalidade         | Comportamento Esperado                                                         | Verificações                                                                               | Critérios de Aceite                                                       |
@@ -66,7 +64,6 @@
 | Nível de Acesso        | Retornar campos visíveis com base no `nivel_acesso` do usuário                 | Chamada a `nivelAcesso` e comparação por perfil                                            | Lista de campos varia conforme o perfil (admin, operador, munícipe, etc.) |
 | Filtrar Campos         | Reduz dados de retorno conforme os campos permitidos                           | Chamada a `manterCampos` com base nos campos autorizados                                   | Apenas campos permitidos são mantidos                                     |
 | Funções Auxiliares     | `removerCampos`, `manterCampos` manipulam propriedades do objeto               | Testes diretos de transformação de objetos                                                 | Campos são corretamente mantidos ou removidos                             |
----
 
 # Plano de Teste para `DemandaRepository` (Sprint 5)
 
@@ -82,7 +79,6 @@
 | deletar                          | Deleta demanda com `findByIdAndDelete` e retorna objeto deletado     | Chamada com ID                                                         | Retorna objeto deletado ou erro se não existir          |
 | atribuir, devolver, resolver     | Atualiza campos específicos e retorna demanda atualizada             | Chamada com `findByIdAndUpdate`                                        | Retorna demanda atualizada ou erro se não existir       |
 
----
 
 # Plano de teste para `Demanda Endpoint` (Sprint 7)
 
@@ -97,5 +93,3 @@
 |        |                 | Atualizar demanda com ID inexistente         | Resposta 404, mensagem "Recurso não encontrado em Demanda."                              | Exibe erro ao tentar atualizar recurso que não existe            |
 | DELETE | `/demandas/:id` | Deletar uma demanda existente                | Resposta 200, mensagem "Demanda excluída com sucesso!", ID correspondente no corpo       | Exclusão da demanda realizada com sucesso                        |
 |        |                 | Deletar demanda com ID inexistente           | Resposta 404, mensagem "Recurso não encontrado em Demanda."                              | Erro apropriado exibido ao tentar deletar recurso que não existe |
-
----
