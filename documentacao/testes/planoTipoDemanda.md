@@ -18,7 +18,6 @@
 | Remoção de tipo demanda inexistente     | Deve retornar null ao tentar deletar tipo demanda com ID inexistente                                     | Deletar tipo demanda com ID inexistente                                                    | Deve retornar null                                                                    |
 | Erro ao deletar com ID malformado       | Deve lançar erro ao tentar deletar tipo demanda com ID malformado (ex: string curta ou formato inválido) | Deletar tipo demanda com ID malformado                                                     | Deve lançar erro                                                                      |
 
----
 
 # Plano de Teste para `TipoDemandaController` (Sprint 5)
 
@@ -30,7 +29,6 @@
 | Deletar TipoDemanda   | Deve deletar TipoDemanda existente por ID                                | - Deletar com ID válido<br>- ID não fornecido (CustomError)<br>- ID inválido (erro validação Zod)<br>- Lidar com erro inesperado no service | Resposta 200 com confirmação ou lançamento de erro            |
 | Tratamento de erros   | Deve lançar erros adequados nos casos de falhas de validação ou internas | - Lançar erro de validação Zod<br>- Lançar `CustomError` para casos específicos                                                             | Erros esperados com status e mensagens adequadas              |
 
----
 
 # Plano de Teste para `TipoDemandaService` (Sprint 5)
 
@@ -45,7 +43,6 @@
 | Deletar tipo de demanda existente                    | Deve deletar registro existente pelo ID                                 | BuscarPorID retorna registro<br>Chama deletar do repository<br>Retorna resultado da exclusão                           | Registro removido<br>Repository chamado com ID correto                              |
 | Deletar tipo de demanda inexistente                  | Deve lançar erro ao tentar deletar tipo não existente                   | BuscarPorID retorna null<br>Erro CustomError lançado                                                                   | Erro lançado (CustomError)                                                          |
 
----
 
 # Plano de Teste para `TipoDemandaRepository` (Sprint 5)
 
@@ -61,4 +58,17 @@
 | Atualizar tipo de demanda existente | Deve atualizar tipo de demanda pelo ID                    | `findByIdAndUpdate` chamado com ID, dados e `{ new: true }`<br>Retorna objeto atualizado    | Objeto atualizado retornado<br>Lança erro se não encontrado             |
 | Deletar tipo de demanda             | Deve deletar tipo de demanda pelo ID                      | `findByIdAndDelete` chamado com ID<br>Retorna objeto deletado                               | Objeto deletado retornado                                               |
 
-------
+
+# Plano de teste para `TipoDemanda Endpoint` (Sprint 7)
+
+| Funcionalidade                     | Comportamento Esperado                                        | Cenários/Testes                                                                                                  | Critérios de Aceite                     |
+| ---------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| Listar tipos de demanda            | Deve retornar uma lista de tipos de demanda cadastrados       | - Requisição GET `/tipoDemanda` com token válido<br>- Resposta 200 com mensagem "Requisição bem-sucedida"        | Status 200 e lista no corpo da resposta |
+| Obter tipoDemanda por ID           | Deve retornar tipoDemanda correspondente ao ID                | - Requisição GET `/tipoDemanda/:id` com ID válido e token<br>- Resposta 200 com objeto correspondente            | Status 200 e objeto correto no corpo    |
+| Obter tipoDemanda por ID inválido  | Deve retornar erro quando ID não existe                       | - Requisição GET `/tipoDemanda/:idInvalido` com token<br>- Resposta 404 com mensagem "Recurso não encontrado"    | Status 404 com mensagem de erro         |
+| Criar novo tipoDemanda             | Deve criar um novo tipoDemanda com dados válidos              | - Requisição POST `/tipoDemanda` com corpo válido e token<br>- Resposta 201 com dados criados                    | Status 201 e dados criados no corpo     |
+| Criar tipoDemanda com título vazio | Deve retornar erro de validação                               | - Requisição POST `/tipoDemanda` com título vazio e token<br>- Resposta 400 com mensagem de erro de validação    | Status 400 e mensagem de erro           |
+| Atualizar tipoDemanda              | Deve atualizar parcialmente dados de um tipoDemanda existente | - Requisição PATCH `/tipoDemanda/:id` com dados válidos e token<br>- Resposta 200 com dados atualizados          | Status 200 e dados atualizados no corpo |
+| Atualizar tipoDemanda inexistente  | Deve retornar erro ao tentar atualizar tipo inexistente       | - PATCH `/tipoDemanda/:idInvalido` com token<br>- Resposta 404 com mensagem "Recurso não encontrado"             | Status 404 e mensagem de erro           |
+| Deletar tipoDemanda                | Deve deletar um tipoDemanda existente com sucesso             | - POST para criar, DELETE `/tipoDemanda/:idCriado` com token<br>- Resposta 200 com confirmação e dados deletados | Status 200 e confirmação da exclusão    |
+| Deletar tipoDemanda inválido       | Deve retornar erro ao tentar deletar com ID inválido          | - DELETE `/tipoDemanda/:idInvalido` com token<br>- Resposta 404 com mensagem "Recurso não encontrado"            | Status 404 e mensagem de erro           |
