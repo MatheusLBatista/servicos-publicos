@@ -4,6 +4,9 @@ import { UsuarioQuerySchema, UsuarioIdSchema } from '../../utils/validators/sche
 import { UsuarioSchema, UsuarioUpdateSchema } from '../../utils/validators/schemas/zod/UsuarioSchema.js';
 import UsuarioController from '../../controllers/UsuarioController.js';
 
+jest.unstable_mockModule('express-fileupload', () => ({
+  default: jest.fn(() => (req, res, next) => next())
+}));
 jest.mock('../../service/UsuarioService.js');
 
 describe('controller', () => {

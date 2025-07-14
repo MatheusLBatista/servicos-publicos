@@ -366,7 +366,7 @@ describe("UsuarioService", () => {
       const resultado = await service.criarComSenha({ ...input });
 
       expect(grupoRepositoryMock.buscarPorNome).toHaveBeenCalledWith(
-        "municipe"
+        "Municipe"
       );
       expect(resultado).not.toHaveProperty("senha");
     });
