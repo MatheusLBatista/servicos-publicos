@@ -53,3 +53,17 @@
 | deletar        | Deleta usuário                           | Retorna usuário deletado                               | Retorna usuário deletado                                                    |
 
 ---
+
+# Plano de Teste para Endpoint de Usuário (/usuarios) - Sprint 7
+
+| Método                            | Comportamento esperado                                             | Verificações                                                    | Critérios de Aceite                                                         |
+| --------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Listar todos os usuários          | Deve retornar status 200 com uma lista de usuários                 | Chamada GET em `/usuarios`                                      | Resposta com `status 200`, mensagem de sucesso e `data.docs` como array    |
+| Buscar usuário por ID             | Deve retornar os dados do usuário especificado pelo ID             | Chamada GET em `/usuarios/:id` com ID existente                 | Retorna `status 200`, `message` e `data` com o usuário correto             |
+| Buscar usuário com ID inexistente | Deve retornar erro 404 ao buscar usuário que não existe            | Chamada GET em `/usuarios/:id` com ID válido mas inexistente    | Retorna `status 404` com mensagem de recurso não encontrado                |
+| Criar novo usuário                | Deve criar um novo usuário com dados válidos e retornar status 201 | Chamada POST em `/usuarios` com corpo completo e válido         | Resposta com `status 201`, `message` e `data` com os dados do novo usuário |
+| Atualizar parcialmente usuário    | Deve atualizar apenas os campos enviados no corpo da requisição    | Chamada PATCH em `/usuarios/:id` com ID válido e dados parciais | Resposta com `status 200` e `data` atualizado                              |
+| Atualizar usuário inexistente     | Deve retornar erro ao tentar atualizar um usuário que não existe   | Chamada PATCH em `/usuarios/:id` com ID inexistente             | Retorna `status 404` com mensagem de recurso não encontrado                |
+| Deletar usuário                   | Deve excluir usuário existente e retornar confirmação de exclusão  | Criar usuário via POST, deletar com DELETE em `/usuarios/:id`   | Resposta com `status 200`, `message` e `_id` do usuário deletado           |
+| Deletar usuário inexistente       | Deve retornar erro ao tentar excluir usuário que não existe        | Chamada DELETE em `/usuarios/:id` com ID inexistente            | Retorna `status 404` com mensagem de recurso não encontrado                |
+| Token de autenticação             | Todas as rotas devem exigir token válido no header Authorization   | Enviar requisições sem token ou com token inválido              | Retorna `status 401` ou `403` conforme a proteção de rota                  |
