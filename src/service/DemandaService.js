@@ -24,7 +24,7 @@ class DemandaService {
         this.secretariaRepository = new SecretariaRepository()
     }
 
-    async listar(req) {
+async listar(req) {
         const { id } = req.params;
 
         if (id) {
@@ -41,7 +41,7 @@ class DemandaService {
             const secretariasUsuario = usuario.secretarias?.map(s => s._id.toString());
 
             data.docs = data.docs.filter(demanda => {
-                const secretariasDemanda = (demanda?.secretarias).map(s => s._id.toString());
+                const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
                 return secretariasDemanda.some(id => secretariasUsuario.includes(id));
             });
         }
@@ -51,8 +51,8 @@ class DemandaService {
             const userId = usuario._id.toString();
 
             data.docs = data.docs.filter(demanda => {
-                const secretariasDemanda = (demanda?.secretarias).map(s => s._id.toString());
-                const demandaUsuarios = (demanda?.usuarios).map(user => user._id.toString());
+                const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
+                const demandaUsuarios = (demanda.usuarios || []).map(user => user._id.toString());
                 return secretariasDemanda.some(id => secretariasUsuario.includes(id)) && demandaUsuarios.includes(userId);
             });
         }
@@ -61,7 +61,7 @@ class DemandaService {
             const userId = usuario._id.toString()
 
             data.docs = data.docs.filter(demanda => {
-                const demandaUsuarios = (demanda?.usuarios).map(user => user._id.toString());
+                const demandaUsuarios = (demanda.usuarios || []).map(user => user._id.toString());
                 return demandaUsuarios.includes(userId);
             })
         }
@@ -74,6 +74,7 @@ class DemandaService {
 
         return data;
     }
+
 
     async criar(parsedData, req) {
         console.log("Estou em Demanda Service");
@@ -119,7 +120,7 @@ class DemandaService {
 
         const demanda = await this.repository.buscarPorID(id);
 
-        if (!nivel.municipe) {
+        if (!nivel.municipe && !nivel.admin) {
             throw new CustomError({
                 statusCode: HttpStatusCodes.FORBIDDEN.code,
                 errorType: 'permissionError',
@@ -225,7 +226,7 @@ class DemandaService {
         const nivel = usuario?.nivel_acesso;
         const userId = usuario._id.toString();
 
-        if (!nivel.operador) {
+        if (!nivel.operador && !nivel.admin) {
             throw new CustomError({
                 statusCode: HttpStatusCodes.FORBIDDEN.code,
                 errorType: 'permissionError',
@@ -256,7 +257,7 @@ class DemandaService {
         const usuario = await this.userRepository.buscarPorID(req.user_id);
         const nivel = usuario?.nivel_acesso;
 
-        if (!nivel.operador) {
+        if (!nivel.operador && !nivel.admin) {
             throw new CustomError({
                 statusCode: HttpStatusCodes.FORBIDDEN.code,
                 errorType: 'permissionError',

@@ -47,12 +47,57 @@ const usuarioSchemas = {
         'celular',
         'endereco'
     ],
-    description: "Schema para criação de um usuário"
+    description: "Schema para criação de um usuário",
+    example: 
+      {
+        cpf: "31782537856",
+        email: "Adriana.Saraiva3@gmail.com",
+        celular: "35935198784",
+        cnh: "28525359763",
+        data_nomeacao: "2024-07-14T12:30:00.000Z",
+        cargo: "Planejador",
+        formacao: "Segurança",
+        link_imagem: "http://edivan.net/b4a264ac-c062-4a5d-afe4-62f6f8428515.jpg",
+        nivel_acesso: {
+          municipe: false,
+          operador: false,
+          secretario: true,
+          administrador: false
+        },
+        nome: "Adriana Saraiva",
+        ativo: true,
+        portaria_nomeacao: "PORTARIA/8871",
+        senha: "Senha@123",
+        endereco: {
+          logradouro: "Rua das Flores",
+          bairro: "Jardim Bom",
+          numero: 123,
+          cidade: "São Paulo",
+          estado: "SP",
+          cep: "01234567"
+        },
+        secretarias: ["687466f04c27d5dd5911bedb"]
+    }
   },
   UsuarioPutPatch: {
     ...deepCopy(usuarioJsonSchema),
     required: [],
-    description: "Schema para atualização de um usuário"
+    description: "Schema para atualização de um usuário",
+    example: 
+      {
+        celular: "35935198884",
+        cargo: "Planejador de Softwares",
+        formacao: "Segurança de dados",
+        nome: "Adriana Saraiva Pereira",
+        endereco: {
+          logradouro: "Rua das Ramas",
+          bairro: "Jardim Feris",
+          numero: 333,
+          cidade: "São Paulo",
+          estado: "SP",
+          cep: "91234567"
+        }
+    }
   },
   UsuarioLogin: {
     ...deepCopy(usuarioJsonSchema),
@@ -66,7 +111,23 @@ const usuarioSchemas = {
   signupPost: {
     ...deepCopy(usuarioJsonSchema),
     required: ["nome", "cpf", "email", "senha", "cnh", "endereco"],
-    description: "Schema para cadastro de usuário"
+    description: "Schema para cadastro de usuário",
+      example: {
+        nome: "João Silva",
+        cpf: "12345687900",
+        email: "joao.silva@email.com",
+        senha: "Senha@123",
+        cnh: "13345678900",
+        celular: "12345678900",
+        endereco: {
+          logradouro: "Rua das Flores",
+          bairro: "Jardim Bom",
+          numero: 123,
+          cidade: "São Paulo",
+          estado: "SP",
+          cep: "01234567"
+        }
+      }
   },
   signupPostDestalhes: {
     ...deepCopy(usuarioJsonSchema),
@@ -106,5 +167,56 @@ usuarioSchemas.UsuarioPutPatch.example = await generateExample(usuarioSchemas.Us
 usuarioSchemas.UsuarioLogin.example = await generateExample(usuarioSchemas.UsuarioLogin, null, usuarioMongooseSchema);
 usuarioSchemas.UsuarioRespostaLogin.example = await generateExample(usuarioSchemas.UsuarioRespostaLogin, null, usuarioMongooseSchema);
 usuarioSchemas.signupPost.example = await generateExample(usuarioSchemas.signupPost, null, usuarioMongooseSchema);
+
+/**
+ * Schemas personalizados para upload/download de foto de usuário, não há como automatizar
+ */
+usuarioSchemas.UsuarioFotoPayload = {
+  type: "object",
+  properties: {
+    message: {
+      type: "string",
+      description: "Mensagem de sucesso da operação de upload",
+      example: "Arquivo recebido e usuário atualizado com sucesso."
+    },
+    dados: {
+      type: "object",
+      description: "Dados atualizados do usuário",
+      properties: {
+        link_imagem: {
+          type: "string",
+          description: "Nome do arquivo de foto salvo",
+          example: "c25069f4-d07b-4836-97a1-2c600b67f9f2.jpg"
+        }
+      },
+      required: ["link_imagem"]
+    },
+    metadados: {
+      type: "object",
+      description: "Informações técnicas sobre o arquivo enviado",
+      properties: {
+        fileName: {
+          type: "string",
+          example: "c25069f4-d07b-4836-97a1-2c600b67f9f2.jpg"
+        },
+        fileExtension: {
+          type: "string",
+          example: "jpg"
+        },
+        fileSize: {
+          type: "integer",
+          example: 121421
+        },
+        md5: {
+          type: "string",
+          example: "1bd822a4b1ca3c6224b5be5ef330ebdf"
+        }
+      },
+      required: ["fileName", "fileExtension", "fileSize", "md5"]
+    }
+  },
+  required: ["message", "dados", "metadados"],
+  description: "Payload de resultado de upload de foto de usuário"
+};
 
 export default usuarioSchemas;

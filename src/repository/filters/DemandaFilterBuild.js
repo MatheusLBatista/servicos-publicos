@@ -8,7 +8,6 @@ import UsuarioRepository from "../UsuarioRepository.js";
 import SecretariaRepository from "../SecretariaRepository.js";
 
 class DemandaFilterBuild {
-  //TODO: adicionar filtro de secretaria a demanda e usuário
   constructor() {
     this.filtros = {};
     this.demandaRepository = new DemandaRepository();

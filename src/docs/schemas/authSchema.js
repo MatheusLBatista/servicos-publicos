@@ -29,7 +29,11 @@ const authSchemas = {
       email: { type: "string", description: "Email do usuário" },
       senha: { type: "string", description: "Senha do usuário" }
     },
-    required: ["email", "senha"]
+    required: ["email", "senha"],
+    example: {
+      email: "admin@exemplo.com",
+      senha: "Senha@123"
+    }
   },
   RespostaPass: {
     type: "object",
