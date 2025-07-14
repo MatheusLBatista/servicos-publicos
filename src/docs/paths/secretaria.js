@@ -214,7 +214,7 @@ const secretariaRoutes = {
             + Caso de uso: - Permitir que o administrador exclua uma secretaria do sistema, caso ela não esteja vinculada a nenhuma demanda ativa.
             
             + Função de Negócio:
-                - Permitir à front-end permitir atualizar uma secretaria.
+                - Permitir à front-end permitir deletar uma secretaria.
                 + Recebe como path parameter:
                     - **id**: identificador da secretaria (MongoDB ObjectId).
 
