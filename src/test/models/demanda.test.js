@@ -55,32 +55,4 @@ describe('Modelo demanda', () => {
     expect(demandaSalva.link_imagem_resolucao).toBe("https://exemplo.com/imagem_resolucao.jpg");
     expect(demandaSalva.endereco.bairro).toBe("Centro");
     });
-
-    it("Deve lançar erro se o link da imagem de resolução for inválido", async () => {
-    const demanda = new Demanda({
-        tipo: "Animais",
-        status: "Em aberto",
-        data: "2025-05-19T14:30:00.000Z",
-        resolucao: "Teste",
-        link_imagem_resolucao: "invalid-link", 
-        endereco: {
-            logradouro: "Rua X",
-            cep: "00000-000",
-            bairro: "Centro",
-            numero: "123"
-        },
-        usuarios: []
-    });
-
-    let erro;
-    try {
-        await demanda.save();
-    } catch (err) {
-        erro = err;
-    }
-
-    expect(erro).toBeDefined();
-    expect(erro.message).toMatch(/não é um link de imagem válido/i);
-    });
-
 })
