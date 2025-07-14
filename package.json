@@ -104,7 +104,10 @@
       "utils/helpers/HttpStatusCodes.js",
       "utils/validators/schemas/zod/querys/GrupoQuerySchema.js",
       "utils/validators/schemas/zod/querys/RequestAuthorizationSchema.js",
-      "utils/validators/schemas/zod/GrupoSchema.js"
+      "utils/validators/schemas/zod/GrupoSchema.js",
+      "utils/validators/schemas/zod/LoginSchema.js",
+      "src/service/PermissionService.js",
+      "src/repository/filters/DemandaFilterBuild.js"
     ]
   }
 }
