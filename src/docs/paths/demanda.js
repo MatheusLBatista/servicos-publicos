@@ -608,7 +608,7 @@ const demandaRoutes = {
         },
     },
     // Rotas para upload de foto do demanda
-    "/demandas/{id}/foto/?{tipo}": {
+    "/demandas/{id}/foto/{tipo}": {
         post: {
             tags: ["Demandas"],
             summary: "Faz upload da foto do demanda",
@@ -629,6 +629,12 @@ const demandaRoutes = {
             parameters: [
                 {
                     name: "id",
+                    in: "path",
+                    required: true,
+                    schema: { type: "string" }
+                },
+                {
+                    name: "tipo",
                     in: "path",
                     required: true,
                     schema: { type: "string" }
@@ -679,7 +685,13 @@ const demandaRoutes = {
                     name: "id",
                     in: "path",
                     required: true,
-                    schema: { type: "binary" }
+                    schema: { type: "string" }
+                },
+                {
+                    name: "tipo",
+                    in: "path",
+                    required: true,
+                    schema: { type: "string" }
                 }
             ],
             responses: {

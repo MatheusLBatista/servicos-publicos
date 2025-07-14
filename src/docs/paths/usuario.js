@@ -387,7 +387,7 @@ const usuarioRoutes = {
                     name: "id",
                     in: "path",
                     required: true,
-                    schema: { type: "binary" }
+                    schema: { type: "string" }
                 }
             ],
             responses: {
