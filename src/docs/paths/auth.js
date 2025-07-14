@@ -45,6 +45,54 @@ const authRoutes = {
         }
     },
 
+
+    "/recover": {
+        post: {
+            tags: ["Auth"],
+            summary: "Solicita envio de e-mail para recuperação de senha",
+            description: `
+            + Caso de uso: Iniciar fluxo de redefinição de senha via e-mail.
+            
+            + Função de Negócio:
+                - Permitir ao usuário solicitar link seguro para redefinição de senha.
+                + Recebe { email } no corpo da requisição.
+                    - Gera um token de redefinição com validade de 1 hora.
+                    - Envia e-mail com link para \`/reset-password?token=…\`.
+                    - Retorna 200 OK sem diferenciar se o e-mail existe 
+                        + Mensagens a evitar, pois com as mensagens abaixo é possível descobrir por meio de força bruta se o e-mail existe ou não:
+                            - Se o e-mail não estiver cadastrado, retorna 404 Not Found.
+                            - Se o usuário estiver bloqueado, retorna 401 Unauthorized.
+                            - Se o e-mail estiver inválido, retorna 422 Unprocessable Entity.
+                            - Se o e-mail não for do domínio permitido, retorna 403 Forbidden.
+                            - Se o usuário não estiver ativo, retorna 401 Unauthorized.
+                            - Se o e-mail não for válido, retorna 422 Unprocessable Entity.
+                            - Se o e-mail não for do domínio permitido, retorna 403 Forbidden. 
+            
+            + Regras de Negócio Adicionais:
+                - Template de e-mail deve usar URL configurável (frontend/backoffice).
+                - Registrar tentativa de recuperação (timestamp, IP).
+                - Se envio de e-mail falhar, retorna 500 Internal Server Error.
+            
+            + Resultado Esperado:
+                - Retorno 200 OK com mensagem de sucesso: E-mail enviado com link de redefinição de senha.
+      `,
+            requestBody: {
+                required: true,
+                content: {
+                    "application/json": {
+                        schema: authSchemas.RequisicaoRecuperaSenha
+                    }
+                }
+            },
+            responses: {
+                200: commonResponses[200]("#/components/schemas/RequisicaoRecuperaSenha"),
+                400: commonResponses[400](),
+                404: commonResponses[404](),
+                500: commonResponses[500]()
+            }
+        }
+    },
+
     "/signup": {
         post: {
             tags: ["Auth"],
@@ -142,6 +190,55 @@ const authRoutes = {
       nbf: { type: "integer", description: "Timestamp UNIX de início de validade do token", example: 1672527600, },
      */
 
+    "/introspect": {
+        post: {
+            tags: ["Auth"],
+            summary: "Verifica validade do access token",
+            description: `
+            + Caso de uso: Introspecção de token para verificar estado ativo.
+            
+            + Função de Negócio:
+                - Permitir a front-end, App Mobile e serviços server-to-server conferirem se um accessToken ainda está válido.
+
+            + Recebe **token** no corpo da requisição.
+                - Retorna payload: { active: true/false, client_id, token_type, exp, iat, nbf }.
+                - Se expirado ou revogado, retorna active: false (200 OK).
+                - Não retornar 401 para token expirado (facilita integração), pois o front-end pode tentar renovar o token.
+            
+            + Resultado Esperado:
+                - Um objeto JSON com os dados do token, incluindo:
+                    - active: true/false
+                    - client_id: ID do cliente OAuth
+                    - token_type: Tipo de token (Bearer)
+                    - exp: Timestamp UNIX de expiração
+                    - iat: Timestamp UNIX de emissão
+                    - nbf: Timestamp UNIX de início de validade
+      `,
+            requestBody: {
+                required: true,
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                access_token: {
+                                    type: "string",
+                                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…"
+                                },
+                            },
+                            required: ["access_token"]
+                        }
+                    }
+                }
+            },
+            responses: {
+                200: commonResponses[200]("#/components/schemas/RespostaPass"),
+                400: commonResponses[400](),
+                500: commonResponses[500]()
+            }
+        }
+    },
+
     "/refresh": {
         post: {
             tags: ["Auth"],
@@ -189,6 +286,60 @@ const authRoutes = {
                 200: commonResponses[200]("#/components/schemas/UsuarioRespostaLogin"),
                 400: commonResponses[400](),
                 401: commonResponses[401](),
+                498: commonResponses[498](),
+                500: commonResponses[500]()
+            }
+        }
+    },
+
+
+    "/revoke": {
+        post: {
+            tags: ["Auth"],
+            summary: "Revoga refresh token específico",
+            description: `
+            + Caso de uso: Revogação seletiva de refreshToken para controle de sessões.
+                
+            + Função de Negócio:
+                - Permitir a um administrador revogar um refreshToken e accessToken específicos, invalidando-os para futuras renovações de accessToken, forçando o usuário autenticar usando email e senha novamente.
+
+            + Recebe no corpo da requisição:
+                - **id** (string): identificador do refreshToken a ser revogado.
+            
+            + Fluxo:
+                1. Localiza o refreshToken pelo ID.
+                2. Elimina da base de dados, invalidando a sessão.
+                3. Garante que este token não possa mais ser usado para renovar accessTokens.
+            
+            + Pontos de Atenção:
+                - Endpoint idempotente: revogar um token já revogado continua retornando 204 No Content.
+                - Caso o ID não exista, retorna 404 Not Found.
+            
+            + Resultado Esperado:
+                - HTTP 200 OK sem conteúdo em caso de sucesso: Refresh token revogado.
+      `,
+            requestBody: {
+                required: true,
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                id: {
+                                    type: "string",
+                                    example: "674fa21d79969d2172e78710"
+                                }
+                            },
+                            required: ["id"]
+                        }
+                    }
+                }
+            },
+            responses: {
+                200: commonResponses[200](),
+                400: commonResponses[400](),
+                401: commonResponses[401](),
+                404: commonResponses[404](),
                 498: commonResponses[498](),
                 500: commonResponses[500]()
             }

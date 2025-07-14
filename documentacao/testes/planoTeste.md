@@ -2,13 +2,14 @@
 
 **Serviços Públicos - Vilhena+ Pública**
 
-*versão 1.0*
+*versão 1.1*
 
 ## Histórico das alterações
 
 | Data       | Versão | Descrição                         | Autor(a)    |
 | ---------- | ------ | --------------------------------- | ----------- |
 | 01/06/2025 | 1.0    | Primeira versão do plano de teste | Giullia e Matheus Lucas |
+| 08/07/2025 | 1.1    | SEgunda versão do plano de teste  | Giullia e Matheus Lucas |
 
 ## 1 - Introdução
 
