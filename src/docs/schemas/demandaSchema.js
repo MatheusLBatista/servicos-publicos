@@ -20,58 +20,36 @@ const demandaSchemas = {
   DemandaFiltro: {
     type: "object",
     properties: {
-      nome: demandaJsonSchema.properties.nome,
-      email: demandaJsonSchema.properties.email,
-      ativo: demandaJsonSchema.properties.ativo,
-      secretaria: demandaJsonSchema.properties.secretaria,
-      // nivel_acesso: demandaJsonSchema.properties.nivel_acesso,
-      cargo: demandaJsonSchema.properties.cargo,
-      formacao: demandaJsonSchema.properties.formacao
+      // nome: demandaJsonSchema.properties.nome,
+      // email: demandaJsonSchema.properties.email,
+      // ativo: demandaJsonSchema.properties.ativo,
+      // secretaria: demandaJsonSchema.properties.secretaria,
+      // // nivel_acesso: demandaJsonSchema.properties.nivel_acesso,
+      // cargo: demandaJsonSchema.properties.cargo,
+      // formacao: demandaJsonSchema.properties.formacao
     }
   },
   DemandaListagem: {
     ...deepCopy(demandaJsonSchema),
-    description: "Schema para listagem dos usuários"
+    description: "Schema para listagem dos demandas"
   },
   DemandaDetalhes: {
     ...deepCopy(demandaJsonSchema),
-    description: "Schema para detalhes de um usuário"
+    description: "Schema para detalhes de um demanda"
   },
   DemandaPost: {
     ...deepCopy(demandaJsonSchema),
     required: [
-        'cpf',
-        'nome',
-        'cnh',
-        'email',
-        'celular',
+        'tipo',
+        'descricao',
         'endereco'
     ],
-    description: "Schema para criação de um usuário"
+    description: "Schema para criação de um demanda"
   },
   DemandaPutPatch: {
     ...deepCopy(demandaJsonSchema),
     required: [],
-    description: "Schema para atualização de um usuário"
-  },
-  DemandaLogin: {
-    ...deepCopy(demandaJsonSchema),
-    required: ["email", "senha"],
-    description: "Schema para login de usuário"
-  },
-  DemandaRespostaLogin: {
-    ...deepCopy(demandaJsonSchema),
-    description: "Schema para resposta de login de usuário"
-  },
-  signupPost: {
-    ...deepCopy(demandaJsonSchema),
-    required: ["nome", "cpf", "email", "senha", "cnh", "endereco"],
-    description: "Schema para cadastro de usuário"
-  },
-  signupPostDestalhes: {
-    ...deepCopy(demandaJsonSchema),
-    required: ["nome", "email", "senha"],
-    description: "Schema para detalhes do cadastro de usuário"
+    description: "Schema para atualização de um demanda"
   }
 };
 
@@ -81,11 +59,7 @@ const removalMapping = {
   DemandaDetalhes: ['__v'],
   DemandaPost: ['createdAt', 'updatedAt', '__v', '_id'],
   DemandaPutPatch: ['createdAt', 'updatedAt', '__v', '_id'],
-  DemandaDelete: ['createdAt', 'updatedAt', '__v', '_id'],
-  DemandaLogin: ['tokenUnico', 'senha', '__v', '_id', 'codigo_recupera_senha', 'exp_codigo_recupera_senha'],
-  DemandaRespostaLogin: ['tokenUnico', 'senha', 'createdAt', 'updatedAt', '__v', 'codigo_recupera_senha', 'exp_codigo_recupera_senha'],
-  signupPost: ['accesstoken', 'refreshtoken', 'tokenUnico', 'createdAt', 'updatedAt', '__v', '_id', 'ativo', 'nivel_acesso', 'codigo_recupera_senha', 'secretarias', 'exp_codigo_recupera_senha', 'grupo'],
-  signupPostDestalhes: ['accesstoken', 'refreshtoken', 'tokenUnico', 'createdAt', 'updatedAt', '__v', '_id', 'ativo', 'nivel_acesso', 'grupo', 'codigo_recupera_senha', 'exp_codigo_recupera_senha', 'senha', 'secretarias']
+  DemandaDelete: ['createdAt', 'updatedAt', '__v', '_id']
 };
 
 // Aplica a remoção de campos de forma individual a cada schema
@@ -103,8 +77,5 @@ demandaSchemas.DemandaListagem.example = await generateExample(demandaSchemas.De
 demandaSchemas.DemandaDetalhes.example = await generateExample(demandaSchemas.DemandaDetalhes, null, demandaMongooseSchema);
 demandaSchemas.DemandaPost.example = await generateExample(demandaSchemas.DemandaPost, null, demandaMongooseSchema);
 demandaSchemas.DemandaPutPatch.example = await generateExample(demandaSchemas.DemandaPutPatch, null, demandaMongooseSchema);
-demandaSchemas.DemandaLogin.example = await generateExample(demandaSchemas.DemandaLogin, null, demandaMongooseSchema);
-demandaSchemas.DemandaRespostaLogin.example = await generateExample(demandaSchemas.DemandaRespostaLogin, null, demandaMongooseSchema);
-demandaSchemas.signupPost.example = await generateExample(demandaSchemas.signupPost, null, demandaMongooseSchema);
 
 export default demandaSchemas;

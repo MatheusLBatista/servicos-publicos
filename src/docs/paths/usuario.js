@@ -12,7 +12,7 @@ const usuarioRoutes = {
         + Caso de uso: Permitir que o sistema ou um usuário autorizado liste todos os usuários disponíveis no sistema, com possibilidade de filtros.
         
         + Função de Negócio:
-            - Permitir ao front-end obter uma lista das usuários cadastradas.
+            - Permitir ao front-end obter uma lista dos usuários cadastradas.
             + Recebe como query parameters (opcionais):
                 • filtros: nome, email, ativo, secretaria, nivelAcesso, cargo e formacao.
 

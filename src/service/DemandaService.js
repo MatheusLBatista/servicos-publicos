@@ -119,7 +119,7 @@ class DemandaService {
 
         const demanda = await this.repository.buscarPorID(id);
 
-        if (!nivel.municipe) {
+        if (!nivel.municipe && !nivel.admin) {
             throw new CustomError({
                 statusCode: HttpStatusCodes.FORBIDDEN.code,
                 errorType: 'permissionError',
@@ -225,7 +225,7 @@ class DemandaService {
         const nivel = usuario?.nivel_acesso;
         const userId = usuario._id.toString();
 
-        if (!nivel.operador) {
+        if (!nivel.operador && !nivel.admin) {
             throw new CustomError({
                 statusCode: HttpStatusCodes.FORBIDDEN.code,
                 errorType: 'permissionError',
@@ -256,7 +256,7 @@ class DemandaService {
         const usuario = await this.userRepository.buscarPorID(req.user_id);
         const nivel = usuario?.nivel_acesso;
 
-        if (!nivel.operador) {
+        if (!nivel.operador && !nivel.admin) {
             throw new CustomError({
                 statusCode: HttpStatusCodes.FORBIDDEN.code,
                 errorType: 'permissionError',
