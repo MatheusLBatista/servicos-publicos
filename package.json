@@ -97,7 +97,10 @@
       "/utils/helpers/CommonResponse.js",
       "/middlewares/asyncWrapper.js",
       "utils/helpers/CustomError.js",
-      "utils/helpers/HttpStatusCodes.js"
+      "utils/helpers/HttpStatusCodes.js",
+      "utils/validators/schemas/zod/querys/GrupoQuerySchema.js",
+      "utils/validators/schemas/zod/querys/RequestAuthorizationSchema.js",
+      "utils/validators/schemas/zod/GrupoSchema.js"
     ]
   }
 }
