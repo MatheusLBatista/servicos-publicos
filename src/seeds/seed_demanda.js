@@ -23,6 +23,46 @@ async function seedDemanda() {
 
   const demandas = [];
 
+  const secretarioFixo = await Usuario.findOne({ email: "secretariofixo@exemplo.com" });
+  const operadorFixo = await Usuario.findOne({ email: "operadorfixo@exemplo.com" });
+  const municipeFixo = await Usuario.findOne({ email: "municipefixo@exemplo.com" });
+
+  const secretariaFixa = secretarioFixo.secretarias[0];
+
+  demandas.push({
+    tipo: "Iluminação",
+    status: "Em aberto",
+    data: new Date(),
+    descricao: "Poste de luz quebrado na esquina.",
+    link_imagem: globalFakeMapping.link_imagem(),
+    endereco: {
+      logradouro: "Rua das Flores",
+      cep: "12345-678",
+      bairro: "Jardim Luz",
+      numero: "100",
+      complemento: "Perto do ponto de ônibus"
+    },
+    usuarios: [municipeFixo._id],
+    secretarias: [secretariaFixa]
+  });
+
+  demandas.push({
+    tipo: "Pavimentação",
+    status: "Em andamento",
+    data: new Date(),
+    descricao: "Buraco enorme na rua após a chuva.",
+    link_imagem: globalFakeMapping.link_imagem(),
+    endereco: {
+      logradouro: "Avenida Central",
+      cep: "87654-321",
+      bairro: "Centro",
+      numero: "250",
+      complemento: "Em frente ao mercado"
+    },
+    usuarios: [municipeFixo._id, operadorFixo._id], 
+    secretarias: [secretariaFixa]
+  });
+
   for (let i = 0; i <= 10; i++) {
     const usuarioAleatorio = usuarios[Math.floor(Math.random() * usuarios.length )];
 
