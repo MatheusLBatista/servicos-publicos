@@ -24,7 +24,7 @@ class DemandaService {
         this.secretariaRepository = new SecretariaRepository()
     }
 
-    async listar(req) {
+async listar(req) {
         const { id } = req.params;
 
         if (id) {
@@ -41,7 +41,7 @@ class DemandaService {
             const secretariasUsuario = usuario.secretarias?.map(s => s._id.toString());
 
             data.docs = data.docs.filter(demanda => {
-                const secretariasDemanda = (demanda?.secretarias).map(s => s._id.toString());
+                const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
                 return secretariasDemanda.some(id => secretariasUsuario.includes(id));
             });
         }
@@ -51,8 +51,8 @@ class DemandaService {
             const userId = usuario._id.toString();
 
             data.docs = data.docs.filter(demanda => {
-                const secretariasDemanda = (demanda?.secretarias).map(s => s._id.toString());
-                const demandaUsuarios = (demanda?.usuarios).map(user => user._id.toString());
+                const secretariasDemanda = (demanda.secretarias || []).map(s => s._id.toString());
+                const demandaUsuarios = (demanda.usuarios || []).map(user => user._id.toString());
                 return secretariasDemanda.some(id => secretariasUsuario.includes(id)) && demandaUsuarios.includes(userId);
             });
         }
@@ -61,7 +61,7 @@ class DemandaService {
             const userId = usuario._id.toString()
 
             data.docs = data.docs.filter(demanda => {
-                const demandaUsuarios = (demanda?.usuarios).map(user => user._id.toString());
+                const demandaUsuarios = (demanda.usuarios || []).map(user => user._id.toString());
                 return demandaUsuarios.includes(userId);
             })
         }
@@ -74,6 +74,7 @@ class DemandaService {
 
         return data;
     }
+
 
     async criar(parsedData, req) {
         console.log("Estou em Demanda Service");

@@ -196,6 +196,7 @@ const demandaRoutes = {
                 - Os dados enviados devem seguir o DemandaUpdateSchema.
                 - Não deve permitir a atualização do tipo ou data.
                 - Apenas os munícipes e administradores podem atualizar uma demandas através dessa rota.
+                - Rota usada principalmente para trazer o feedback da resolução da demanda.
 
             + Resultado Esperado:
                 - HTTP 200 OK e os dados da demanda são atualizados com sucesso e o sistema retorna os novos dados com uma mensagem de confirmação.
@@ -243,6 +244,7 @@ const demandaRoutes = {
                 - Os dados enviados devem seguir o DemandaUpdateSchema.
                 - Não deve permitir a atualização do tipo ou data.
                 - Apenas os munícipes e administradores podem atualizar uma demandas através dessa rota.
+                - Rota usada principalmente para trazer o feedback da resolução da demanda.
 
             + Resultado Esperado:
                 - HTTP 200 OK e os dados da demanda são atualizados com sucesso e o sistema retorna os novos dados com uma mensagem de confirmação.
@@ -350,13 +352,13 @@ const demandaRoutes = {
                 content: {
                     "application/json": {
                         schema: {
-                            $ref: "#/components/schemas/DemandaPutPatch"
+                            $ref: "#/components/schemas/DemandaAtribuir"
                         }
                     }
                 }
             },
             responses: {
-                200: commonResponses[200]("#/components/schemas/DemandaPutPatch"),
+                200: commonResponses[200]("#/components/schemas/DemandaAtribuir"),
                 400: commonResponses[400](),
                 401: commonResponses[401](),
                 404: commonResponses[404](),
@@ -398,13 +400,13 @@ const demandaRoutes = {
                 content: {
                     "application/json": {
                         schema: {
-                            $ref: "#/components/schemas/DemandaPutPatch"
+                            $ref: "#/components/schemas/DemandaAtribuir"
                         }
                     }
                 }
             },
             responses: {
-                200: commonResponses[200]("#/components/schemas/DemandaPutPatch"),
+                200: commonResponses[200]("#/components/schemas/DemandaAtribuir"),
                 400: commonResponses[400](),
                 401: commonResponses[401](),
                 404: commonResponses[404](),
@@ -448,13 +450,13 @@ const demandaRoutes = {
                 content: {
                     "application/json": {
                         schema: {
-                            $ref: "#/components/schemas/DemandaPutPatch"
+                            $ref: "#/components/schemas/DemandaDevolver"
                         }
                     }
                 }
             },
             responses: {
-                200: commonResponses[200]("#/components/schemas/DemandaPutPatch"),
+                200: commonResponses[200]("#/components/schemas/DemandaDevolver"),
                 400: commonResponses[400](),
                 401: commonResponses[401](),
                 404: commonResponses[404](),
@@ -496,13 +498,13 @@ const demandaRoutes = {
                 content: {
                     "application/json": {
                         schema: {
-                            $ref: "#/components/schemas/DemandaPutPatch"
+                            $ref: "#/components/schemas/DemandaDevolver"
                         }
                     }
                 }
             },
             responses: {
-                200: commonResponses[200]("#/components/schemas/DemandaPutPatch"),
+                200: commonResponses[200]("#/components/schemas/DemandaDevolver"),
                 400: commonResponses[400](),
                 401: commonResponses[401](),
                 404: commonResponses[404](),
@@ -545,13 +547,13 @@ const demandaRoutes = {
                 content: {
                     "application/json": {
                         schema: {
-                            $ref: "#/components/schemas/DemandaPutPatch"
+                            $ref: "#/components/schemas/DemandaResolver"
                         }
                     }
                 }
             },
             responses: {
-                200: commonResponses[200]("#/components/schemas/DemandaPutPatch"),
+                200: commonResponses[200]("#/components/schemas/DemandaResolver"),
                 400: commonResponses[400](),
                 401: commonResponses[401](),
                 404: commonResponses[404](),
@@ -592,13 +594,13 @@ const demandaRoutes = {
                 content: {
                     "application/json": {
                         schema: {
-                            $ref: "#/components/schemas/DemandaPutPatch"
+                            $ref: "#/components/schemas/DemandaResolver"
                         }
                     }
                 }
             },
             responses: {
-                200: commonResponses[200]("#/components/schemas/DemandaPutPatch"),
+                200: commonResponses[200]("#/components/schemas/DemandaResolver"),
                 400: commonResponses[400](),
                 401: commonResponses[401](),
                 404: commonResponses[404](),

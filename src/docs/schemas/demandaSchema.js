@@ -44,12 +44,52 @@ const demandaSchemas = {
         'descricao',
         'endereco'
     ],
-    description: "Schema para criação de um demanda"
+    description: "Schema para criação de um demanda",
+    example: {
+      tipo: "Iluminação",
+      descricao: "Poste quebrado.",
+      endereco: {
+          logradouro: "Rua das Flores",
+          bairro: "Jardim Bom",
+          numero: 123,
+          cidade: "São Paulo",
+          estado: "SP",
+          cep: "01234567"
+        }
+    }
   },
   DemandaPutPatch: {
     ...deepCopy(demandaJsonSchema),
     required: [],
-    description: "Schema para atualização de um demanda"
+    description: "Schema para atualização de um demanda",
+    example: {
+      feedback: 4,
+      avaliacao_resolucao: "Poste trocado e iluminação melhorou 50% comparado com o mesmo período do ano passado."
+    }
+  },
+  DemandaAtribuir: {
+    ...deepCopy(demandaJsonSchema),
+    required: [],
+    description: "Schema para atribuir uma demanda",
+    example: {
+      usuarios: ["687493051022d36d2cfc70d4"]
+    }
+  },
+  DemandaDevolver: {
+    ...deepCopy(demandaJsonSchema),
+    required: [],
+    description: "Schema para devolver uma demanda",
+    example: {
+      motivo_devolucao: "Não possuo as ferramentas necessárias."
+    }
+  },
+  DemandaResolver: {
+    ...deepCopy(demandaJsonSchema),
+    required: [],
+    description: "Schema para resolver uma demanda",
+    example: {
+      resolucao: "Problemática ajustada."
+    }
   }
 };
 
