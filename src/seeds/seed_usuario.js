@@ -300,6 +300,39 @@ async function seedUsuario() {
     grupo: grupoOperador._id
   });
 
+  usuarios.push({
+    link_imagem: "https://example.com/operador-fixo.jpg",
+    ativo: true,
+    cpf: "01162809213",
+    email: "operadorfixo2@exemplo.com",
+    celular: "(11) 92322-2222",
+    cnh: "22222462222",
+    data_nomeacao: new Date("2022-01-01"),
+    cargo: "Operador",
+    formacao: "Tecnologia da Informação",
+    nivel_acesso: {
+      administrador: false,
+      secretario: false,
+      operador: true,
+      municipe: false
+    },
+    nome: "Operador Fixo 2",
+    nome_social: "",
+    portaria_nomeacao: "OP-FIX-2022",
+    senha: senhaHash,
+    endereco: {
+      logradouro: "Rua Operador Fixo",
+      cep: "22222-222",
+      bairro: "Vila Nova",
+      numero: "20",
+      complemento: "Bloco B",
+      cidade: "São Paulo",
+      estado: "SP"
+    },
+    secretarias: secretariaFixa,
+    grupo: grupoOperador._id
+  });
+
   // Munícipe fixo - mesma secretaria
   usuarios.push({
     link_imagem: "https://example.com/municipe-fixo.jpg",
