@@ -118,6 +118,7 @@ const usuarioSchemas = {
         email: "joao.silva@email.com",
         senha: "Senha@123",
         cnh: "13345678900",
+        celular: "12345678900",
         endereco: {
           logradouro: "Rua das Flores",
           bairro: "Jardim Bom",
